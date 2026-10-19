@@ -1,0 +1,15 @@
+{
+  "raw_section_count": 16,
+  "clean_section_count": 6,
+  "raw_chunk_count": 34,
+  "clean_chunk_count": 24,
+  "clean_headings": [
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)",
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.1. Numbers ¶](#numbers)",
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.3. Lists ¶](#lists)",
+    "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)"
+  ],
+  "clean_first_chunk_preview": "# [3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)\n\nIn the following examples, input and output are distinguished by the presence or absence of prompts ( [&gt;&gt;&gt;](..\\glossary.html#term-0) and [...](..\\glossary.html#term-...) ): to repeat the example, you must type everything after the prompt, when the prompt appears; lines that do not begin with a prompt are output from the interpreter. Note that a secondary prompt on a line by itself in an example means you m"
+}

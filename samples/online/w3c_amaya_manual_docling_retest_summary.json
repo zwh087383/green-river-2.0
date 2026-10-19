@@ -1,0 +1,17 @@
+{
+  "file": "samples\\online\\w3c_amaya_manual.pdf",
+  "backend": "docling",
+  "elapsed_seconds": 189.87,
+  "section_count": 127,
+  "chunk_count": 175,
+  "first_section_text": "## Amaya User Manual",
+  "first_section_metadata": {
+    "parser": "docling",
+    "content_type": "pdf",
+    "heading": "Amaya User Manual",
+    "heading_level": 2,
+    "heading_path": "Amaya User Manual",
+    "intermediate_format": "markdown"
+  },
+  "used_fallback": false
+}

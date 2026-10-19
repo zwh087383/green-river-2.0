@@ -1,0 +1,112 @@
+{
+  "source": "parsed_documents/upload_long_text.json",
+  "source_name": "long.txt",
+  "backend": "auto",
+  "sections": [
+    {
+      "text": "alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "id": "long.txt:s0:c0:5911f81b2f83",
+      "text": "alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_long_text.json",
+        "source_name": "long.txt",
+        "section_index": 0,
+        "chunk_index": 0,
+        "chunk_size": 500,
+        "chunk_overlap": 50
+      }
+    },
+    {
+      "id": "long.txt:s0:c1:4872ceafa5fb",
+      "text": "mma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha b",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_long_text.json",
+        "source_name": "long.txt",
+        "section_index": 0,
+        "chunk_index": 1,
+        "chunk_size": 500,
+        "chunk_overlap": 50
+      }
+    },
+    {
+      "id": "long.txt:s0:c2:9117682e7385",
+      "text": "ha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma del",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_long_text.json",
+        "source_name": "long.txt",
+        "section_index": 0,
+        "chunk_index": 2,
+        "chunk_size": 500,
+        "chunk_overlap": 50
+      }
+    },
+    {
+      "id": "long.txt:s0:c3:0e60316487dc",
+      "text": "delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta alpha beta gamma delta",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_long_text.json",
+        "source_name": "long.txt",
+        "section_index": 0,
+        "chunk_index": 3,
+        "chunk_size": 500,
+        "chunk_overlap": 50
+      }
+    },
+    {
+      "id": "long.txt:s0:c4:2be17648014c",
+      "text": "beta gamma delta alpha beta gamma delta",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_long_text.json",
+        "source_name": "long.txt",
+        "section_index": 0,
+        "chunk_index": 4,
+        "chunk_size": 500,
+        "chunk_overlap": 50
+      }
+    }
+  ],
+  "tables": [],
+  "assets": [],
+  "diagnostics": [
+    {
+      "level": "info",
+      "code": "backend_used",
+      "message": "Parsed with backend: auto",
+      "metadata": {
+        "cache_hit": false
+      }
+    }
+  ],
+  "cache_key": "f337bb967d92eb3a134ae81fbbeffcb7e965c56b3b44564ed995e5c4a74e12b4",
+  "cache_hit": false,
+  "elapsed_seconds": 0.003,
+  "metadata": {
+    "file_sha256": "1db8e7afb88aabb5790b0009f001bcc4ae100198db6e5e6a3b91e99659bb7005",
+    "file_size": 1840,
+    "suffix": ".txt"
+  }
+}

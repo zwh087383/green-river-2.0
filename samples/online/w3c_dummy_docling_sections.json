@@ -1,0 +1,13 @@
+[
+  {
+    "text": "## Dummy PDF file",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pdf",
+      "heading": "Dummy PDF file",
+      "heading_level": 2,
+      "heading_path": "Dummy PDF file",
+      "intermediate_format": "markdown"
+    }
+  }
+]

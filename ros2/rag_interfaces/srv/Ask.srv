@@ -1,0 +1,7 @@
+string query
+int32 top_k
+string session_id
+---
+bool accepted
+string request_id
+string message

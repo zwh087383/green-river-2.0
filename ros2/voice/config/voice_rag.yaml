@@ -1,0 +1,85 @@
+voice_bridge_node:
+  ros__parameters:
+    transcript_topic: /speech_interaction/isr_result
+    query_topic: /voice/query
+    answer_topic: /voice/answer
+    interrupt_topic: /voice/interrupt
+    control_topic: /voice/control
+    arm_motion_request_topic: /voice/arm_motion_request
+    text_to_audio_topic: /speech_interaction/text_to_audio
+    display_topic: /voice/display_text
+    playback_topic: /voice/playback
+    session_id: robot
+    top_k: 4
+    speak_answers: true
+    dedup_seconds: 1.0
+    interrupt_ack_timeout_seconds: 8.0
+    playback_timeout_seconds: 30.0
+
+rag_answer_node:
+  ros__parameters:
+    query_topic: /voice/query
+    answer_topic: /voice/answer
+    control_topic: /voice/control
+    interrupt_topic: /voice/interrupt
+    ask_service: /rag/ask
+    default_top_k: 4
+    worker_count: 1
+    max_sessions: 16
+
+rag_knowledge_node:
+  ros__parameters:
+    chunk_size: 2400
+    chunk_overlap: 300
+    search_service: /rag/search
+    index_stats_service: /rag/index_stats
+    set_document_enabled_service: /rag/set_document_enabled
+    parse_action: /rag/parse_document
+    index_action: /rag/index_document
+
+display_node:
+  ros__parameters:
+    state_path: data/runtime/display_state.json
+    display_topic: /voice/display_text
+    mode_service: /display/set_mode
+
+robot_audio_input_node:
+  ros__parameters:
+    device: ""
+    sample_rate: 16000
+    block_ms: 100
+    wakeup_enabled: true
+    wake_word: "\u5c0f\u7eff\u5c0f\u7eff"
+    end_silence_ms: 400
+    initial_silence_ms: 8000
+    max_utterance_ms: 30000
+    pre_pad_ms: 300
+    post_pad_ms: 200
+    query_topic: /voice/query
+    control_topic: /voice/control
+    interrupt_topic: /voice/interrupt
+    arm_motion_request_topic: /voice/arm_motion_request
+    playback_topic: /voice/playback
+    status_topic: /voice/audio_status
+    session_id: robot
+    top_k: 4
+
+voice_arm_motion_node:
+  ros__parameters:
+    enabled: true
+    motion_request_topic: /voice/arm_motion_request
+    interrupt_topic: /voice/interrupt
+    control_topic: /voice/control
+    arm_motion_topic: /arm_control/motion
+    arm_state_topic: /arm_control/arm_state
+    session_id: robot
+    wake_motion_code: 4
+    answer_motion_code: 5
+    closing_motion_code: 4
+    # SDK code 1 is "preset position"; confirm on the robot that this is
+    # Xiao Lu's intended default pose before the acceptance test.
+    default_motion_code: 1
+    motion_start_timeout_seconds: 3.0
+    motion_finish_timeout_seconds: 15.0
+    reset_start_timeout_seconds: 3.0
+    reset_finish_timeout_seconds: 10.0

@@ -1,0 +1,99 @@
+{
+  "source": "samples\\online\\calibre_demo.docx",
+  "status": "ok",
+  "section_count": 17,
+  "chunk_count": 26,
+  "headings": [
+    "Demonstration of DOCX support in calibre",
+    "Demonstration of DOCX support in calibre > Text Formatting",
+    "Demonstration of DOCX support in calibre > Text Formatting > Inline formatting",
+    "Demonstration of DOCX support in calibre > Text Formatting > Fun with fonts",
+    "Demonstration of DOCX support in calibre > Text Formatting > Paragraph level formatting",
+    "Demonstration of DOCX support in calibre > Tables",
+    "Demonstration of DOCX support in calibre > Structural Elements",
+    "Demonstration of DOCX support in calibre > Structural Elements > Footnotes &amp; Endnotes",
+    "Demonstration of DOCX support in calibre > Structural Elements > Dropcaps",
+    "Demonstration of DOCX support in calibre > Structural Elements > Links",
+    "Demonstration of DOCX support in calibre > Structural Elements > Table of Contents",
+    "Demonstration of DOCX support in calibre > Images"
+  ],
+  "first_sections": [
+    {
+      "heading_path": "Demonstration of DOCX support in calibre",
+      "parser": "docling",
+      "content_type": "docx",
+      "intermediate_format": "markdown",
+      "text_preview": "# Demonstration of DOCX support in calibre\\n\\nThis document demonstrates the ability of the calibre DOCX Input plugin to convert the various typographic features in a Microsoft Word (2007 and newer) document. Convert this document to a modern ebook format, such as AZW3 for Kindles or EPUB for other eb"
+    },
+    {
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting",
+      "parser": "docling",
+      "content_type": "docx",
+      "intermediate_format": "markdown",
+      "text_preview": "## Text Formatting"
+    },
+    {
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Inline formatting",
+      "parser": "docling",
+      "content_type": "docx",
+      "intermediate_format": "markdown",
+      "text_preview": "### Inline formatting\\n\\nHere, we demonstrate various types of inline text formatting and the use of embedded fonts.\\n\\nHere is some **bold,** *italic,* ***bold-italic,*** underlined and ~~struck out~~ text. Then, we have a super script and a sub script . Now we see some red, green and blue text. Some t"
+    },
+    {
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Fun with fonts",
+      "parser": "docling",
+      "content_type": "docx",
+      "intermediate_format": "markdown",
+      "text_preview": "### Fun with fonts\\n\\nThis document has embedded the Ubuntu font family. The body text is in the Ubuntu typeface, here is some text in the Ubuntu Mono typeface, notice how every letter has the same width, even i and m. Every embedded font will automatically be embedded in the output ebook during conve"
+    },
+    {
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Paragraph level formatting",
+      "parser": "docling",
+      "content_type": "docx",
+      "intermediate_format": "markdown",
+      "text_preview": "### Paragraph level formatting\\n\\nYou can do crazy things with paragraphs, if the urge strikes you. For instance this paragraph is right aligned and has a right border. It has also been given a light gray background.\\n\\nFor the lovers of poetry amongst you, paragraphs with hanging indents, like this oft"
+    }
+  ],
+  "first_chunks": [
+    {
+      "id": "calibre_demo.docx:s0:c0:1efcf6968d83",
+      "heading_path": "Demonstration of DOCX support in calibre",
+      "source_name": "calibre_demo.docx",
+      "section_index": 0,
+      "chunk_index": 0,
+      "text_preview": "# Demonstration of DOCX support in calibre\\n\\nThis document demonstrates the ability of the calibre DOCX Input plugin to convert the various typographic features in a Microsoft Word (2007 and newer) document. Convert this document to a modern ebook format, such as AZW3 for Kindles or EPUB for other eb"
+    },
+    {
+      "id": "calibre_demo.docx:s1:c0:543122f34360",
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting",
+      "source_name": "calibre_demo.docx",
+      "section_index": 1,
+      "chunk_index": 0,
+      "text_preview": "## Text Formatting"
+    },
+    {
+      "id": "calibre_demo.docx:s2:c0:fce8fab57268",
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Inline formatting",
+      "source_name": "calibre_demo.docx",
+      "section_index": 2,
+      "chunk_index": 0,
+      "text_preview": "### Inline formatting\\n\\nHere, we demonstrate various types of inline text formatting and the use of embedded fonts.\\n\\nHere is some **bold,** *italic,* ***bold-italic,*** underlined and ~~struck out~~ text. Then, we have a super script and a sub script . Now we see some red, green and blue text. Some t"
+    },
+    {
+      "id": "calibre_demo.docx:s3:c0:dcfa97da425e",
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Fun with fonts",
+      "source_name": "calibre_demo.docx",
+      "section_index": 3,
+      "chunk_index": 0,
+      "text_preview": "### Fun with fonts\\n\\nThis document has embedded the Ubuntu font family. The body text is in the Ubuntu typeface, here is some text in the Ubuntu Mono typeface, notice how every letter has the same width, even i and m. Every embedded font will automatically be embedded in the output ebook during conve"
+    },
+    {
+      "id": "calibre_demo.docx:s4:c0:3317b294c34a",
+      "heading_path": "Demonstration of DOCX support in calibre > Text Formatting > Paragraph level formatting",
+      "source_name": "calibre_demo.docx",
+      "section_index": 4,
+      "chunk_index": 0,
+      "text_preview": "### Paragraph level formatting\\n\\nYou can do crazy things with paragraphs, if the urge strikes you. For instance this paragraph is right aligned and has a right border. It has also been given a light gray background.\\n\\nFor the lovers of poetry amongst you, paragraphs with hanging indents, like this oft"
+    }
+  ]
+}

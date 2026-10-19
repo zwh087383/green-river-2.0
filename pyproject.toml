@@ -1,0 +1,169 @@
+[project]
+name = "rag-system"
+version = "0.1.0"
+description = "Document parsing foundation for a RAG system."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+rag-module-test = "rag_system.module_test.cli:main"
+rag-time-probe = "rag_system.time_probe.cli:main"
+rag-wakeup-test = "rag_system.wakeup.cli:main"
+rag-vad-test = "rag_system.vad.cli:main"
+rag-asr-test = "rag_system.asr.cli:main"
+rag-tts-test = "rag_system.tts.cli:main"
+rag-cloud-test = "rag_system.rag_cloud.cli:main"
+rag-edge-test = "rag_system.rag_edge.cli:main"
+rag-agent-test = "rag_system.agent.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"rag_system.web" = [
+    "assets/*.mp3",
+    "assets/*.txt",
+    "assets/*.js",
+    "assets/emotions/*.png",
+    "assets/emotions/*.json",
+]
+
+[project.optional-dependencies]
+pdf = [
+    "pypdf>=4.0.0",
+]
+ocr = [
+    "pillow>=10.0.0",
+    "pytesseract>=0.3.10",
+]
+html = [
+    "beautifulsoup4>=4.12.0",
+]
+docling = [
+    "docling>=2.117.0,<2.118",
+    "modelscope-hub>=0.2.0,<0.3",
+    "onnxruntime>=1.19.0",
+]
+unstructured = [
+    "unstructured[all-docs]==0.18.32",
+    "unstructured-inference==1.1.1",
+    "python-magic-bin>=0.4.14; platform_system == 'Windows'",
+    "spacy>=3.8,<3.9",
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+]
+heavy = [
+    "beautifulsoup4>=4.12.0",
+    "docling>=2.117.0,<2.118",
+    "modelscope-hub>=0.2.0,<0.3",
+    "onnxruntime>=1.19.0",
+    "unstructured[all-docs]==0.18.32",
+    "unstructured-inference==1.1.1",
+    "python-magic-bin>=0.4.14; platform_system == 'Windows'",
+    "spacy>=3.8,<3.9",
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+]
+web = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "python-multipart>=0.0.9",
+]
+indexing = [
+    "openai>=1.0.0",
+    "chromadb>=0.5.0",
+    "rank-bm25>=0.2.2",
+    "jieba>=0.42.1",
+    "requests>=2.31.0",
+]
+rag = [
+    "openai>=1.0.0",
+    "chromadb>=0.5.0",
+    "rank-bm25>=0.2.2",
+    "jieba>=0.42.1",
+    "requests>=2.31.0",
+]
+voice = [
+    "faster-whisper>=1.2.1,<2.0",
+    "modelscope-hub>=0.2.0,<0.3",
+    "edge-tts>=7.0.0",
+    "aiohttp>=3.11.0,<4.0",
+    "opencc-python-reimplemented>=0.1.7,<0.2",
+    "funasr-onnx==0.4.2",
+    "onnxruntime>=1.19.0,<2.0",
+    "numpy==1.26.4",
+    "opencv-python==4.11.0.86",
+    "sounddevice>=0.5.0",
+    "sherpa-onnx>=1.13.4,<2.0",
+    "pypinyin>=0.55.0,<1.0",
+]
+wakeup = [
+    "modelscope-hub>=0.2.0,<0.3",
+    "numpy==1.26.4",
+    "sherpa-onnx>=1.13.4,<2.0",
+    "pypinyin>=0.55.0,<1.0",
+]
+vad = [
+    "funasr-onnx==0.4.2",
+    "modelscope-hub>=0.2.0,<0.3",
+    "onnxruntime>=1.19.0,<2.0",
+    "numpy==1.26.4",
+    "opencv-python==4.11.0.86",
+]
+asr-local = [
+    "faster-whisper>=1.2.1,<2.0",
+    "modelscope-hub>=0.2.0,<0.3",
+    "opencc-python-reimplemented>=0.1.7,<0.2",
+    "aiohttp>=3.11.0,<4.0",
+    "numpy==1.26.4",
+]
+asr-cloud = [
+    "aiohttp>=3.11.0,<4.0",
+    "opencc-python-reimplemented>=0.1.7,<0.2",
+]
+tts-edge = [
+    "edge-tts>=7.0.0",
+    "aiohttp>=3.11.0,<4.0",
+]
+tts-cloud = [
+    "aiohttp>=3.11.0,<4.0",
+    "edge-tts>=7.0.0",
+]
+audio-io = [
+    "sounddevice>=0.5.0",
+    "numpy==1.26.4",
+]
+rag-edge = [
+    "openai>=1.0.0",
+    "chromadb>=0.5.0",
+    "rank-bm25>=0.2.2",
+    "jieba>=0.42.1",
+    "requests>=2.31.0",
+]
+rag-cloud = [
+    "openai>=1.0.0",
+    "chromadb>=0.5.0",
+    "rank-bm25>=0.2.2",
+    "jieba>=0.42.1",
+    "requests>=2.31.0",
+    "docling>=2.117.0,<2.118",
+    "modelscope-hub>=0.2.0,<0.3",
+    "onnxruntime>=1.19.0",
+]
+agent = [
+    "openai>=1.0.0",
+    "chromadb>=0.5.0",
+    "rank-bm25>=0.2.2",
+    "jieba>=0.42.1",
+    "requests>=2.31.0",
+]
+test = [
+    "opencc-python-reimplemented>=0.1.7,<0.2",
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

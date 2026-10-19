@@ -1,0 +1,1048 @@
+{
+  "source": "parsed_documents/sample_docx_long.json",
+  "source_name": "docx-long-samplelib.docx",
+  "backend": "auto",
+  "sections": [
+    {
+      "text": "# Sample Multi-Page Document\n\nThis document has 18 chapters of lorem ipsum, each illustrated with a coloured numbered figure. Useful for testing pagination, parsers and document converters.",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Sample Multi-Page Document",
+        "heading_level": 1,
+        "heading_path": "Sample Multi-Page Document",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 1\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 1",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 1",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 2\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 2",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 2",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 3\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 3",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 3",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 4\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 4",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 4",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 5\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 5",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 5",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 6\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 6",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 6",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 7\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 7",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 7",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 8\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 8",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 8",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 9\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 9",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 9",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 10\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 10",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 10",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 11\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 11",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 11",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 12\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 12",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 12",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 13\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 13",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 13",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 14\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 14",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 14",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 15\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 15",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 15",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 16\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 16",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 16",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 17\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 17",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 17",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "## Chapter 18\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 18",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 18",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser"
+      }
+    },
+    {
+      "text": "10",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image10.png",
+        "image_path": "image10-531c3e5cff07f549.png",
+        "image_index": 1,
+        "image_sha256": "531c3e5cff07f5490838780448ce29e2af9730ca29b5519b182676d678d2864a",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "11",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image11.png",
+        "image_path": "image11-ea6fd2e5b179bad3.png",
+        "image_index": 2,
+        "image_sha256": "ea6fd2e5b179bad385bc6abacfb4786ce37c8beef335a04ff8e9645d9b079298",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "12",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image12.png",
+        "image_path": "image12-d7dd07f28e4ac03c.png",
+        "image_index": 3,
+        "image_sha256": "d7dd07f28e4ac03c1a1493c02a9a5b5326c0da806cc9d1506da39f0e3444e728",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "13",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image13.png",
+        "image_path": "image13-49c4a315ff007a42.png",
+        "image_index": 4,
+        "image_sha256": "49c4a315ff007a42cbe2d666c5f0339f2eccfc3cefbc9f8276f07c685de77234",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "16",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image16.png",
+        "image_path": "image16-e4a936bdfafb5acb.png",
+        "image_index": 7,
+        "image_sha256": "e4a936bdfafb5acbda3c0f797e36787bb33c77fa94e61e69f39d22dc8f39c443",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "17",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image17.png",
+        "image_path": "image17-491835bcd529d484.png",
+        "image_index": 8,
+        "image_sha256": "491835bcd529d484c1604f701c3711401a334edf934269a98cadf8c21d3749d2",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "text": "18",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image18.png",
+        "image_path": "image18-1b82305d0197eec5.png",
+        "image_index": 9,
+        "image_sha256": "1b82305d0197eec518e66bdc908bb29e8c1674ac36b39119860f3a00297d192e",
+        "ocr_languages": "eng+chi_sim"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "id": "docx-long-samplelib.docx:s0:c0:f50585e9a3a9",
+      "text": "# Sample Multi-Page Document\n\nThis document has 18 chapters of lorem ipsum, each illustrated with a coloured numbered figure. Useful for testing pagination, parsers and document converters.",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Sample Multi-Page Document",
+        "heading_level": 1,
+        "heading_path": "Sample Multi-Page Document",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 0,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s1:c0:27132545dcd3",
+      "text": "## Chapter 1\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 1",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 1",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 1,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s2:c0:76847c88dcee",
+      "text": "## Chapter 2\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 2",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 2",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 2,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s3:c0:f4d298eec6f4",
+      "text": "## Chapter 3\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 3",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 3",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 3,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s4:c0:a86cef131b7b",
+      "text": "## Chapter 4\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 4",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 4",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 4,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s5:c0:aa40568a35d4",
+      "text": "## Chapter 5\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 5",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 5",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 5,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s6:c0:1849c8610422",
+      "text": "## Chapter 6\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 6",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 6",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 6,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s7:c0:4686380d12b2",
+      "text": "## Chapter 7\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 7",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 7",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 7,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s8:c0:b33d09d4d65a",
+      "text": "## Chapter 8\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 8",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 8",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 8,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s9:c0:52e1814cc5b1",
+      "text": "## Chapter 9\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 9",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 9",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 9,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s10:c0:51bc37c568da",
+      "text": "## Chapter 10\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 10",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 10",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 10,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s11:c0:1f20266780ae",
+      "text": "## Chapter 11\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 11",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 11",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 11,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s12:c0:be6e4a4539eb",
+      "text": "## Chapter 12\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 12",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 12",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 12,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s13:c0:3cd7a385b17b",
+      "text": "## Chapter 13\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 13",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 13",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 13,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s14:c0:6554381911bf",
+      "text": "## Chapter 14\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 14",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 14",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 14,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s15:c0:d42f334b9564",
+      "text": "## Chapter 15\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 15",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 15",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 15,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s16:c0:101c697585de",
+      "text": "## Chapter 16\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 16",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 16",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 16,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s17:c0:e9230fbe6f17",
+      "text": "## Chapter 17\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 17",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 17",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 17,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s18:c0:dae8970dc1e6",
+      "text": "## Chapter 18\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n<!-- image -->",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "docx",
+        "heading": "Chapter 18",
+        "heading_level": 2,
+        "heading_path": "Sample Multi-Page Document > Chapter 18",
+        "intermediate_format": "markdown",
+        "auto_strategy": "DoclingParser",
+        "source": "parsed_documents/sample_docx_long.json",
+        "source_name": "docx-long-samplelib.docx",
+        "section_index": 18,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s19:c0:1d2162b49aac",
+      "text": "10",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image10.png",
+        "image_path": "image10-531c3e5cff07f549.png",
+        "image_index": 1,
+        "image_sha256": "531c3e5cff07f5490838780448ce29e2af9730ca29b5519b182676d678d2864a",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 19,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s20:c0:b593dc830e5f",
+      "text": "11",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image11.png",
+        "image_path": "image11-ea6fd2e5b179bad3.png",
+        "image_index": 2,
+        "image_sha256": "ea6fd2e5b179bad385bc6abacfb4786ce37c8beef335a04ff8e9645d9b079298",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 20,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s21:c0:3c28e84f3e36",
+      "text": "12",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image12.png",
+        "image_path": "image12-d7dd07f28e4ac03c.png",
+        "image_index": 3,
+        "image_sha256": "d7dd07f28e4ac03c1a1493c02a9a5b5326c0da806cc9d1506da39f0e3444e728",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 21,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s22:c0:67fdd9507d67",
+      "text": "13",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image13.png",
+        "image_path": "image13-49c4a315ff007a42.png",
+        "image_index": 4,
+        "image_sha256": "49c4a315ff007a42cbe2d666c5f0339f2eccfc3cefbc9f8276f07c685de77234",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 22,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s23:c0:5e53597a79fb",
+      "text": "16",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image16.png",
+        "image_path": "image16-e4a936bdfafb5acb.png",
+        "image_index": 7,
+        "image_sha256": "e4a936bdfafb5acbda3c0f797e36787bb33c77fa94e61e69f39d22dc8f39c443",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 23,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s24:c0:367697f8b6d6",
+      "text": "17",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image17.png",
+        "image_path": "image17-491835bcd529d484.png",
+        "image_index": 8,
+        "image_sha256": "491835bcd529d484c1604f701c3711401a334edf934269a98cadf8c21d3749d2",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 24,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    },
+    {
+      "id": "docx-long-samplelib.docx:s25:c0:01b6788bb95d",
+      "text": "18",
+      "metadata": {
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "source_name": "docx-long-samplelib.docx",
+        "parent_content_type": "docx",
+        "embedded_path": "image18.png",
+        "image_path": "image18-1b82305d0197eec5.png",
+        "image_index": 9,
+        "image_sha256": "1b82305d0197eec518e66bdc908bb29e8c1674ac36b39119860f3a00297d192e",
+        "ocr_languages": "eng+chi_sim",
+        "source": "parsed_documents/sample_docx_long.json",
+        "section_index": 25,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    }
+  ],
+  "tables": [],
+  "assets": [
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:19:592695fb201e",
+      "kind": "image",
+      "caption": "10",
+      "page": null,
+      "bbox": null,
+      "path": "image10-531c3e5cff07f549.png",
+      "metadata": {
+        "section_index": 19,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image10.png",
+        "image_path": "image10-531c3e5cff07f549.png",
+        "image_index": 1,
+        "image_sha256": "531c3e5cff07f5490838780448ce29e2af9730ca29b5519b182676d678d2864a",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:20:17eae9e5aee9",
+      "kind": "image",
+      "caption": "11",
+      "page": null,
+      "bbox": null,
+      "path": "image11-ea6fd2e5b179bad3.png",
+      "metadata": {
+        "section_index": 20,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image11.png",
+        "image_path": "image11-ea6fd2e5b179bad3.png",
+        "image_index": 2,
+        "image_sha256": "ea6fd2e5b179bad385bc6abacfb4786ce37c8beef335a04ff8e9645d9b079298",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:21:d9a6a6b00a2a",
+      "kind": "image",
+      "caption": "12",
+      "page": null,
+      "bbox": null,
+      "path": "image12-d7dd07f28e4ac03c.png",
+      "metadata": {
+        "section_index": 21,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image12.png",
+        "image_path": "image12-d7dd07f28e4ac03c.png",
+        "image_index": 3,
+        "image_sha256": "d7dd07f28e4ac03c1a1493c02a9a5b5326c0da806cc9d1506da39f0e3444e728",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:22:0edabed2b613",
+      "kind": "image",
+      "caption": "13",
+      "page": null,
+      "bbox": null,
+      "path": "image13-49c4a315ff007a42.png",
+      "metadata": {
+        "section_index": 22,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image13.png",
+        "image_path": "image13-49c4a315ff007a42.png",
+        "image_index": 4,
+        "image_sha256": "49c4a315ff007a42cbe2d666c5f0339f2eccfc3cefbc9f8276f07c685de77234",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:23:47ad06f9a127",
+      "kind": "image",
+      "caption": "16",
+      "page": null,
+      "bbox": null,
+      "path": "image16-e4a936bdfafb5acb.png",
+      "metadata": {
+        "section_index": 23,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image16.png",
+        "image_path": "image16-e4a936bdfafb5acb.png",
+        "image_index": 7,
+        "image_sha256": "e4a936bdfafb5acbda3c0f797e36787bb33c77fa94e61e69f39d22dc8f39c443",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:24:8cdf7caa05ce",
+      "kind": "image",
+      "caption": "17",
+      "page": null,
+      "bbox": null,
+      "path": "image17-491835bcd529d484.png",
+      "metadata": {
+        "section_index": 24,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image17.png",
+        "image_path": "image17-491835bcd529d484.png",
+        "image_index": 8,
+        "image_sha256": "491835bcd529d484c1604f701c3711401a334edf934269a98cadf8c21d3749d2",
+        "ocr_languages": "eng+chi_sim"
+      }
+    },
+    {
+      "asset_id": "docx-long-samplelib.docx:asset:25:f7b62e8023ec",
+      "kind": "image",
+      "caption": "18",
+      "page": null,
+      "bbox": null,
+      "path": "image18-1b82305d0197eec5.png",
+      "metadata": {
+        "section_index": 25,
+        "source_name": "docx-long-samplelib.docx",
+        "parser": "embedded_image_ocr",
+        "content_type": "embedded_image",
+        "element_type": "EmbeddedImageOCR",
+        "origin": "office_embedded_image",
+        "parent_content_type": "docx",
+        "embedded_path": "image18.png",
+        "image_path": "image18-1b82305d0197eec5.png",
+        "image_index": 9,
+        "image_sha256": "1b82305d0197eec518e66bdc908bb29e8c1674ac36b39119860f3a00297d192e",
+        "ocr_languages": "eng+chi_sim"
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "level": "info",
+      "code": "embedded_image_ocr",
+      "message": "OCR extracted text from 7 embedded image(s).",
+      "metadata": {
+        "source_name": "docx-long-samplelib.docx",
+        "image_count": 7
+      }
+    },
+    {
+      "level": "info",
+      "code": "backend_used",
+      "message": "Parsed with backend: auto",
+      "metadata": {
+        "cache_hit": false
+      }
+    }
+  ],
+  "cache_key": "a2791eae2711c59ebe8232409d6780f72333aa78c2f4be5237011a8def5988be",
+  "cache_hit": false,
+  "elapsed_seconds": 17.372,
+  "metadata": {
+    "file_sha256": "2bdc6318e9dd8432669b6924f21cd377ce0b0230ae523ed3a6672e498f8bad12",
+    "file_size": 165492,
+    "suffix": ".docx"
+  }
+}

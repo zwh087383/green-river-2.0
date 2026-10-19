@@ -1,0 +1,15 @@
+string file_path
+string backend
+int32 chunk_size
+int32 chunk_overlap
+bool enable_cache
+---
+bool success
+string message
+string document_json
+float64 elapsed_seconds
+string[] diagnostics
+---
+float32 progress
+string stage
+string detail

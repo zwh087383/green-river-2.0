@@ -1,0 +1,15 @@
+[Unit]
+Description=Green River RAG voice bridge
+After=wheel_controller.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=RAG_DATA_DIR=%h/.local/share/green-river
+EnvironmentFile=-%h/.config/green-river/voice.env
+ExecStart=%h/Voice/ros2/voice/scripts/run_voice.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

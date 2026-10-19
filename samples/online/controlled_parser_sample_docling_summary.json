@@ -1,0 +1,76 @@
+{
+  "source": "samples\\online\\controlled_parser_sample.pptx",
+  "status": "ok",
+  "section_count": 4,
+  "chunk_count": 4,
+  "headings": [
+    "Parser Test Deck",
+    "Retrieval Pipeline",
+    "Evaluation Matrix",
+    "Closing Notes"
+  ],
+  "first_sections": [
+    {
+      "heading_path": "Parser Test Deck",
+      "parser": "docling",
+      "content_type": "pptx",
+      "intermediate_format": "markdown",
+      "text_preview": "# Parser Test Deck\\n\\nDocling PPTX structure extraction sample"
+    },
+    {
+      "heading_path": "Retrieval Pipeline",
+      "parser": "docling",
+      "content_type": "pptx",
+      "intermediate_format": "markdown",
+      "text_preview": "# Retrieval Pipeline\\n\\n- Parse documents\\n- Create chunks\\n- Build vector and BM25 indexes\\n- Generate cited answers"
+    },
+    {
+      "heading_path": "Evaluation Matrix",
+      "parser": "docling",
+      "content_type": "pptx",
+      "intermediate_format": "markdown",
+      "text_preview": "# Evaluation Matrix\\n\\n| Case     | Expected           | Status               |\\n|----------|--------------------|----------------------|\\n| Markdown | Headings preserved | Pass                 |\\n| PDF      | Text extracted     | Needs complex checks |\\n| PPTX     | Slides sectioned   | Testing              |"
+    },
+    {
+      "heading_path": "Closing Notes",
+      "parser": "docling",
+      "content_type": "pptx",
+      "intermediate_format": "markdown",
+      "text_preview": "# Closing Notes\\n\\n- The parser should preserve slide titles, bullets, and table-like content."
+    }
+  ],
+  "first_chunks": [
+    {
+      "id": "controlled_parser_sample.pptx:s0:c0:53f4c1b22825",
+      "heading_path": "Parser Test Deck",
+      "source_name": "controlled_parser_sample.pptx",
+      "section_index": 0,
+      "chunk_index": 0,
+      "text_preview": "# Parser Test Deck\\n\\nDocling PPTX structure extraction sample"
+    },
+    {
+      "id": "controlled_parser_sample.pptx:s1:c0:bed4eded55f2",
+      "heading_path": "Retrieval Pipeline",
+      "source_name": "controlled_parser_sample.pptx",
+      "section_index": 1,
+      "chunk_index": 0,
+      "text_preview": "# Retrieval Pipeline\\n\\n- Parse documents\\n- Create chunks\\n- Build vector and BM25 indexes\\n- Generate cited answers"
+    },
+    {
+      "id": "controlled_parser_sample.pptx:s2:c0:105ad370e8c0",
+      "heading_path": "Evaluation Matrix",
+      "source_name": "controlled_parser_sample.pptx",
+      "section_index": 2,
+      "chunk_index": 0,
+      "text_preview": "# Evaluation Matrix\\n\\n| Case     | Expected           | Status               |\\n|----------|--------------------|----------------------|\\n| Markdown | Headings preserved | Pass                 |\\n| PDF      | Text extracted     | Needs complex checks |\\n| PPTX     | Slides sectioned   | Testing              |"
+    },
+    {
+      "id": "controlled_parser_sample.pptx:s3:c0:03ce103780c7",
+      "heading_path": "Closing Notes",
+      "source_name": "controlled_parser_sample.pptx",
+      "section_index": 3,
+      "chunk_index": 0,
+      "text_preview": "# Closing Notes\\n\\n- The parser should preserve slide titles, bullets, and table-like content."
+    }
+  ]
+}

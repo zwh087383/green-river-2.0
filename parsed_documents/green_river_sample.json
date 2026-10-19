@@ -1,0 +1,52 @@
+{
+  "source": "parsed_documents/green_river_sample.json",
+  "source_name": "green_river.txt",
+  "backend": "auto",
+  "sections": [
+    {
+      "text": "绿色江河环境保护促进会是一家关注长江源与青藏高原生态保护的民间环保组织。\n\n组织长期开展水生态监测、野生动物监测、环境教育和公众参与等工作。\n\n本文件仅作为 RAG 模块的固定验收样例，用于验证解析、切片、入库、检索和问答链路。",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "id": "green_river.txt:s0:c0:8fca9c61cf20",
+      "text": "绿色江河环境保护促进会是一家关注长江源与青藏高原生态保护的民间环保组织。\n\n组织长期开展水生态监测、野生动物监测、环境教育和公众参与等工作。\n\n本文件仅作为 RAG 模块的固定验收样例，用于验证解析、切片、入库、检索和问答链路。",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/green_river_sample.json",
+        "source_name": "green_river.txt",
+        "section_index": 0,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    }
+  ],
+  "tables": [],
+  "assets": [],
+  "diagnostics": [
+    {
+      "level": "info",
+      "code": "backend_used",
+      "message": "Parsed with backend: auto",
+      "metadata": {
+        "cache_hit": false
+      }
+    }
+  ],
+  "cache_key": "5555c6742d102b73bb39124fd5523b1127e4e172197520f8d630e525d39481f2",
+  "cache_hit": false,
+  "elapsed_seconds": 0.003,
+  "metadata": {
+    "file_sha256": "29e51f1ad4607a171b03fee24fc87dcfa92e7f2ed7eb7b3508891dc80bed6129",
+    "file_size": 325,
+    "suffix": ".txt"
+  }
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "text": "# Parser Test Deck\n\nDocling PPTX structure extraction sample",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pptx",
+      "heading": "Parser Test Deck",
+      "heading_level": 1,
+      "heading_path": "Parser Test Deck",
+      "intermediate_format": "markdown"
+    }
+  },
+  {
+    "text": "# Retrieval Pipeline\n\n- Parse documents\n- Create chunks\n- Build vector and BM25 indexes\n- Generate cited answers",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pptx",
+      "heading": "Retrieval Pipeline",
+      "heading_level": 1,
+      "heading_path": "Retrieval Pipeline",
+      "intermediate_format": "markdown"
+    }
+  },
+  {
+    "text": "# Evaluation Matrix\n\n| Case     | Expected           | Status               |\n|----------|--------------------|----------------------|\n| Markdown | Headings preserved | Pass                 |\n| PDF      | Text extracted     | Needs complex checks |\n| PPTX     | Slides sectioned   | Testing              |",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pptx",
+      "heading": "Evaluation Matrix",
+      "heading_level": 1,
+      "heading_path": "Evaluation Matrix",
+      "intermediate_format": "markdown"
+    }
+  },
+  {
+    "text": "# Closing Notes\n\n- The parser should preserve slide titles, bullets, and table-like content.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pptx",
+      "heading": "Closing Notes",
+      "heading_level": 1,
+      "heading_path": "Closing Notes",
+      "intermediate_format": "markdown"
+    }
+  }
+]

@@ -1,0 +1,15 @@
+[Unit]
+Description=Green River dedicated robot display
+After=graphical-session.target voice-rag.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.Xauthority
+Environment=BROWSER_BIN=/usr/bin/chromium
+ExecStart=$BROWSER_BIN --kiosk --app=http://127.0.0.1:8000/display --noerrdialogs --disable-session-crashed-bubble --disable-infobars
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target

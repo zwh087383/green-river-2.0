@@ -1,0 +1,18 @@
+[
+  {
+    "id": "unec_pdf_sample.pdf:s0:c0:841dd5c4ad06",
+    "text": "## Adobe Acrobat PDF Files\n\nAdobe® Portable Document Format (PDF) is a universal file format that preserves all of the fonts, formatting, colours and graphics of any source document, regardless of the application and platform used to create it.\n\nAdobe PDF is an ideal format for electronic document distribution as it overcomes the problems commonly encountered with electronic file sharing.\n\n- Anyone, anywhere can open a PDF file. All you need is the free Adobe Acrobat Reader. Recipients of other file formats sometimes can't open files because they don't have the applications used to create the documents.\n- PDF files always print correctly on any printing device.\n- PDF  files  always  display exactly as  created,  regardless  of  fonts,  software,  and operating systems. Fonts, and graphics are not lost due to platform, software, and version incompatibilities.\n- The  free  Acrobat  Reader  is  easy  to  download  and  can  be  freely  distributed  by anyone.\n- Compact  PDF  files are smaller than their source files and download a page at a time for fast display on the Web.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pdf",
+      "heading": "Adobe Acrobat PDF Files",
+      "heading_level": 2,
+      "heading_path": "Adobe Acrobat PDF Files",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\unec_pdf_sample.pdf",
+      "source_name": "unec_pdf_sample.pdf",
+      "section_index": 0,
+      "chunk_index": 0
+    }
+  }
+]

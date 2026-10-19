@@ -1,0 +1,28 @@
+{
+  "source": "samples\\online\\unec_pdf_sample.pdf",
+  "status": "ok",
+  "section_count": 1,
+  "chunk_count": 1,
+  "headings": [
+    "Adobe Acrobat PDF Files"
+  ],
+  "first_sections": [
+    {
+      "heading_path": "Adobe Acrobat PDF Files",
+      "parser": "docling",
+      "content_type": "pdf",
+      "intermediate_format": "markdown",
+      "text_preview": "## Adobe Acrobat PDF Files\\n\\nAdobe® Portable Document Format (PDF) is a universal file format that preserves all of the fonts, formatting, colours and graphics of any source document, regardless of the application and platform used to create it.\\n\\nAdobe PDF is an ideal format for electronic document d"
+    }
+  ],
+  "first_chunks": [
+    {
+      "id": "unec_pdf_sample.pdf:s0:c0:841dd5c4ad06",
+      "heading_path": "Adobe Acrobat PDF Files",
+      "source_name": "unec_pdf_sample.pdf",
+      "section_index": 0,
+      "chunk_index": 0,
+      "text_preview": "## Adobe Acrobat PDF Files\\n\\nAdobe® Portable Document Format (PDF) is a universal file format that preserves all of the fonts, formatting, colours and graphics of any source document, regardless of the application and platform used to create it.\\n\\nAdobe PDF is an ideal format for electronic document d"
+    }
+  ]
+}

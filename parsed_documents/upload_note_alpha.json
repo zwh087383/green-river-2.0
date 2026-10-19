@@ -1,0 +1,52 @@
+{
+  "source": "parsed_documents/upload_note_alpha.json",
+  "source_name": "note.txt",
+  "backend": "auto",
+  "sections": [
+    {
+      "text": "alpha searchable content",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "id": "note.txt:s0:c0:f1075619d3b6",
+      "text": "alpha searchable content",
+      "metadata": {
+        "parser": "text",
+        "content_type": "text",
+        "auto_strategy": "TextParser",
+        "source": "parsed_documents/upload_note_alpha.json",
+        "source_name": "note.txt",
+        "section_index": 0,
+        "chunk_index": 0,
+        "chunk_size": 2400,
+        "chunk_overlap": 300
+      }
+    }
+  ],
+  "tables": [],
+  "assets": [],
+  "diagnostics": [
+    {
+      "level": "info",
+      "code": "backend_used",
+      "message": "Parsed with backend: auto",
+      "metadata": {
+        "cache_hit": false
+      }
+    }
+  ],
+  "cache_key": "07b04e49704400250f217a2b2eea038646b0e2823121476874b3183488b0b259",
+  "cache_hit": false,
+  "elapsed_seconds": 0.001,
+  "metadata": {
+    "file_sha256": "eb77121d659b0281f187a65c326d7b78ed7c31b610ad54688c4d60e7557329de",
+    "file_size": 24,
+    "suffix": ".txt"
+  }
+}

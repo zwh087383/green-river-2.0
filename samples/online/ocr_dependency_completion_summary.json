@@ -1,0 +1,39 @@
+{
+  "image_parser_tesseract": {
+    "section_count": 1,
+    "text": "Parser OCR Test\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks."
+  },
+  "docling_image_rapidocr": {
+    "section_count": 1,
+    "text": "## Parser OCR Test\n\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "png",
+      "heading": "Parser OCR Test",
+      "heading_level": 2,
+      "heading_path": "Parser OCR Test",
+      "intermediate_format": "markdown"
+    }
+  },
+  "docling_scanned_pdf_rapidocr": {
+    "section_count": 1,
+    "text": "## Parser OCR Test\n\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "pdf",
+      "heading": "Parser OCR Test",
+      "heading_level": 2,
+      "heading_path": "Parser OCR Test",
+      "intermediate_format": "markdown"
+    }
+  },
+  "pypdf_text_pdf": {
+    "section_count": 1,
+    "text_preview": "Adobe Acrobat PDF Files\nAdobe® Portable Document Format (PDF) is a universal file format that preserves all\nof the fonts, formatting, colours and graphics of any source document, regardless of\nthe application and platform used to create it.\nAdobe PDF is an ideal format for electronic document distri",
+    "metadata": {
+      "parser": "pdf",
+      "content_type": "pdf",
+      "page": 1
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "format_version": 1,
+  "package_type": "sanitized_project_with_parsed_documents",
+  "generated_date": "2026-09-06",
+  "included_roots": [
+    "src",
+    "tests",
+    "docs",
+    "samples",
+    "scripts",
+    "ros2",
+    "docs/robot_deployment.md"
+  ],
+  "parsed_documents": [
+    "parsed_documents/green_river_knowledge.json",
+    "parsed_documents/green_river_sample.json",
+    "parsed_documents/sample_docx_long.json",
+    "parsed_documents/upload_long_text.json",
+    "parsed_documents/upload_note_alpha.json",
+    "parsed_documents/upload_note_hello.json"
+  ],
+  "excluded_categories": [
+    "virtual_environments",
+    "model_weights",
+    "runtime_logs_and_pid_files",
+    "uploads_and_extracted_assets",
+    "generated_indexes_and_caches",
+    "local_settings_and_api_keys",
+    "git_and_agent_metadata",
+    "build_and_temporary_files"
+  ]
+}

@@ -1,0 +1,11 @@
+---
+bool success
+string message
+int32 document_count
+int32 chunk_count
+int32 vector_count
+string collection
+string model
+int32 dimensions
+int32 bm25_chunk_count
+int32 sparse_chunk_count

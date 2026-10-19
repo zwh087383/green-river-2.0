@@ -1,0 +1,12 @@
+From: parser@example.com
+To: rag@example.com
+Subject: Parser Email Sample
+Date: Thu, 25 Jun 2026 10:00:00 +0800
+Content-Type: text/plain; charset="utf-8"
+
+This email checks whether the document parser can extract message text.
+
+Action items:
+- Parse the body
+- Preserve useful metadata
+- Create chunks for retrieval

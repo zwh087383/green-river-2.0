@@ -1,0 +1,11 @@
+std_msgs/Header header
+string request_id
+string session_id
+uint64 generation
+string text
+bool final
+bool success
+string error
+string model
+string[] source_names
+string disposition

@@ -1,0 +1,28 @@
+{
+  "source": "samples\\online\\w3c_dummy.pdf",
+  "status": "ok",
+  "section_count": 1,
+  "chunk_count": 1,
+  "headings": [
+    "Dummy PDF file"
+  ],
+  "first_sections": [
+    {
+      "heading_path": "Dummy PDF file",
+      "parser": "docling",
+      "content_type": "pdf",
+      "intermediate_format": "markdown",
+      "text_preview": "## Dummy PDF file"
+    }
+  ],
+  "first_chunks": [
+    {
+      "id": "w3c_dummy.pdf:s0:c0:fc4c5694757c",
+      "heading_path": "Dummy PDF file",
+      "source_name": "w3c_dummy.pdf",
+      "section_index": 0,
+      "chunk_index": 0,
+      "text_preview": "## Dummy PDF file"
+    }
+  ]
+}

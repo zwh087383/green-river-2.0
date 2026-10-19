@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 96,
+    "height": 48,
+    "background": "#000000"
+  },
+  "render": {
+    "image_rendering": "pixelated",
+    "alpha": false
+  },
+  "layout": {
+    "eye_anchors": [[28, 24], [68, 24]],
+    "content_bounds": [[13, 8, 37, 35], [59, 3, 86, 35]],
+    "target_x_fraction": [0.27, 0.73],
+    "target_y_fraction": 0.53,
+    "edge_padding_fraction": 0.015
+  },
+  "states": {
+    "idle": {
+      "frames": [
+        "idle_01.png",
+        "idle_02.png",
+        "idle_03.png",
+        "idle_04.png"
+      ],
+      "frame_duration_ms": 500,
+      "loop": true,
+      "description": "Neutral eyes; uses the normal opening/closing frames from the happy set.",
+      "source": "happy_eyes_v1/frame_01.png, frame_02.png, frame_11.png, frame_12.png",
+      "fallback_state": "idle"
+    },
+    "listening": {
+      "frames": [
+        "listening_01.png",
+        "listening_02.png",
+        "listening_03.png",
+        "listening_04.png",
+        "listening_05.png",
+        "listening_06.png",
+        "listening_07.png",
+        "listening_08.png",
+        "listening_09.png",
+        "listening_10.png",
+        "listening_11.png",
+        "listening_12.png"
+      ],
+      "frame_duration_ms": 400,
+      "loop": true,
+      "description": "Alternating wink while the robot is listening.",
+      "source": "wink_eyes_v1/frame_01.png ... frame_12.png",
+      "fallback_state": "listening"
+    },
+    "thinking": {
+      "eye_anchors": [[26, 24], [70, 24]],
+      "frames": [
+        "thinking_01.png",
+        "thinking_02.png",
+        "thinking_03.png",
+        "thinking_04.png",
+        "thinking_05.png",
+        "thinking_06.png",
+        "thinking_07.png",
+        "thinking_08.png",
+        "thinking_09.png",
+        "thinking_10.png",
+        "thinking_11.png",
+        "thinking_12.png",
+        "thinking_13.png",
+        "thinking_14.png",
+        "thinking_15.png",
+        "thinking_16.png"
+      ],
+      "frame_duration_ms": 180,
+      "loop": true,
+      "description": "Rotating spiral eyes while retrieval/generation is running.",
+      "source": "spiral_eyes_v1/frame_01.png ... frame_16.png",
+      "fallback_state": "thinking"
+    },
+    "speaking": {
+      "frames": [
+        "speaking_01.png",
+        "speaking_02.png",
+        "speaking_03.png",
+        "speaking_04.png",
+        "speaking_05.png",
+        "speaking_06.png",
+        "speaking_07.png",
+        "speaking_08.png",
+        "speaking_09.png",
+        "speaking_10.png",
+        "speaking_11.png",
+        "speaking_12.png",
+        "speaking_13.png"
+      ],
+      "frame_duration_ms": 400,
+      "loop": true,
+      "description": "Playful wink and blush while an answer is being spoken.",
+      "source": "wink_blush_v1/frame_01.png ... frame_13.png",
+      "fallback_state": "speaking"
+    },
+    "success": {
+      "frames": [
+        "success_01.png",
+        "success_02.png",
+        "success_03.png",
+        "success_04.png",
+        "success_05.png",
+        "success_06.png",
+        "success_07.png",
+        "success_08.png",
+        "success_09.png",
+        "success_10.png",
+        "success_11.png",
+        "success_12.png"
+      ],
+      "frame_duration_ms": 500,
+      "loop": false,
+      "description": "Star eyes for a completed/successful answer.",
+      "source": "happy_eyes_v1/frame_01.png ... frame_12.png",
+      "fallback_state": "idle"
+    },
+    "error": {
+      "frames": [
+        "error_01.png",
+        "error_02.png",
+        "error_03.png",
+        "error_04.png",
+        "error_05.png",
+        "error_06.png",
+        "error_07.png",
+        "error_08.png",
+        "error_09.png",
+        "error_10.png"
+      ],
+      "frame_duration_ms": 140,
+      "loop": false,
+      "description": "Sweat and blinking for an error or failed answer.",
+      "source": "sweat_blink_v6/frame_01.png ... frame_10.png",
+      "fallback_state": "idle"
+    },
+    "sleep": {
+      "frames": [
+        "sleep_01.png",
+        "sleep_02.png",
+        "sleep_03.png",
+        "sleep_04.png",
+        "sleep_05.png",
+        "sleep_06.png",
+        "sleep_07.png",
+        "sleep_08.png",
+        "sleep_09.png",
+        "sleep_10.png",
+        "sleep_11.png",
+        "sleep_12.png"
+      ],
+      "frame_duration_ms": 250,
+      "loop": true,
+      "description": "Sleep animation after an extended idle period.",
+      "source": "sleep_eyes_v1/frame_01.png ... frame_12.png",
+      "fallback_state": "sleep"
+    },
+    "shy": {
+      "frames": [
+        "shy_01.png",
+        "shy_02.png",
+        "shy_03.png",
+        "shy_04.png",
+        "shy_05.png",
+        "shy_06.png",
+        "shy_07.png",
+        "shy_08.png",
+        "shy_09.png",
+        "shy_10.png",
+        "shy_11.png",
+        "shy_12.png",
+        "shy_13.png",
+        "shy_14.png"
+      ],
+      "frame_duration_ms": 400,
+      "loop": false,
+      "description": "Blush animation for a warm or playful response.",
+      "source": "shy_eyes_v1/frame_01.png ... frame_14.png",
+      "fallback_state": "idle"
+    },
+    "smug": {
+      "frames": [
+        "smug_01.png",
+        "smug_02.png",
+        "smug_03.png",
+        "smug_04.png",
+        "smug_05.png",
+        "smug_06.png",
+        "smug_07.png",
+        "smug_08.png",
+        "smug_09.png",
+        "smug_10.png"
+      ],
+      "frame_duration_ms": 400,
+      "loop": false,
+      "description": "Smug smile eyes for an optional personality cue.",
+      "source": "smug_eyes_v1/frame_01.png ... frame_10.png",
+      "fallback_state": "idle"
+    }
+  }
+}

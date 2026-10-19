@@ -1,0 +1,31 @@
+{
+  "audio_contract": "mono/16000Hz/PCM16/WAV",
+  "origin": "synthetic TTS fixtures",
+  "purpose": "module smoke tests only; use agreed human recordings for accuracy acceptance",
+  "samples": {
+    "wakeup": {
+      "path": "samples/audio/wakeup_xiaolv.wav",
+      "sample_rate": 16000,
+      "duration_ms": 3216,
+      "expected_keyword": "小绿小绿"
+    },
+    "question": {
+      "path": "samples/audio/question_green_river.wav",
+      "sample_rate": 16000,
+      "duration_ms": 2136,
+      "expected_text": "介绍一下绿色江河"
+    },
+    "wakeup_then_question": {
+      "path": "samples/audio/wakeup_then_question.wav",
+      "sample_rate": 16000,
+      "duration_ms": 6352,
+      "expected_keyword": "小绿小绿",
+      "expected_text": "介绍一下绿色江河"
+    },
+    "silence": {
+      "path": "samples/audio/silence_2s.wav",
+      "sample_rate": 16000,
+      "duration_ms": 2000
+    }
+  }
+}

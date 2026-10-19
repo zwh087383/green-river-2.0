@@ -1,0 +1,15 @@
+{
+  "file": "samples\\online\\w3c_amaya_manual.pdf",
+  "section_count": 108,
+  "chunk_count": 334,
+  "first_section": {
+    "text": "Amaya User Manual\nAuthors:\nIrène Vatton, Vincent Quint, José Kahan, Kim Cramer, Kim Nylander, Kathy Rosen, Michael\nSpinella, and Lori Caldwell LeDoux\nContributors:\nCharles McCathieNevile, John Russell, Marja-Riitta Koivunen, Laurent Carcone, Bartolomé Sintes\nThis manual presents the user interface of Amaya. The user interface on your computer could be a little\ndifferent, depending on your system and its configuration. This is not a complete user manual. Its\npurpose is only to help you to discove",
+    "metadata": {
+      "parser": "pdf",
+      "content_type": "pdf",
+      "page": 1,
+      "fallback_from": "docling",
+      "fallback_reason": "Docling timed out after 3 seconds: samples\\online\\w3c_amaya_manual.pdf"
+    }
+  }
+}

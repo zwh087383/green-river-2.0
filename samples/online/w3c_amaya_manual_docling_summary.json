@@ -1,0 +1,6 @@
+{
+  "source": "samples\\online\\w3c_amaya_manual.pdf",
+  "status": "error",
+  "error_type": "ParseError",
+  "error": "Docling could not parse file: samples\\online\\w3c_amaya_manual.pdf"
+}

@@ -1,0 +1,105 @@
+[
+  {
+    "file": "samples\\online\\controlled_table_sample.xlsx",
+    "section_count": 1,
+    "chunk_count": 1,
+    "first_sections": [
+      {
+        "text": "Document Type Parser Expected Output DOCX Unstructured Title and NarrativeText elements PPTX Unstructured Slide titles with page numbers XLSX Unstructured Table rows as structured text",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "xlsx",
+          "element_index": 0,
+          "element_type": "Table",
+          "filename": "controlled_table_sample.xlsx",
+          "page_number": 1,
+          "text_as_html": "<table><tr><td>Document Type</td><td>Parser</td><td>Expected Output</td></tr><tr><td>DOCX</td><td>Unstructured</td><td>Title and NarrativeText elements</td></tr><tr><td>PPTX</td><td>Unstructured</td><td>Slide titles with page numbers</td></tr><tr><td>XLSX</td><td>Unstructured</td><td>Table rows as structured text</td></tr></table>",
+          "languages": [
+            "eng"
+          ],
+          "filetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+      }
+    ]
+  },
+  {
+    "file": "samples\\online\\controlled_email_sample.eml",
+    "section_count": 5,
+    "chunk_count": 5,
+    "first_sections": [
+      {
+        "text": "This email checks whether the document parser can extract message text.",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "eml",
+          "element_index": 0,
+          "element_type": "NarrativeText",
+          "languages": [
+            "eng"
+          ],
+          "filename": "controlled_email_sample.eml",
+          "filetype": "message/rfc822"
+        }
+      },
+      {
+        "text": "Action items:",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "eml",
+          "element_index": 1,
+          "element_type": "Title",
+          "languages": [
+            "eng"
+          ],
+          "filename": "controlled_email_sample.eml",
+          "filetype": "message/rfc822"
+        }
+      },
+      {
+        "text": "Parse the body",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "eml",
+          "element_index": 2,
+          "element_type": "NarrativeText",
+          "languages": [
+            "eng"
+          ],
+          "filename": "controlled_email_sample.eml",
+          "filetype": "message/rfc822",
+          "parent_id": "3ad3d9e7c9c8df9bf5283990139300ac"
+        }
+      },
+      {
+        "text": "Preserve useful metadata",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "eml",
+          "element_index": 3,
+          "element_type": "NarrativeText",
+          "languages": [
+            "eng"
+          ],
+          "filename": "controlled_email_sample.eml",
+          "filetype": "message/rfc822",
+          "parent_id": "3ad3d9e7c9c8df9bf5283990139300ac"
+        }
+      },
+      {
+        "text": "Create chunks for retrieval",
+        "metadata": {
+          "parser": "unstructured",
+          "content_type": "eml",
+          "element_index": 4,
+          "element_type": "NarrativeText",
+          "languages": [
+            "eng"
+          ],
+          "filename": "controlled_email_sample.eml",
+          "filetype": "message/rfc822",
+          "parent_id": "3ad3d9e7c9c8df9bf5283990139300ac"
+        }
+      }
+    ]
+  }
+]

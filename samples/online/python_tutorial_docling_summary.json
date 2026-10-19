@@ -1,0 +1,105 @@
+{
+  "source": "samples\\online\\python_tutorial_introduction.html",
+  "section_count": 16,
+  "chunk_count": 34,
+  "first_sections": [
+    {
+      "heading_path": "[Table of Contents](..\\contents.html)",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "### [Table of Contents](..\\contents.html)\\n\\n- [3. An Informal Introduction to Python](#)\\n    - [3.1. Using Python as a Calculator](#using-python-as-a-calculator)\\n        - [3.1.1. Numbers](#numbers)\\n        - [3.1.2. Text"
+    },
+    {
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "#### Previous topic\\n\\n[2. Using the Python Interpreter](interpreter.html)"
+    },
+    {
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Next topic",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "#### Next topic\\n\\n[4. More Control Flow Tools](controlflow.html)"
+    },
+    {
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > This page",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "### This page\\n\\n- [Report a bug](..\\bugs.html)\\n- [Improve this page](..\\improve-page-nojs.html)\\n- [Show source](https://github.com/python/cpython/blob/main/Doc/tutorial/introduction.rst?plain=1)"
+    },
+    {
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Navigation",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "### Navigation\\n\\n- [index](..\\genindex.html)\\n- [modules](..\\py-modindex.html) |\\n- [next](controlflow.html) |\\n- [previous](interpreter.html) |\\n- [Python](https://www.python.org/) »\\n- [3.14.6 Documentation](..\\index.html) »"
+    },
+    {
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "# [3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)\\n\\nIn the following examples, input and output are distinguished by the presence or absence of prompts ( [&gt;&gt;&gt;](..\\glossary.html#term"
+    },
+    {
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "## [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)\\n\\nLet's try some simple Python commands. Start the interpreter and wait for the primary prompt, `>>>` . (It shouldn't take long.)"
+    },
+    {
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.1. Numbers ¶](#numbers)",
+      "parser": "docling",
+      "content_type": "html",
+      "intermediate_format": "markdown",
+      "text_preview": "### [3.1.1. Numbers ¶](#numbers)\\n\\nThe interpreter acts as a simple calculator: you can type an expression into it and it will write the value. Expression syntax is straightforward: the operators `+` , `-` , `*` and `/` c"
+    }
+  ],
+  "first_chunks": [
+    {
+      "id": "python_tutorial_introduction.html:s0:c0:fc304a9a2529",
+      "heading_path": "[Table of Contents](..\\contents.html)",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 0,
+      "chunk_index": 0,
+      "text_preview": "### [Table of Contents](..\\contents.html)\\n\\n- [3. An Informal Introduction to Python](#)\\n    - [3.1. Using Python as a Calculator](#using-python-as-a-calculator)\\n        - [3.1.1. Numbers](#numbers)\\n        - [3.1.2. Text"
+    },
+    {
+      "id": "python_tutorial_introduction.html:s1:c0:087a7ddbacfc",
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 1,
+      "chunk_index": 0,
+      "text_preview": "#### Previous topic\\n\\n[2. Using the Python Interpreter](interpreter.html)"
+    },
+    {
+      "id": "python_tutorial_introduction.html:s2:c0:00e57cb90126",
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Next topic",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 2,
+      "chunk_index": 0,
+      "text_preview": "#### Next topic\\n\\n[4. More Control Flow Tools](controlflow.html)"
+    },
+    {
+      "id": "python_tutorial_introduction.html:s3:c0:0a7171bf2bd9",
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > This page",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 3,
+      "chunk_index": 0,
+      "text_preview": "### This page\\n\\n- [Report a bug](..\\bugs.html)\\n- [Improve this page](..\\improve-page-nojs.html)\\n- [Show source](https://github.com/python/cpython/blob/main/Doc/tutorial/introduction.rst?plain=1)"
+    },
+    {
+      "id": "python_tutorial_introduction.html:s4:c0:3b808786a480",
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Navigation",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 4,
+      "chunk_index": 0,
+      "text_preview": "### Navigation\\n\\n- [index](..\\genindex.html)\\n- [modules](..\\py-modindex.html) |\\n- [next](controlflow.html) |\\n- [previous](interpreter.html) |\\n- [Python](https://www.python.org/) »\\n- [3.14.6 Documentation](..\\index.html) »"
+    }
+  ]
+}

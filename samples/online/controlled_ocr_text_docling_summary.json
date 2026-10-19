@@ -1,0 +1,36 @@
+{
+  "source": "samples\\online\\controlled_ocr_text.png",
+  "section_count": 1,
+  "chunk_count": 1,
+  "sections": [
+    {
+      "text": "## Parser OCR Test\n\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks.",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "png",
+        "heading": "Parser OCR Test",
+        "heading_level": 2,
+        "heading_path": "Parser OCR Test",
+        "intermediate_format": "markdown"
+      }
+    }
+  ],
+  "chunks": [
+    {
+      "id": "controlled_ocr_text.png:s0:c0:2d7b7c493291",
+      "text": "## Parser OCR Test\n\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks.",
+      "metadata": {
+        "parser": "docling",
+        "content_type": "png",
+        "heading": "Parser OCR Test",
+        "heading_level": 2,
+        "heading_path": "Parser OCR Test",
+        "intermediate_format": "markdown",
+        "source": "samples\\online\\controlled_ocr_text.png",
+        "source_name": "controlled_ocr_text.png",
+        "section_index": 0,
+        "chunk_index": 0
+      }
+    }
+  ]
+}

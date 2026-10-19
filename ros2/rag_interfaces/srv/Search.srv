@@ -1,0 +1,10 @@
+string query
+int32 top_k
+---
+bool success
+string message
+string diagnostics_json
+string[] ids
+string[] texts
+float64[] scores
+string[] source_names

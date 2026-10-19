@@ -1,0 +1,123 @@
+[
+  {
+    "file": "samples\\online\\python_tutorial_introduction.html",
+    "backend": "auto",
+    "cache_hit": false,
+    "elapsed_seconds": 0.288,
+    "sections": 52,
+    "chunks": 59,
+    "tables": 0,
+    "assets": 0,
+    "first_text": "# 3. An Informal Introduction to Python ¶\n\nIn the following examples, input and output are distinguished by the presence or\nabsence of prompts ( >>> and … ): to repeat the example, you must type\neverything after the prompt, when the prompt appears; lines that do not begin\nwith a prompt are output fr",
+    "diagnostics": [
+      {
+        "level": "info",
+        "code": "backend_used",
+        "message": "Parsed with backend: auto",
+        "metadata": {
+          "cache_hit": false
+        }
+      }
+    ],
+    "metadata": {
+      "file_sha256": "fd398babcd634b8e951dc3d3d03798515754921e10e72adcd57b59a64932581b",
+      "file_size": 73158,
+      "suffix": ".html"
+    }
+  },
+  {
+    "file": "samples\\online\\controlled_table_sample.xlsx",
+    "backend": "auto",
+    "cache_hit": false,
+    "elapsed_seconds": 3.851,
+    "sections": 1,
+    "chunks": 1,
+    "tables": 1,
+    "assets": 0,
+    "first_text": "Document Type Parser Expected Output DOCX Unstructured Title and NarrativeText elements PPTX Unstructured Slide titles with page numbers XLSX Unstructured Table rows as structured text",
+    "diagnostics": [
+      {
+        "level": "info",
+        "code": "backend_used",
+        "message": "Parsed with backend: auto",
+        "metadata": {
+          "cache_hit": false
+        }
+      }
+    ],
+    "metadata": {
+      "file_sha256": "c2dd122fa047eb64a515b2124697870f078c6af945143c4157edc57342f3751d",
+      "file_size": 4995,
+      "suffix": ".xlsx"
+    }
+  },
+  {
+    "file": "samples\\online\\controlled_ocr_text.png",
+    "backend": "auto",
+    "cache_hit": false,
+    "elapsed_seconds": 0.221,
+    "sections": 1,
+    "chunks": 1,
+    "tables": 0,
+    "assets": 0,
+    "first_text": "Parser OCR Test\nDocument chunking should keep this text.\n\nLine 3: table, image, and citation checks.",
+    "diagnostics": [
+      {
+        "level": "info",
+        "code": "backend_used",
+        "message": "Parsed with backend: auto",
+        "metadata": {
+          "cache_hit": false
+        }
+      },
+      {
+        "level": "warning",
+        "code": "missing_chinese_ocr_language",
+        "message": "Tesseract Chinese language data chi_sim is not installed; Chinese OCR may be poor.",
+        "metadata": {}
+      }
+    ],
+    "metadata": {
+      "file_sha256": "a07d45f8a21b63d833aaa4bc13d57951e62e99397a0b36b5f283801886134e15",
+      "file_size": 24504,
+      "suffix": ".png"
+    }
+  },
+  {
+    "file": "samples\\online\\w3c_dummy.pdf",
+    "backend": "auto",
+    "cache_hit": false,
+    "elapsed_seconds": 0.076,
+    "sections": 1,
+    "chunks": 1,
+    "tables": 0,
+    "assets": 0,
+    "first_text": "Dummy PDF file",
+    "diagnostics": [
+      {
+        "level": "info",
+        "code": "backend_used",
+        "message": "Parsed with backend: auto",
+        "metadata": {
+          "cache_hit": false
+        }
+      }
+    ],
+    "metadata": {
+      "file_sha256": "3df79d34abbca99308e79cb94461c1893582604d68329a41fd4bec1885e6adb4",
+      "file_size": 13264,
+      "suffix": ".pdf",
+      "pdf_preflight": {
+        "page_count": 1,
+        "extracted_chars": 14,
+        "chars_per_page": 14.0,
+        "likely_scanned": false
+      }
+    }
+  },
+  {
+    "file": "samples\\online\\python_tutorial_introduction.html",
+    "second_run_cache_hit": true,
+    "sections": 52
+  }
+]

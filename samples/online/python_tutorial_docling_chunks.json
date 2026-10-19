@@ -1,0 +1,546 @@
+[
+  {
+    "id": "python_tutorial_introduction.html:s0:c0:fc304a9a2529",
+    "text": "### [Table of Contents](..\\contents.html)\n\n- [3. An Informal Introduction to Python](#)\n    - [3.1. Using Python as a Calculator](#using-python-as-a-calculator)\n        - [3.1.1. Numbers](#numbers)\n        - [3.1.2. Text](#text)\n        - [3.1.3. Lists](#lists)\n    - [3.2. First Steps Towards Programming](#first-steps-towards-programming)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[Table of Contents](..\\contents.html)",
+      "heading_level": 3,
+      "heading_path": "[Table of Contents](..\\contents.html)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 0,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s1:c0:087a7ddbacfc",
+    "text": "#### Previous topic\n\n[2. Using the Python Interpreter](interpreter.html)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Previous topic",
+      "heading_level": 4,
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 1,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s2:c0:00e57cb90126",
+    "text": "#### Next topic\n\n[4. More Control Flow Tools](controlflow.html)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Next topic",
+      "heading_level": 4,
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Next topic",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 2,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s3:c0:0a7171bf2bd9",
+    "text": "### This page\n\n- [Report a bug](..\\bugs.html)\n- [Improve this page](..\\improve-page-nojs.html)\n- [Show source](https://github.com/python/cpython/blob/main/Doc/tutorial/introduction.rst?plain=1)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "This page",
+      "heading_level": 3,
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > This page",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 3,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s4:c0:3b808786a480",
+    "text": "### Navigation\n\n- [index](..\\genindex.html)\n- [modules](..\\py-modindex.html) |\n- [next](controlflow.html) |\n- [previous](interpreter.html) |\n- [Python](https://www.python.org/) »\n- [3.14.6 Documentation](..\\index.html) »\n- [The Python Tutorial](index.html) »\n- 3. An Informal Introduction to Python\n- |\nQuick search\nGo\n- Theme Auto Light Dark |",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Navigation",
+      "heading_level": 3,
+      "heading_path": "[Table of Contents](..\\contents.html) > Previous topic > Navigation",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 4,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s5:c0:0955bd73150b",
+    "text": "# [3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)\n\nIn the following examples, input and output are distinguished by the presence or absence of prompts ( [&gt;&gt;&gt;](..\\glossary.html#term-0) and [...](..\\glossary.html#term-...) ): to repeat the example, you must type everything after the prompt, when the prompt appears; lines that do not begin with a prompt are output from the interpreter. Note that a secondary prompt on a line by itself in an example means you must type a blank line; this is used to end a multi-line command.\n\nYou can use the \"Copy\" button (it appears in the upper-right corner when hovering over or tapping a code example), which strips prompts and omits output, to copy and paste the input lines into your interpreter.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+      "heading_level": 1,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 5,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s5:c1:014327876b4b",
+    "text": "corner when hovering over or tapping a code example), which strips prompts and omits output, to copy and paste the input lines into your interpreter.\n\nMany of the examples in this manual, even those entered at the interactive prompt, include comments. Comments in Python start with the hash character, `#` , and extend to the end of the physical line. A comment may appear at the start of a line or following whitespace or code, but not within a string literal. A hash character within a string literal is just a hash character. Since comments are to clarify code and are not interpreted by Python, they may be omitted when typing in examples.\n\nSome examples:\n\n```\n# this is the first comment\nspam = 1 # and this is the second comment # ... and now a third!\ntext = \"# This is not a comment because it's inside quotes.\"\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+      "heading_level": 1,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 5,
+      "chunk_index": 1
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s6:c0:73952ec3025b",
+    "text": "## [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)\n\nLet's try some simple Python commands. Start the interpreter and wait for the primary prompt, `>>>` . (It shouldn't take long.)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 6,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s7:c0:6ec315e6fb93",
+    "text": "### [3.1.1. Numbers ¶](#numbers)\n\nThe interpreter acts as a simple calculator: you can type an expression into it and it will write the value. Expression syntax is straightforward: the operators `+` , `-` , `*` and `/` can be used to perform arithmetic; parentheses ( `()` ) can be used for grouping. For example:\n\n```\n>>> 2 + 2\n4\n>>> 50 - 5 * 6\n20\n>>> ( 50 - 5 * 6 ) / 4\n5.0\n>>> 8 / 5 # division always returns a floating-point number\n1.6\n```\n\nThe integer numbers (e.g. `2` , `4` , `20` ) have type [`int`](..\\library\\functions.html#int) , the ones with a fractional part (e.g. `5.0` , `1.6` ) have type [`float`](..\\library\\functions.html#float) . We will see more about numeric types later in the tutorial.\n\nDivision ( `/` ) always returns a float. To do [floor division](..\\glossary.html#term-floor-division) and get an integer result you can use the `//` operator; to calculate the remainder you can use `%` :\n\n```\n>>> 17 / 3 # classic division returns a float\n5.666666666666667\n>>>\n>>> 17 // 3 # floor division discards the fractional part\n5\n>>> 17 % 3 # the % operator returns the remainder of the division\n2\n>>> 5 * 3 + 2 # floored quotient * divisor + remainder\n17\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.1. Numbers ¶](#numbers)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.1. Numbers ¶](#numbers)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 7,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s7:c1:c30d8e79ed9c",
+    "text": "he fractional part\n5\n>>> 17 % 3 # the % operator returns the remainder of the division\n2\n>>> 5 * 3 + 2 # floored quotient * divisor + remainder\n17\n```\n\nWith Python, it is possible to use the `**` operator to calculate powers [[ 1 ]](#id3) :\n\n```\n>>> 5 ** 2 # 5 squared\n25\n>>> 2 ** 7 # 2 to the power of 7\n128\n```\n\nThe equal sign ( `=` ) is used to assign a value to a variable. Afterwards, no result is displayed before the next interactive prompt:\n\n```\n>>> width = 20\n>>> height = 5 * 9\n>>> width * height\n900\n```\n\nIf a variable is not \"defined\" (assigned a value), trying to use it will give you an error:\n\n```\n>>> n # try to access an undefined variable\nTraceback (most recent call last): File \"<stdin>\" , line 1 , in <module>\nNameError : name 'n' is not defined\n```\n\nThere is full support for floating point; operators with mixed type operands convert the integer operand to floating point:\n\n```\n>>> 4 * 3.75 - 1\n14.0\n```\n\nIn interactive mode, the last printed expression is assigned to the variable `_` . This means that when you are using Python as a desk calculator, it is somewhat easier to continue calculations, for example:",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.1. Numbers ¶](#numbers)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.1. Numbers ¶](#numbers)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 7,
+      "chunk_index": 1
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s7:c2:ad07d0f7df0e",
+    "text": "ned to the variable `_` . This means that when you are using Python as a desk calculator, it is somewhat easier to continue calculations, for example:\n\n```\n>>> tax = 12.5 / 100\n>>> price = 100.50\n>>> price * tax\n12.5625\n>>> price + _\n113.0625\n>>> round ( _ , 2 )\n113.06\n```\n\nThis variable should be treated as read-only by the user. Don't explicitly assign a value to it - you would create an independent local variable with the same name masking the built-in variable with its magic behavior.\n\nIn addition to [`int`](..\\library\\functions.html#int) and [`float`](..\\library\\functions.html#float) , Python supports other types of numbers, such as [`Decimal`](..\\library\\decimal.html#decimal.Decimal) and [`Fraction`](..\\library\\fractions.html#fractions.Fraction) . Python also has built-in support for [complex numbers](..\\library\\stdtypes.html#typesnumeric) , and uses the `j` or `J` suffix to indicate the imaginary part (e.g. `3+5j` ).",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.1. Numbers ¶](#numbers)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.1. Numbers ¶](#numbers)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 7,
+      "chunk_index": 2
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c0:a4e60ab88ec3",
+    "text": "### [3.1.2. Text ¶](#text)\n\nPython can manipulate text (represented by type [`str`](..\\library\\stdtypes.html#str) , so-called \"strings\") as well as numbers. This includes characters \" `!` \", words \" `rabbit` \", names \" `Paris` \", sentences \" `Got your back.` \", etc. \" `Yay! :)` \". They can be enclosed in single quotes ( `'...'` ) or double quotes ( `\"...\"` ) with the same result [[ 2 ]](#id4) .\n\n```\n>>> 'spam eggs' # single quotes\n'spam eggs'\n>>> \"Paris rabbit got your back :)! Yay!\" # double quotes\n'Paris rabbit got your back :)! Yay!'\n>>> '1975' # digits and numerals enclosed in quotes are also strings\n'1975'\n```\n\nTo quote a quote, we need to \"escape\" it, by preceding it with `\\` . Alternatively, we can use the other type of quotation marks:\n\n```\n>>> 'doesn \\' t' # use \\' to escape the single quote...\n\"doesn't\"\n>>> \"doesn't\" # ...or use double quotes instead\n\"doesn't\"\n>>> '\"Yes,\" they said.'\n'\"Yes,\" they said.'\n>>> \" \\\" Yes, \\\" they said.\"\n'\"Yes,\" they said.'\n>>> '\"Isn \\' t,\" they said.'\n'\"Isn\\'t,\" they said.'\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c1:272b757cf1af",
+    "text": "\"\n>>> '\"Yes,\" they said.'\n'\"Yes,\" they said.'\n>>> \" \\\" Yes, \\\" they said.\"\n'\"Yes,\" they said.'\n>>> '\"Isn \\' t,\" they said.'\n'\"Isn\\'t,\" they said.'\n```\n\nIn the Python shell, the string definition and output string can look different. The [`print()`](..\\library\\functions.html#print) function produces a more readable output, by omitting the enclosing quotes and by printing escaped and special characters:\n\n```\n>>> s = 'First line. \\n Second line.' # \\n means newline\n>>> s # without print(), special characters are included in the string\n'First line.\\nSecond line.'\n>>> print ( s ) # with print(), special characters are interpreted, so \\n produces new line\nFirst line.\nSecond line.\n```\n\nIf you don't want characters prefaced by `\\` to be interpreted as special characters, you can use *raw strings* by adding an `r` before the first quote:\n\n```\n>>> print ( 'C: \\t his \\n ame' ) # here \\t means tab, \\n means newline\nC:      his\name\n>>> print ( r 'C:\\this\\name' ) # note the r before the quote\nC:\\this\\name\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 1
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c2:7a7fc89f40bc",
+    "text": ": \\t his \\n ame' ) # here \\t means tab, \\n means newline\nC:      his\name\n>>> print ( r 'C:\\this\\name' ) # note the r before the quote\nC:\\this\\name\n```\n\nThere is one subtle aspect to raw strings: a raw string may not end in an odd number of `\\` characters; see [the FAQ entry](..\\faq\\programming.html#faq-programming-raw-string-backslash) for more information and workarounds.\n\nString literals can span multiple lines. One way is using triple-quotes: `\"\"\"...\"\"\"` or `'''...'''` . End-of-line characters are automatically included in the string, but it's possible to prevent this by adding a `\\` at the end of the line. In the following example, the initial newline is not included:\n\n```\n>>> print ( \"\"\" \\\n... Usage: thingy [OPTIONS]\n... -h                        Display this usage message\n... -H hostname               Hostname to connect to\n... \"\"\" )\nUsage: thingy [OPTIONS]\n-h                        Display this usage message\n-H hostname               Hostname to connect to\n>>>\n```\n\nStrings can be concatenated (glued together) with the `+` operator, and repeated with `*` :\n\n```\n>>> # 3 times 'un', followed by 'ium'\n>>> 3 * 'un' + 'ium'\n'unununium'\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 2
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c3:f96271074c12",
+    "text": "enated (glued together) with the `+` operator, and repeated with `*` :\n\n```\n>>> # 3 times 'un', followed by 'ium'\n>>> 3 * 'un' + 'ium'\n'unununium'\n```\n\nTwo or more *string literals* (i.e. the ones enclosed between quotes) next to each other are automatically concatenated.\n\n```\n>>> 'Py' 'thon'\n'Python'\n```\n\nThis feature is particularly useful when you want to break long strings:\n\n```\n>>> text = ( 'Put several strings within parentheses '\n... 'to have them joined together.' )\n>>> text\n'Put several strings within parentheses to have them joined together.'\n```\n\nThis only works with two literals though, not with variables or expressions:\n\n```\n>>> prefix = 'Py'\n>>> prefix 'thon' # can't concatenate a variable and a string literal File \"<stdin>\" , line 1\nprefix 'thon'\n^^^^^^\nSyntaxError : invalid syntax\n>>> ( 'un' * 3 ) 'ium' File \"<stdin>\" , line 1\n( 'un' * 3 ) 'ium'\n^^^^^\nSyntaxError : invalid syntax\n```\n\nIf you want to concatenate variables or a variable and a literal, use `+` :\n\n```\n>>> prefix + 'thon'\n'Python'\n```\n\nStrings can be *indexed* (subscripted), with the first character having index 0. There is no separate character type; a character is simply a string of size one:",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 3
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c4:0f16fc208550",
+    "text": "be *indexed* (subscripted), with the first character having index 0. There is no separate character type; a character is simply a string of size one:\n\n```\n>>> word = 'Python'\n>>> word [ 0 ] # character in position 0\n'P'\n>>> word [ 5 ] # character in position 5\n'n'\n```\n\nIndices may also be negative numbers, to start counting from the right:\n\n```\n>>> word [ - 1 ] # last character\n'n'\n>>> word [ - 2 ] # second-last character\n'o'\n>>> word [ - 6 ]\n'P'\n```\n\nNote that since -0 is the same as 0, negative indices start from -1.\n\nIn addition to indexing, *slicing* is also supported. While indexing is used to obtain individual characters, *slicing* allows you to obtain a substring:\n\n```\n>>> word [ 0 : 2 ] # characters from position 0 (included) to 2 (excluded)\n'Py'\n>>> word [ 2 : 5 ] # characters from position 2 (included) to 5 (excluded)\n'tho'\n```\n\nSlice indices have useful defaults; an omitted first index defaults to zero, an omitted second index defaults to the size of the string being sliced.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 4
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c5:7270a0902467",
+    "text": "Slice indices have useful defaults; an omitted first index defaults to zero, an omitted second index defaults to the size of the string being sliced.\n\n```\n>>> word [: 2 ] # character from the beginning to position 2 (excluded)\n'Py'\n>>> word [ 4 :] # characters from position 4 (included) to the end\n'on'\n>>> word [ - 2 :] # characters from the second-last (included) to the end\n'on'\n```\n\nNote how the start is always included, and the end always excluded. This makes sure that `s[:i] + s[i:]` is always equal to `s` :\n\n```\n>>> word [: 2 ] + word [ 2 :]\n'Python'\n>>> word [: 4 ] + word [ 4 :]\n'Python'\n```\n\nOne way to remember how slices work is to think of the indices as pointing *between* characters, with the left edge of the first character numbered 0. Then the right edge of the last character of a string of *n* characters has index *n* , for example:\n\n```\n+---+---+---+---+---+---+ | P | y | t | h | o | n | +---+---+---+---+---+---+ 0 1 2 3 4 5 6\n- 6 - 5 - 4 - 3 - 2 - 1\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 5
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c6:f550635baf0a",
+    "text": "index *n* , for example:\n\n```\n+---+---+---+---+---+---+ | P | y | t | h | o | n | +---+---+---+---+---+---+ 0 1 2 3 4 5 6\n- 6 - 5 - 4 - 3 - 2 - 1\n```\n\nThe first row of numbers gives the position of the indices 0...6 in the string; the second row gives the corresponding negative indices. The slice from *i* to *j* consists of all characters between the edges labeled *i* and *j* , respectively.\n\nFor non-negative indices, the length of a slice is the difference of the indices, if both are within bounds. For example, the length of `word[1:3]` is 2.\n\nAttempting to use an index that is too large will result in an error:\n\n```\n>>> word [ 42 ] # the word only has 6 characters\nTraceback (most recent call last): File \"<stdin>\" , line 1 , in <module>\nIndexError : string index out of range\n```\n\nHowever, out of range slice indexes are handled gracefully when used for slicing:\n\n```\n>>> word [ 4 : 42 ]\n'on'\n>>> word [ 42 :]\n''\n```\n\nPython strings cannot be changed - they are [immutable](..\\glossary.html#term-immutable) . Therefore, assigning to an indexed position in the string results in an error:",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 6
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c7:09bcd7ca0176",
+    "text": "ot be changed - they are [immutable](..\\glossary.html#term-immutable) . Therefore, assigning to an indexed position in the string results in an error:\n\n```\n>>> word [ 0 ] = 'J'\nTraceback (most recent call last): File \"<stdin>\" , line 1 , in <module>\nTypeError : 'str' object does not support item assignment\n>>> word [ 2 :] = 'py'\nTraceback (most recent call last): File \"<stdin>\" , line 1 , in <module>\nTypeError : 'str' object does not support item assignment\n```\n\nIf you need a different string, you should create a new one:\n\n```\n>>> 'J' + word [ 1 :]\n'Jython'\n>>> word [: 2 ] + 'py'\n'Pypy'\n```\n\nThe built-in function [`len()`](..\\library\\functions.html#len) returns the length of a string:\n\n```\n>>> s = 'supercalifragilisticexpialidocious'\n>>> len ( s )\n34\n```\n\nSee also",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 7
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s8:c8:b82d25c23133",
+    "text": "en()`](..\\library\\functions.html#len) returns the length of a string:\n\n```\n>>> s = 'supercalifragilisticexpialidocious'\n>>> len ( s )\n34\n```\n\nSee also\n\n- [**Text Sequence Type - str**](..\\library\\stdtypes.html#textseq)\n    - Strings are examples of *sequence types* , and support the common operations supported by such types.\n- [**String Methods**](..\\library\\stdtypes.html#string-methods)\n    - Strings support a large number of methods for basic transformations and searching.\n- [**f-strings**](..\\reference\\lexical_analysis.html#f-strings)\n    - String literals that have embedded expressions.\n- [**Format string syntax**](..\\library\\string.html#formatstrings)\n    - Information about string formatting with [`str.format()`](..\\library\\stdtypes.html#str.format) .\n- [**printf-style String Formatting**](..\\library\\stdtypes.html#old-string-formatting)\n    - The old formatting operations invoked when strings are the left operand of the `%` operator are described in more detail here.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.2. Text ¶](#text)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.2. Text ¶](#text)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 8,
+      "chunk_index": 8
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s9:c0:944894fac9d6",
+    "text": "### [3.1.3. Lists ¶](#lists)\n\nPython knows a number of *compound* data types, used to group together other values. The most versatile is the *list* , which can be written as a list of comma-separated values (items) between square brackets. Lists might contain items of different types, but usually the items all have the same type.\n\n```\n>>> squares = [ 1 , 4 , 9 , 16 , 25 ]\n>>> squares\n[1, 4, 9, 16, 25]\n```\n\nLike strings (and all other built-in [sequence](..\\glossary.html#term-sequence) types), lists can be indexed and sliced:\n\n```\n>>> squares [ 0 ] # indexing returns the item\n1\n>>> squares [ - 1 ]\n25\n>>> squares [ - 3 :] # slicing returns a new list\n[9, 16, 25]\n```\n\nLists also support operations like concatenation:\n\n```\n>>> squares + [ 36 , 49 , 64 , 81 , 100 ]\n[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\n```\n\nUnlike strings, which are [immutable](..\\glossary.html#term-immutable) , lists are a [mutable](..\\glossary.html#term-mutable) type, i.e. it is possible to change their content:\n\n```\n>>> cubes = [ 1 , 8 , 27 , 65 , 125 ] # something's wrong here\n>>> 4 ** 3 # the cube of 4 is 64, not 65!\n64\n>>> cubes [ 3 ] = 64 # replace the wrong value\n>>> cubes\n[1, 8, 27, 64, 125]\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.3. Lists ¶](#lists)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.3. Lists ¶](#lists)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 9,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s9:c1:fa526a1d15b3",
+    "text": "# something's wrong here\n>>> 4 ** 3 # the cube of 4 is 64, not 65!\n64\n>>> cubes [ 3 ] = 64 # replace the wrong value\n>>> cubes\n[1, 8, 27, 64, 125]\n```\n\nYou can also add new items at the end of the list, by using the [`list.append()`](..\\library\\stdtypes.html#list.append) *method* (we will see more about methods later):\n\n```\n>>> cubes . append ( 216 ) # add the cube of 6\n>>> cubes . append ( 7 ** 3 ) # and the cube of 7\n>>> cubes\n[1, 8, 27, 64, 125, 216, 343]\n```\n\nSimple assignment in Python never copies data. When you assign a list to a variable, the variable refers to the *existing list* . Any changes you make to the list through one variable will be seen through all other variables that refer to it.:\n\n```\n>>> rgb = [ \"Red\" , \"Green\" , \"Blue\" ]\n>>> rgba = rgb\n>>> id ( rgb ) == id ( rgba ) # they reference the same object\nTrue\n>>> rgba . append ( \"Alph\" )\n>>> rgb\n[\"Red\", \"Green\", \"Blue\", \"Alph\"]\n```\n\nAll slice operations return a new list containing the requested elements. This means that the following slice returns a [shallow copy](..\\library\\copy.html#shallow-vs-deep-copy) of the list:",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.3. Lists ¶](#lists)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.3. Lists ¶](#lists)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 9,
+      "chunk_index": 1
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s9:c2:d34983168b71",
+    "text": "ontaining the requested elements. This means that the following slice returns a [shallow copy](..\\library\\copy.html#shallow-vs-deep-copy) of the list:\n\n```\n>>> correct_rgba = rgba [:]\n>>> correct_rgba [ - 1 ] = \"Alpha\"\n>>> correct_rgba\n[\"Red\", \"Green\", \"Blue\", \"Alpha\"]\n>>> rgba\n[\"Red\", \"Green\", \"Blue\", \"Alph\"]\n```\n\nAssignment to slices is also possible, and this can even change the size of the list or clear it entirely:\n\n```\n>>> letters = [ 'a' , 'b' , 'c' , 'd' , 'e' , 'f' , 'g' ]\n>>> letters\n['a', 'b', 'c', 'd', 'e', 'f', 'g']\n>>> # replace some values\n>>> letters [ 2 : 5 ] = [ 'C' , 'D' , 'E' ]\n>>> letters\n['a', 'b', 'C', 'D', 'E', 'f', 'g']\n>>> # now remove them\n>>> letters [ 2 : 5 ] = []\n>>> letters\n['a', 'b', 'f', 'g']\n>>> # clear the list by replacing all the elements with an empty list\n>>> letters [:] = []\n>>> letters\n[]\n```\n\nThe built-in function [`len()`](..\\library\\functions.html#len) also applies to lists:\n\n```\n>>> letters = [ 'a' , 'b' , 'c' , 'd' ]\n>>> len ( letters )\n4\n```\n\nIt is possible to nest lists (create lists containing other lists), for example:",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.3. Lists ¶](#lists)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.3. Lists ¶](#lists)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 9,
+      "chunk_index": 2
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s9:c3:0e8985143c86",
+    "text": "``\n>>> letters = [ 'a' , 'b' , 'c' , 'd' ]\n>>> len ( letters )\n4\n```\n\nIt is possible to nest lists (create lists containing other lists), for example:\n\n```\n>>> a = [ 'a' , 'b' , 'c' ]\n>>> n = [ 1 , 2 , 3 ]\n>>> x = [ a , n ]\n>>> x\n[['a', 'b', 'c'], [1, 2, 3]]\n>>> x [ 0 ]\n['a', 'b', 'c']\n>>> x [ 0 ][ 1 ]\n'b'\n```",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.1.3. Lists ¶](#lists)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.1. Using Python as a Calculator ¶](#using-python-as-a-calculator) > [3.1.3. Lists ¶](#lists)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 9,
+      "chunk_index": 3
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s10:c0:ce760e0b0cb1",
+    "text": "## [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)\n\nOf course, we can use Python for more complicated tasks than adding two and two together. For instance, we can write an initial sub-sequence of the [Fibonacci series](https://en.wikipedia.org/wiki/Fibonacci_sequence) as follows:\n\n```\n>>> # Fibonacci series:\n>>> # the sum of two elements defines the next\n>>> a , b = 0 , 1\n>>> while a < 10 :\n... print ( a )\n... a , b = b , a + b\n...\n0\n1\n1\n2\n3\n5\n8\n```\n\nThis example introduces several new features.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 10,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s10:c1:408190051adb",
+    "text": "- The first line contains a *multiple assignment* : the variables `a` and `b` simultaneously get the new values 0 and 1. On the last line this is used again, demonstrating that the expressions on the right-hand side are all evaluated first before any of the assignments take place. The right-hand side expressions are evaluated from the left to the right.\n- The [`while`](..\\reference\\compound_stmts.html#while) loop executes as long as the condition (here: `a < 10` ) remains true. In Python, like in C, any non-zero integer value is true; zero is false. The condition may also be a string or list value, in fact any sequence; anything with a non-zero length is true, empty sequences are false. The test used in the example is a simple comparison. The standard comparison operators are written the same as in C: `<` (less than), `>` (greater than), `==` (equal to), `<=` (less than or equal to), `>=` (greater than or equal to) and `!=` (not equal to).\n- The *body* of the loop is *indented* : indentation is Python's way of grouping statements. At the interactive prompt, you have to type a tab or space(s) for each indented line. In practice you will prepare more complicated input for Python with",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 10,
+      "chunk_index": 1
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s10:c2:f34dfb4c0fab",
+    "text": "the interactive prompt, you have to type a tab or space(s) for each indented line. In practice you will prepare more complicated input for Python with a text editor; all decent text editors have an auto-indent facility. When a compound statement is entered interactively, it must be followed by a blank line to indicate completion (since the parser cannot guess when you have typed the last line). Note that each line within a basic block must be indented by the same amount.\n- The [`print()`](..\\library\\functions.html#print) function writes the value of the argument(s) it is given. It differs from just writing the expression you want to write (as we did earlier in the calculator examples) in the way it handles multiple arguments, floating-point quantities, and strings. Strings are printed without quotes, and a space is inserted between items, so you can format things nicely, like this: &gt;&gt;&gt; i = 256 * 256 &gt;&gt;&gt; print ( 'The value of i is' , i ) The value of i is 65536 The keyword argument *end* can be used to avoid the newline after the output, or end the output with a different string: &gt;&gt;&gt; a , b = 0 , 1 &gt;&gt;&gt; while a &lt; 1000 : ... print ( a , end = ','",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 10,
+      "chunk_index": 2
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s10:c3:5ec21b3084c1",
+    "text": "ne after the output, or end the output with a different string: &gt;&gt;&gt; a , b = 0 , 1 &gt;&gt;&gt; while a &lt; 1000 : ... print ( a , end = ',' ) ... a , b = b , a + b ... 0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 10,
+      "chunk_index": 3
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s10:c4:1e86144682b9",
+    "text": "Footnotes\n\n[ [1](#id1) ]\n\nSince `**` has higher precedence than `-` , `-3**2` will be interpreted as `-(3**2)` and thus result in `-9` . To avoid this and get `9` , you can use `(-3)**2` .\n\n[ [2](#id2) ]\n\nUnlike other languages, special characters such as `\\n` have the same meaning with both single ( `'...'` ) and double ( `\"...\"` ) quotes. The only difference between the two is that within single quotes you don't need to escape `\"` (but you have to escape `\\'` ) and vice versa.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "heading_level": 2,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 10,
+      "chunk_index": 4
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s11:c0:0d4321a8d55c",
+    "text": "### [Table of Contents](..\\contents.html)\n\n- [3. An Informal Introduction to Python](#)\n    - [3.1. Using Python as a Calculator](#using-python-as-a-calculator)\n        - [3.1.1. Numbers](#numbers)\n        - [3.1.2. Text](#text)\n        - [3.1.3. Lists](#lists)\n    - [3.2. First Steps Towards Programming](#first-steps-towards-programming)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "[Table of Contents](..\\contents.html)",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming) > [Table of Contents](..\\contents.html)",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 11,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s12:c0:a4b716b08c17",
+    "text": "#### Previous topic\n\n[2. Using the Python Interpreter](interpreter.html)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Previous topic",
+      "heading_level": 4,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming) > [Table of Contents](..\\contents.html) > Previous topic",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 12,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s13:c0:728e3d8be7b3",
+    "text": "#### Next topic\n\n[4. More Control Flow Tools](controlflow.html)",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Next topic",
+      "heading_level": 4,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming) > [Table of Contents](..\\contents.html) > Next topic",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 13,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s14:c0:c341f30aa4c0",
+    "text": "### This page\n\n- [Report a bug](..\\bugs.html)\n- [Improve this page](..\\improve-page-nojs.html)\n- [Show source](https://github.com/python/cpython/blob/main/Doc/tutorial/introduction.rst?plain=1)\n\n«",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "This page",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming) > This page",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 14,
+      "chunk_index": 0
+    }
+  },
+  {
+    "id": "python_tutorial_introduction.html:s15:c0:a40e8e43d670",
+    "text": "### Navigation\n\n- [index](..\\genindex.html)\n- [modules](..\\py-modindex.html) |\n- [next](controlflow.html) |\n- [previous](interpreter.html) |\n- [Python](https://www.python.org/) »\n- [3.14.6 Documentation](..\\index.html) »\n- [The Python Tutorial](index.html) »\n- 3. An Informal Introduction to Python\n- |\nQuick search\nGo\n- Theme Auto Light Dark |\n\n© [Copyright](..\\copyright.html) 2001 Python Software Foundation.\nThis page is licensed under the Python Software Foundation License Version 2.\nExamples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.\nSee [History and License](\\license.html) for more information.\n\nThe Python Software Foundation is a non-profit corporation. [Please donate.](https://www.python.org/psf/donations/) Last updated on Jun 24, 2026 (13:27 UTC). [Found a bug](\\bugs.html) ?\nCreated using [Sphinx](https://www.sphinx-doc.org/) 8.2.3.",
+    "metadata": {
+      "parser": "docling",
+      "content_type": "html",
+      "heading": "Navigation",
+      "heading_level": 3,
+      "heading_path": "[3. An Informal Introduction to Python ¶](#an-informal-introduction-to-python) > [3.2. First Steps Towards Programming ¶](#first-steps-towards-programming) > Navigation",
+      "intermediate_format": "markdown",
+      "source": "samples\\online\\python_tutorial_introduction.html",
+      "source_name": "python_tutorial_introduction.html",
+      "section_index": 15,
+      "chunk_index": 0
+    }
+  }
+]
