@@ -2,6 +2,8 @@
 
 本压缩包包含项目源码、测试、文档、样例、ROS 2 接口与已解析文档。
 
+当前默认语音流程已改为云端流式 ASR、EmbeddingGemma 2 实时检索和 Qwen Audio 3.1 原生音频回复。安装、旧库迁移、新 ROS2 入口与验证结果见 [直接语音回复流程](docs/direct_voice_pipeline.md)；旧语音节点和分模块示例保留用于兼容。
+
 ## 已包含
 
 - `src/`、`tests/`、`docs/`、`scripts/`、`ros2/`

@@ -24,6 +24,7 @@ setup(
     license="Proprietary",
     entry_points={
         "console_scripts": [
+            "realtime_voice_gateway = voice.venv_entrypoints:realtime_main",
             "voice_bridge_node = voice.venv_entrypoints:bridge_main",
             "voice_arm_motion_node = voice.venv_entrypoints:arm_main",
             "rag_answer_node = voice.venv_entrypoints:answer_main",

@@ -6,8 +6,10 @@ import json
 import logging
 import os
 import shutil
+import time
 import uuid
 from contextlib import asynccontextmanager, suppress
+from collections import OrderedDict
 
 os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")
 import base64
@@ -33,6 +35,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from rag_system.generation import AnswerGenerationService, ConversationHistory
+from rag_system.generation.live_retrieval import RetrievalPrefetch, register, discard
 from rag_system.generation.history import ROUTER_HISTORY_MAX_ROUNDS
 from rag_system.generation.prompt_catalog import build_llm_prompt_catalog
 from rag_system.display_state import DisplayStateStore
@@ -62,7 +65,7 @@ except ImportError:  # Optional dependency/model failures must not break manual 
     keyword_spec_for_text = None  # type: ignore[assignment]
 
 
-DATA_DIR = Path("data")
+DATA_DIR = Path(os.environ.get("RAG_DATA_DIR", "data"))
 UPLOAD_DIR = DATA_DIR / "uploads"
 CACHE_DIR = DATA_DIR / "parser_cache"
 INDEX_DIR = DATA_DIR / "index"
@@ -94,17 +97,6 @@ async def _application_lifespan(_app: FastAPI):
     """Warm reusable engines and optionally require every preferred provider."""
     service = voice_service_factory()
     strict = _strict_no_fallback_enabled()
-    try:
-        await service.warm_tts_connection()
-    except Exception as exc:
-        if strict:
-            raise RuntimeError(
-                f"Strict startup failed: DashScope realtime TTS is unavailable: {exc}"
-            ) from exc
-        LOGGER.warning(
-            "DashScope realtime TTS warm-up failed; Edge-TTS fallback remains available: %s",
-            exc,
-        )
     if strict:
         try:
             transport = await service.open_realtime_asr(force=True)
@@ -134,6 +126,20 @@ async def _application_lifespan(_app: FastAPI):
             raise RuntimeError(
                 f"Strict startup failed: offline VAD is unavailable: {exc}"
             ) from exc
+    # Run the complete local retrieval path before accepting the first request:
+    # embedding HTTP, Chroma, tokenisation and BM25 all initialise lazily.
+    started = time.monotonic()
+    try:
+        await asyncio.to_thread(_warm_retrieval)
+        _app.state.retrieval_warmup = {"status": "ready", "elapsed_ms": round((time.monotonic() - started) * 1000, 1)}
+        LOGGER.info("Retrieval startup warm-up completed in %.1f ms", _app.state.retrieval_warmup["elapsed_ms"])
+    except Exception as exc:
+        _app.state.retrieval_warmup = {"status": "failed", "error": type(exc).__name__}
+        if strict:
+            raise RuntimeError("Strict startup failed: retrieval warm-up is unavailable") from exc
+        # Keep the settings/upload UI available on a new installation, but
+        # never mark a failed warm-up as ready or suppress later query errors.
+        LOGGER.warning("Retrieval warm-up failed (%s); queries will retry explicitly", type(exc).__name__)
     try:
         yield
     finally:
@@ -160,9 +166,11 @@ _index_jobs: dict[str, dict[str, Any]] = {}
 _index_jobs_lock = Lock()
 _image_index_jobs: dict[str, dict[str, Any]] = {}
 _image_index_jobs_lock = Lock()
-settings_store = SettingsStore()
+settings_store = SettingsStore(DATA_DIR / "settings.json")
 display_state_store = DisplayStateStore(DISPLAY_STATE_PATH)
 conversation_history = ConversationHistory()
+_conversation_histories: OrderedDict[str, ConversationHistory] = OrderedDict()
+_conversation_histories_lock = Lock()
 _voice_service_instance: VoiceService | None = None
 _voice_service_settings_store: SettingsStore | None = None
 _voice_service_lock = Lock()
@@ -180,6 +188,10 @@ WAKEUP_ASR_CONNECT_BUFFER_BYTES = 16_000 * 2 * 15
 
 def indexing_service_factory() -> IndexingService:
     return IndexingService(settings_store=settings_store, index_dir=INDEX_DIR)
+
+
+def _warm_retrieval() -> None:
+    indexing_service_factory().search("检索预热", top_k=1)
 
 
 def image_indexing_service_factory() -> ImageIndexingService:
@@ -328,6 +340,23 @@ class SearchPayload(BaseModel):
 class AnswerPayload(BaseModel):
     query: str
     top_k: int = 4
+    audio: bool = True
+    retrieval_token: str | None = Field(default=None, max_length=64)
+    conversation_id: str | None = Field(default=None, min_length=1, max_length=128)
+
+
+def _answer_service_for(payload: AnswerPayload) -> Any:
+    service = answer_generation_service_factory()
+    if payload.conversation_id:
+        with _conversation_histories_lock:
+            history = _conversation_histories.pop(payload.conversation_id, None)
+            if history is None:
+                history = ConversationHistory()
+            _conversation_histories[payload.conversation_id] = history
+            while len(_conversation_histories) > 128:
+                _conversation_histories.popitem(last=False)
+        service.conversation_history = history
+    return service
 
 
 class TTSPayload(BaseModel):
@@ -336,6 +365,11 @@ class TTSPayload(BaseModel):
 
 class DocumentEnabledPayload(BaseModel):
     enabled: bool
+
+
+@app.get("/api/voice/pcm-player.js")
+def pcm_player_script() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "qwen_pcm.js", media_type="text/javascript")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -711,8 +745,6 @@ def index_parse_job(job_id: str, background_tasks: BackgroundTasks) -> JSONRespo
 
     if not source_results:
         raise HTTPException(status_code=400, detail="No successfully parsed documents to index")
-    if not settings_store.load().has_api_key:
-        raise HTTPException(status_code=400, detail="请先配置百炼 API Key")
 
     index_job_id = uuid.uuid4().hex
     with _index_jobs_lock:
@@ -813,8 +845,6 @@ def reindex_document(document_id: str, background_tasks: BackgroundTasks) -> JSO
     source = Path(record.source)
     if not source.exists():
         raise HTTPException(status_code=404, detail="Source file not found")
-    if not settings_store.load().has_api_key:
-        raise HTTPException(status_code=400, detail="璇峰厛閰嶇疆鐧剧偧 API Key")
 
     index_job_id = uuid.uuid4().hex
     with _index_jobs_lock:
@@ -856,8 +886,6 @@ def delete_document(document_id: str) -> JSONResponse:
 
 @app.post("/api/search")
 def search_index(payload: SearchPayload) -> JSONResponse:
-    if not settings_store.load().has_api_key:
-        raise HTTPException(status_code=400, detail="请先配置百炼 API Key")
     top_k = max(1, min(payload.top_k, 20))
     service = indexing_service_factory()
     try:
@@ -878,10 +906,8 @@ def answer_query(payload: AnswerPayload) -> JSONResponse:
     settings = settings_store.load()
     if not settings.has_api_key:
         raise HTTPException(status_code=400, detail="请先配置百炼 API Key")
-    if not settings.has_deepseek_api_key:
-        raise HTTPException(status_code=400, detail="请先配置 DeepSeek API Key")
     top_k = max(1, min(payload.top_k, 4))
-    service = answer_generation_service_factory()
+    service = _answer_service_for(payload)
     try:
         result = service.answer(payload.query, top_k=top_k)
     except ValueError as exc:
@@ -908,6 +934,8 @@ def _web_answer_events(
     *,
     top_k: int,
     should_cancel: Any,
+    audio: bool = True,
+    retrieval_token: str | None = None,
 ) -> Any:
     stream_answer_events = service.stream_answer_events
     try:
@@ -923,6 +951,10 @@ def _web_answer_events(
         kwargs["should_cancel"] = should_cancel
     if "include_llm_inputs" in parameters or supports_kwargs:
         kwargs["include_llm_inputs"] = True
+    if "audio" in parameters or supports_kwargs:
+        kwargs["audio"] = audio
+    if "retrieval_token" in parameters or supports_kwargs:
+        kwargs["retrieval_token"] = retrieval_token
     return stream_answer_events(query, **kwargs)
 
 
@@ -946,12 +978,10 @@ async def answer_query_stream(payload: AnswerPayload, request: Request) -> Strea
     settings = settings_store.load()
     if not settings.has_api_key:
         raise HTTPException(status_code=400, detail="请先配置百炼 API Key")
-    if not settings.has_deepseek_api_key:
-        raise HTTPException(status_code=400, detail="请先配置 DeepSeek API Key")
     if not payload.query.strip():
         raise HTTPException(status_code=400, detail="Answer query cannot be empty")
     top_k = max(1, min(payload.top_k, 4))
-    service = answer_generation_service_factory()
+    service = _answer_service_for(payload)
 
     async def event_stream():
         cancelled = asyncio.Event()
@@ -964,6 +994,8 @@ async def answer_query_stream(payload: AnswerPayload, request: Request) -> Strea
                     payload.query,
                     top_k=top_k,
                     should_cancel=cancelled.is_set,
+                    audio=payload.audio,
+                    retrieval_token=payload.retrieval_token,
                 )
             )
             while not cancelled.is_set():
@@ -998,6 +1030,9 @@ async def answer_query_stream(payload: AnswerPayload, request: Request) -> Strea
 def get_voice_status() -> JSONResponse:
     settings = settings_store.load()
     payload = voice_service_factory().status().to_dict()
+    payload["reply_audio_available"] = settings.has_api_key
+    payload["reply_model"] = settings.answer_model
+    payload["reply_voice"] = settings.audio_reply_voice
     vad_enabled = bool(getattr(settings, "vad_enabled", True))
     end_silence_ms = int(getattr(settings, "vad_end_silence_ms", 400))
     cloud_vad_active = payload.get("asr_provider_active") == "dashscope_realtime"
@@ -1200,8 +1235,24 @@ async def _forward_realtime_asr_events(
     service: VoiceService,
     wakeup_word: str | None = None,
 ) -> None:
+    prefetch = RetrievalPrefetch(indexing_service_factory())
+    token = register(prefetch)
+    state = {"final": False}
+    try:
+        await _forward_realtime_asr_with_retrieval(websocket, transport, service, wakeup_word,
+                                                  prefetch, token, state)
+    finally:
+        if not state["final"]:
+            discard(token)
+
+
+async def _forward_realtime_asr_with_retrieval(
+    websocket: WebSocket, transport: Any, service: VoiceService, wakeup_word: str | None,
+    prefetch: RetrievalPrefetch, token: str, state: dict[str, bool],
+) -> None:
     """Forward Qwen partial/final events while browser audio is still arriving."""
     speech_started = False
+    previous_preview = ""
     postprocess = getattr(service, "postprocess_asr_text", lambda value: str(value or "").strip())
     async for event in transport.events():
         event_type = str(getattr(event, "type", ""))
@@ -1215,11 +1266,24 @@ async def _forward_realtime_asr_events(
             if not speech_started:
                 speech_started = True
                 await websocket.send_json({"type": "speech_start", "reason": "server_vad"})
+            confirmed = postprocess(getattr(event, "confirmed_text", ""))
+            if wakeup_word:
+                confirmed = _remove_wakeup_prefix(confirmed, wakeup_word)
+            # Short ASR turns may contain only stash until completion. Prefetch
+            # a growing preview after a stable prefix; it remains speculative
+            # and cannot be consumed unless final text and index revision match.
+            stable_prefix = os.path.commonprefix([previous_preview, text])
+            if len(confirmed) >= 2 or len(stable_prefix) >= 4:
+                prefetch.offer(text)
+            previous_preview = text
             await websocket.send_json(
                 {
                     "type": "partial",
                     "text": text,
                     "provider": "dashscope_realtime",
+                    "confirmed_text": confirmed,
+                    "stash": getattr(event, "stash", ""),
+                    "item_id": getattr(event, "item_id", None),
                 }
             )
             continue
@@ -1243,8 +1307,11 @@ async def _forward_realtime_asr_events(
                 "text": text,
                 "reason": "server_vad",
                 "provider": "dashscope_realtime",
+                "retrieval_token": token,
+                "item_id": getattr(event, "item_id", None),
             }
         )
+        state["final"] = True
         return
     await websocket.send_json({"type": "no_speech", "reason": "session_finished"})
 
@@ -3334,7 +3401,7 @@ HTML_PAGE = r"""<!doctype html>
           <div class="chat-composer">
             <button class="secondary" id="voiceMicBtn" title="语音输入" disabled>◉</button>
             <textarea id="chatInput" placeholder="询问你的知识库，例如：这份文档里图片 OCR 是怎么处理的？"></textarea>
-            <button class="secondary" id="autoSpeakBtn" title="自动朗读：开" disabled>♪</button>
+            <button class="secondary" id="autoSpeakBtn" title="语音回复：开" disabled>♪</button>
             <button id="chatSendBtn" title="发送">↑</button>
           </div>
           <div class="wakeup-bar">
@@ -3344,7 +3411,7 @@ HTML_PAGE = r"""<!doctype html>
             </label>
             <span class="wakeup-status" id="wakeupStatus">正在检查离线唤醒模型</span>
           </div>
-          <div class="chat-status" id="chatStatus">DeepSeek v4 flash / top4 chunks / 带引用回答</div>
+          <div class="chat-status" id="chatStatus">Qwen Audio 3.1 / 实时检索 / 流式语音回复</div>
           </div>
         </div>
       </section>
@@ -3430,13 +3497,14 @@ HTML_PAGE = r"""<!doctype html>
             <div class="settings-form">
               <label for="apiKeyInput">百炼 API Key</label>
               <input id="apiKeyInput" type="password" autocomplete="off" placeholder="sk-..." />
-              <div class="model-line" id="modelLine">text-embedding-v4 / 1024 维</div>
+              <div class="model-line" id="modelLine">EmbeddingGemma 2 / 768 维</div>
               <div class="settings-status" id="settingsStatus">读取配置中</div>
               <div class="actions settings-actions">
                 <button id="saveApiKeyBtn">保存</button>
                 <button class="secondary" id="testApiKeyBtn">检查</button>
                 <button class="danger" id="deleteApiKeyBtn">删除</button>
               </div>
+              <div hidden>
               <label for="deepseekApiKeyInput">DeepSeek API Key</label>
               <input id="deepseekApiKeyInput" type="password" autocomplete="off" placeholder="sk-..." />
               <div class="model-line" id="routerAnswerLine">qwen3.7-flash / Router · deepseek-v4-flash / Answer</div>
@@ -3445,6 +3513,7 @@ HTML_PAGE = r"""<!doctype html>
                 <button id="saveDeepseekApiKeyBtn">保存 DeepSeek</button>
                 <button class="secondary" id="testDeepseekApiKeyBtn">检查 DeepSeek</button>
                 <button class="danger" id="deleteDeepseekApiKeyBtn">删除 DeepSeek</button>
+              </div>
               </div>
             </div>
             <h2>切分配置</h2>
@@ -3509,8 +3578,8 @@ HTML_PAGE = r"""<!doctype html>
             </div>
           </section>
           <section class="panel">
-            <h2>DeepSeek 提示词</h2>
-            <div class="settings-form">
+            <h2>回复提示词</h2>
+            <div class="settings-form" hidden>
               <label for="deepseekTurnPromptInput">轮次控制提示词</label>
               <textarea id="deepseekTurnPromptInput" spellcheck="false"></textarea>
               <div class="settings-status" id="deepseekPromptStatus">读取提示词配置中</div>
@@ -3530,6 +3599,7 @@ HTML_PAGE = r"""<!doctype html>
     </main>
   </div>
   <script src="/api/display/client.js"></script>
+  <script src="/api/voice/pcm-player.js"></script>
   <script>
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = {
@@ -3648,6 +3718,15 @@ HTML_PAGE = r"""<!doctype html>
     let ttsPlaybackVersion = 0;
     let ttsSentenceQueue = [];
     let ttsQueueRunPromise = null;
+    const voiceConversationId = crypto.randomUUID();
+    let pendingRetrievalToken = null;
+    let qwenAudioContext = null;
+    let qwenPlayer = null;
+    function unlockReplyAudio() {
+      if (!qwenAudioContext) qwenAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      return qwenAudioContext.resume();
+    }
+    document.addEventListener('pointerdown', () => { void unlockReplyAudio().catch(() => {}); });
     let ttsActiveItem = null;
     let ttsPrefetchState = null;
     let displayEmotionState = null;
@@ -4231,13 +4310,8 @@ HTML_PAGE = r"""<!doctype html>
     function updateIndexButtonState() {
       const parseDone = currentJobPayload && ['completed', 'completed_with_errors'].includes(currentJobPayload.status);
       const hasParsedDocuments = parseDone && (currentJobPayload.results || []).some(result => result.status === 'success');
-      const hasApiKey = currentSettings && currentSettings.has_api_key;
-      indexBtn.disabled = !(currentJob && hasParsedDocuments && hasApiKey);
-      if (!hasApiKey) {
-        indexStatus.textContent = '请先配置百炼 API Key';
-      } else if (!currentJob) {
-        indexStatus.textContent = '解析完成后可以入库';
-      }
+      indexBtn.disabled = !(currentJob && hasParsedDocuments);
+      if (!currentJob) indexStatus.textContent = '解析完成后可以入库';
     }
 
     function updateImageIndexButtonState() {
@@ -4261,13 +4335,6 @@ HTML_PAGE = r"""<!doctype html>
 
     function maybeStartAutoIndexing() {
       if (!autoIndexToggle.checked || !currentJob || !currentJobPayload) return;
-      if (!currentSettings || !currentSettings.has_api_key) {
-        if (['completed', 'completed_with_errors'].includes(currentJobPayload.status)) {
-          indexStatus.textContent = '自动入库等待 API Key';
-          imageIndexStatus.textContent = '自动入库等待 API Key';
-        }
-        return;
-      }
       if (!['completed', 'completed_with_errors'].includes(currentJobPayload.status)) return;
       const successful = (currentJobPayload.results || []).filter(result => result.status === 'success').length;
       if (!successful) return;
@@ -4275,7 +4342,7 @@ HTML_PAGE = r"""<!doctype html>
         autoTextIndexStartedForJob = currentJob;
         startIndexing(true);
       }
-      if (hasIndexableImages(currentJobPayload)) {
+      if (currentSettings?.has_api_key && hasIndexableImages(currentJobPayload)) {
         if (autoImageIndexStartedForJob !== currentJob && !currentImageIndexJob) {
           autoImageIndexStartedForJob = currentJob;
           startImageIndexing(true);
@@ -4677,9 +4744,8 @@ HTML_PAGE = r"""<!doctype html>
         const payload = await readJsonResponse(response);
         voiceStatusPayload = payload;
         const asrRuntime = describeAsrRuntime(payload);
-        const ttsRuntime = describeTtsRuntime(payload);
         voiceMicBtn.disabled = !payload.stt_available;
-        autoSpeakBtn.disabled = !payload.tts_available;
+        autoSpeakBtn.disabled = !payload.reply_audio_available;
         const wakeupWord = payload.wakeup_word || '小绿小绿';
         wakeupLabel.textContent = `唤醒“${wakeupWord}”`;
         const wakeupVadReady = payload.vad_enabled !== false;
@@ -4695,9 +4761,9 @@ HTML_PAGE = r"""<!doctype html>
           wakeupStatus.textContent = wakeupEnabled ? '等待麦克风许可' : '离线唤醒已关闭';
         }
         voiceMicBtn.title = payload.stt_available ? `语音输入 / ${asrRuntime}` : `语音输入不可用：${(payload.errors || []).join('; ')}`;
-        autoSpeakBtn.title = payload.tts_available ? `自动朗读：${autoSpeakEnabled ? '开' : '关'} / ${ttsRuntime} / ${payload.tts_voice || ''}` : `语音合成不可用：${(payload.errors || []).join('; ')}`;
+        autoSpeakBtn.title = `语音回复：${autoSpeakEnabled ? '开' : '关'} / ${payload.reply_model || 'Qwen Audio 3.1'}`;
         if (payload.voice_available) {
-          chatStatus.textContent = `语音就绪 / ASR ${asrRuntime} / TTS ${ttsRuntime}`;
+          chatStatus.textContent = `语音就绪 / ASR ${asrRuntime} / 回复 ${payload.reply_model || 'Qwen Audio 3.1'}`;
         }
         renderVoiceConfigSummary();
       } catch (error) {
@@ -4759,8 +4825,8 @@ HTML_PAGE = r"""<!doctype html>
     function applyAutoSpeakState() {
       autoSpeakBtn.classList.toggle('enabled', autoSpeakEnabled);
       autoSpeakBtn.textContent = autoSpeakEnabled ? '♫' : '♪';
-      if (voiceStatusPayload?.tts_available) {
-        autoSpeakBtn.title = `自动朗读：${autoSpeakEnabled ? '开' : '关'} / ${describeTtsRuntime(voiceStatusPayload)} / ${voiceStatusPayload.tts_voice || ''}`;
+      if (voiceStatusPayload?.reply_audio_available) {
+        autoSpeakBtn.title = `语音回复：${autoSpeakEnabled ? '开' : '关'} / ${voiceStatusPayload.reply_model || 'Qwen Audio 3.1'} / ${voiceStatusPayload.reply_voice || ''}`;
       }
     }
 
@@ -5226,6 +5292,7 @@ HTML_PAGE = r"""<!doctype html>
         }
         setWakeupStatus(text ? `实时识别：${text}` : '正在聆听问题', 'listening');
       } else if (payload.type === "final") {
+        pendingRetrievalToken = payload.retrieval_token || null;
         // The ASR turn is over; the server now switches to its KWS-only
         // waiting phase while the answer and TTS are running.
         recorder.suspended = false;
@@ -5509,6 +5576,7 @@ HTML_PAGE = r"""<!doctype html>
         setDisplayEmotion('thinking');
         chatSendBtn.disabled = true;
       } else if (payload.type === 'final') {
+        pendingRetrievalToken = payload.retrieval_token || null;
         recorder.completed = true;
         const text = (payload.text || recorder.partialText || '').trim();
         clearStreamingPartial(recorder, false);
@@ -5753,6 +5821,7 @@ HTML_PAGE = r"""<!doctype html>
     }
 
     function stopCurrentTTS() {
+      if (qwenPlayer) { qwenPlayer.stop(); qwenPlayer = null; }
       ttsPlaybackVersion += 1;
       ttsQueueRunPromise = null;
       ttsSentenceQueue = [];
@@ -6144,7 +6213,7 @@ HTML_PAGE = r"""<!doctype html>
       llmTraceFeed.textContent = '';
       const pending = document.createElement('p');
       pending.className = 'llm-trace-empty';
-      pending.textContent = '正在分析提示词与上下文';
+      pending.textContent = '正在准备参考资料与对话上下文';
       llmTraceFeed.appendChild(pending);
     }
 
@@ -6199,13 +6268,17 @@ HTML_PAGE = r"""<!doctype html>
     async function sendChatMessage(continuousVoice = false) {
       const query = chatInput.value.trim();
       if (!query || isAnswering || isRecordingVoice || interruptInProgress) return false;
+      const retrievalToken = pendingRetrievalToken;
+      pendingRetrievalToken = null;
       const continueConversation = continuousVoice === true;
       const turnGeneration = ++answerGeneration;
       const controller = new AbortController();
+      const audioEnabled = autoSpeakEnabled;
       let endSession = false;
-      if (wakeupRecorder) {
-        wakeupRecorder.pendingWakeupAction = continueConversation ? 'continue' : 'resume';
-      }
+      let terminal = false;
+      let ignored = false;
+      let failed = false;
+      if (wakeupRecorder) wakeupRecorder.pendingWakeupAction = continueConversation ? 'continue' : 'resume';
       isAnswering = true;
       displayAsrPending = false;
       displayTextResponse = false;
@@ -6215,22 +6288,25 @@ HTML_PAGE = r"""<!doctype html>
       chatInput.value = '';
       beginLiveLlmTrace(query);
       appendChatMessage('user', escapeHtml(query));
-      chatStatus.textContent = '正在生成回答';
+      chatStatus.textContent = '正在检索并生成语音回复';
       chatSendBtn.disabled = true;
       setDisplayEmotion('thinking', 0, true);
       const assistantNode = appendChatMessage('assistant', '<span class="stream-cursor"></span>');
       activeAnswerNode = assistantNode;
       currentAnswerController = controller;
       let streamedText = '';
-      let pendingTtsText = '';
-      let answerTtsVersion = ttsPlaybackVersion;
-      let displayOutcome = 'pending';
+      let player = null;
       const isCurrentTurn = () => turnGeneration === answerGeneration;
       try {
+        if (audioEnabled) {
+          await unlockReplyAudio();
+          if (!isCurrentTurn()) return false;
+          player = new QwenPcmPlayer(qwenAudioContext);
+          qwenPlayer = player;
+        }
         const response = await fetch('/api/answer/stream', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, top_k: 4 }),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, top_k: 4, audio: audioEnabled, retrieval_token: retrievalToken, conversation_id: voiceConversationId }),
           signal: controller.signal
         });
         if (!response.ok) {
@@ -6238,119 +6314,66 @@ HTML_PAGE = r"""<!doctype html>
           throw new Error(payload.detail || '请求失败');
         }
         await readAnswerStream(response, {
-          onLlmInput: event => {
-            if (!isCurrentTurn()) return;
-            appendLiveLlmInput(event);
-          },
+          onLlmInput: event => { if (isCurrentTurn()) appendLiveLlmInput(event); },
           onMeta: event => {
             if (!isCurrentTurn()) return;
-            const retrieval = event.retrieval || {};
-            if (retrieval.reason === 'end_session') {
-              endSession = true;
-              if (wakeupRecorder) wakeupRecorder.pendingWakeupAction = 'resume';
-            }
-            if (!liveLlmInputs.length && event.model === 'local-answer-router') {
-              finishLiveLlmTrace('本轮由本地规则回答，未调用 LLM');
-              llmTraceFeed.innerHTML = '<p class="llm-trace-empty">本轮没有发送 LLM 请求</p>';
-            }
-            chatStatus.textContent = '正在生成回答';
+            endSession = event.retrieval?.reason === 'end_session';
+            if (endSession && wakeupRecorder) wakeupRecorder.pendingWakeupAction = 'resume';
+          },
+          onAudio: event => {
+            if (!isCurrentTurn() || !player) return;
+            if (event.format !== 'pcm16' || event.channels !== 1) throw new Error('回复音频格式不匹配');
+            player.push(event.audio, event.sample_rate);
+            setDisplayEmotion('speaking', 0, true);
           },
           onIgnored: event => {
             if (!isCurrentTurn()) return;
-            displayOutcome = 'ignored';
-            setDisplayEmotion('idle');
-            pendingTtsText = '';
-            stopCurrentTTS();
+            terminal = true;
+            ignored = true;
             assistantNode.remove();
             if (activeAnswerNode === assistantNode) activeAnswerNode = null;
-            finishLiveLlmTrace('本轮只完成前置分析');
-            chatStatus.textContent = event.reason || event.decision?.reason || '未识别到有效问题，继续聆听';
+            chatStatus.textContent = event.reason || '继续聆听';
+            finishLiveLlmTrace('本地空语音过滤');
           },
           onDelta: text => {
             if (!isCurrentTurn()) return;
-            if (text && !(autoSpeakEnabled && voiceStatusPayload?.tts_available)) {
-              displayTextResponse = true;
-              setDisplayEmotion('speaking');
-            }
             streamedText += text;
             assistantNode.innerHTML = `${formatAnswerText(streamedText)}<span class="stream-cursor"></span>`;
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            if (
-              autoSpeakEnabled &&
-              voiceStatusPayload?.tts_available &&
-              answerTtsVersion === ttsPlaybackVersion
-            ) {
-              pendingTtsText += text;
-              const split = splitTtsSentences(pendingTtsText);
-              pendingTtsText = split.remainder;
-              enqueueTtsSentences(split.sentences, answerTtsVersion);
-            }
+            if (!audioEnabled) { displayTextResponse = true; setDisplayEmotion('speaking'); }
           },
           onFinal: result => {
             if (!isCurrentTurn()) return;
-            displayOutcome = 'final';
-            const answerText = result.answer || streamedText;
-            const ttsAnswerChanged = cleanTtsText(answerText) !== cleanTtsText(streamedText);
-            streamedText = answerText;
-            if (ttsAnswerChanged) {
-              pendingTtsText = '';
-              stopCurrentTTS();
-              answerTtsVersion = ttsPlaybackVersion;
-              if (autoSpeakEnabled && voiceStatusPayload?.tts_available) {
-                pendingTtsText = answerText;
-              }
-            }
-            assistantNode.innerHTML = `
-              <div class="chat-message-tools"><button class="secondary speak-btn" title="朗读回答">♪</button></div>
-              <div class="assistant-answer-text">${formatAnswerText(answerText)}</div>
-            `;
-            wireAssistantVoiceControls(assistantNode);
-            if (
-              autoSpeakEnabled &&
-              voiceStatusPayload?.tts_available &&
-              answerTtsVersion === ttsPlaybackVersion
-            ) {
-              const tail = splitTtsSentences(pendingTtsText, true);
-              pendingTtsText = '';
-              enqueueTtsSentences(tail.sentences, answerTtsVersion);
-            }
+            terminal = true;
+            assistantNode.innerHTML = `<div class="assistant-answer-text">${formatAnswerText(result.answer || streamedText)}</div>`;
             finishLiveLlmTrace('本轮完成');
-            chatStatus.textContent = '回答完成';
-            if (!ttsQueueRunPromise) setDisplayEmotion('success', 1400);
+            chatStatus.textContent = audioEnabled ? '语音播放中' : '回答完成';
           },
-          onError: detail => {
-            if (!isCurrentTurn()) return;
-            finishLiveLlmTrace('本轮失败');
-            throw new Error(detail || '流式生成失败');
-          }
+          onError: detail => { throw new Error(detail || '流式生成失败'); }
         });
+        if (!terminal && isCurrentTurn()) throw new Error('回复连接提前结束');
+        if (audioEnabled && !ignored && isCurrentTurn() && !player?.frames) throw new Error('回复缺少语音数据');
+        if (player && isCurrentTurn()) await player.drain();
+        if (isCurrentTurn()) { chatStatus.textContent = '回答完成'; setDisplayEmotion('success', 1400); }
       } catch (error) {
-        if (isCurrentTurn() && error?.name !== 'AbortError' && !controller.signal.aborted) {
-          displayOutcome = 'error';
+        failed = true;
+        controller.abort();
+        if (player) player.stop();
+        if (isCurrentTurn() && error?.name !== 'AbortError') {
           setDisplayEmotion('error', 2000);
-          pendingTtsText = '';
-          stopCurrentTTS();
           assistantNode.innerHTML = `<div class="diag error">生成回答失败：${escapeHtml(error.message)}</div>`;
           finishLiveLlmTrace('本轮失败');
           chatStatus.textContent = '生成失败';
         }
       } finally {
+        if (qwenPlayer === player) qwenPlayer = null;
         if (isCurrentTurn()) {
           if (currentAnswerController === controller) currentAnswerController = null;
           isAnswering = false;
           chatSendBtn.disabled = false;
           chatInput.focus();
-          if (displayOutcome === 'pending' && !ttsQueueRunPromise) {
-            setDisplayEmotion('idle');
-          } else if (displayOutcome === 'final' && !ttsQueueRunPromise &&
-                     displayEmotionState === 'speaking') {
-            setDisplayEmotion('success', 1400);
-          }
-          if (continueConversation && !endSession) {
-            scheduleWakeupContinuation();
-          } else {
-            scheduleWakeupResume();
-          }
+          if (continueConversation && !endSession && !failed) scheduleWakeupContinuation();
+          else scheduleWakeupResume();
         }
       }
       return true;
@@ -6392,6 +6415,7 @@ HTML_PAGE = r"""<!doctype html>
           const event = JSON.parse(line);
           if (event.type === 'llm_input') handlers.onLlmInput?.(event);
           if (event.type === 'meta') handlers.onMeta?.(event);
+          if (event.type === 'audio') handlers.onAudio?.(event);
           if (event.type === 'delta') handlers.onDelta?.(event.text || '');
           else if (event.type === 'ignored') handlers.onIgnored?.(event);
           if (event.type === 'final') handlers.onFinal?.(event.result || {});
@@ -6403,6 +6427,7 @@ HTML_PAGE = r"""<!doctype html>
         const event = JSON.parse(tail);
         if (event.type === 'llm_input') handlers.onLlmInput?.(event);
         else if (event.type === 'meta') handlers.onMeta?.(event);
+        else if (event.type === 'audio') handlers.onAudio?.(event);
         else if (event.type === 'delta') handlers.onDelta?.(event.text || '');
         else if (event.type === 'ignored') handlers.onIgnored?.(event);
         else if (event.type === 'final') handlers.onFinal?.(event.result || {});

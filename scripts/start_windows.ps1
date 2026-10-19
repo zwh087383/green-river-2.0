@@ -16,6 +16,10 @@ if (-not (Test-Path -LiteralPath $pythonPath -PathType Leaf)) {
     throw "Python 虚拟环境不存在：$pythonPath。请先运行 .\.venv\Scripts\python.exe -m pip install -e '.[web,indexing]'."
 }
 
+# Reuse the already-installed local model service; never download weights here.
+$embeddingStarter = Join-Path $PSScriptRoot 'start_embedding_windows.ps1'
+& $embeddingStarter
+
 function Test-ProjectServer {
     try {
         $health = Invoke-RestMethod -Uri $healthUrl -TimeoutSec 2
@@ -52,7 +56,7 @@ $serverProcess = Start-Process -FilePath $pythonPath `
     -PassThru
 Set-Content -LiteralPath $pidPath -Value $serverProcess.Id -Encoding ascii
 
-for ($attempt = 0; $attempt -lt 40; $attempt++) {
+for ($attempt = 0; $attempt -lt 120; $attempt++) {
     if (Test-ProjectServer) {
         & $pythonPath -m rag_system.display_state mode emotion | Out-Null
         & $pythonPath -m rag_system.display_state emotion idle | Out-Null

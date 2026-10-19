@@ -10,9 +10,9 @@ from typing import Any
 from rag_system.indexing.bm25 import BM25Hit, BM25Index, matched_tokens, tokenize
 from rag_system.indexing.document_ids import document_id_for_document, file_sha256_for_document, text_hash
 from rag_system.indexing.embeddings import (
-    AliyunEmbeddingClient,
     AliyunSparseEmbeddingClient,
     EmbeddingClient,
+    EmbeddingGemmaClient,
     MissingApiKeyError,
     SparseEmbeddingClient,
 )
@@ -58,8 +58,15 @@ class IndexingService:
         collection_name: str = "rag_chunks",
     ) -> None:
         self.settings_store = settings_store or SettingsStore()
-        self.index_dir = Path(index_dir)
-        self.collection_name = collection_name
+        self.base_index_dir = Path(index_dir)
+        # Keep old Chroma/manifest/BM25 files intact. Test/integration stores can
+        # still be injected explicitly without a persistent namespace.
+        self.index_dir = (self.base_index_dir / "embeddinggemma2_768_v1"
+                          if vector_store is None else self.base_index_dir)
+        self.collection_name = (collection_name + "__embeddinggemma2_768_v1"
+                                if vector_store is None else collection_name)
+        if (self.index_dir / "migration-in-progress.json").exists():
+            raise RuntimeError("EmbeddingGemma migration is incomplete; finish migration before serving queries")
         self.vector_store = vector_store
         self.bm25_index = bm25_index
         self.sparse_embedding_client = sparse_embedding_client
@@ -161,7 +168,9 @@ class IndexingService:
         cleaned = query.strip()
         if not cleaned:
             raise ValueError("Search query cannot be empty")
-        vectors = self._embedding_client().embed_texts([cleaned])
+        client = self._embedding_client()
+        embed = getattr(client, "embed_queries", client.embed_texts)
+        vectors = embed([cleaned])
         if len(vectors) != 1:
             raise RuntimeError(f"Dense embedding count mismatch: expected 1, got {len(vectors)}")
         return list(vectors[0])
@@ -197,6 +206,8 @@ class IndexingService:
             )
         if bundle is None:
             bundle = self.prefetch_query_embeddings(cleaned)
+        if bundle.dense is None:
+            raise RuntimeError("EmbeddingGemma retrieval unavailable: " + (bundle.dense_error or "missing vector"))
         expanded_top_k = min(max(top_k * 4, top_k), 80)
         self._sync_bm25_from_vector_store_if_needed()
         self._sync_sparse_from_vector_store_if_needed()
@@ -539,8 +550,18 @@ class IndexingService:
     def _embedding_client(self) -> EmbeddingClient:
         if self.embedding_client is not None:
             return self.embedding_client
-        self.embedding_client = AliyunEmbeddingClient.from_settings(self.settings_store.load())
+        self.embedding_client = EmbeddingGemmaClient.from_settings(self.settings_store.load())
         return self.embedding_client
+
+    def revision(self) -> tuple[Any, ...]:
+        """Invalidate speculative retrieval after corpus/settings changes."""
+        settings = self.settings_store.load()
+        paths = [self.index_dir / "index.sqlite3", self.index_dir / "index.sqlite3-wal",
+                 self.index_dir / "chroma" / "chroma.sqlite3",
+                 self.index_dir / "chroma" / "chroma.sqlite3-wal"]
+        stamps = tuple((p.stat().st_mtime_ns, p.stat().st_size) if p.exists() else (0, 0) for p in paths)
+        return (str(self.index_dir.resolve()), self.collection_name, settings.embedding_url,
+                settings.embedding_model, settings.embedding_dimensions, stamps)
 
     def _vector_store(self) -> VectorStore:
         if self.vector_store is None:

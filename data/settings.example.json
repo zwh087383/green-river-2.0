@@ -1,7 +1,7 @@
 {
   "dashscope_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-  "embedding_model": "text-embedding-v4",
-  "embedding_dimensions": 1024,
+  "embedding_model": "google/embeddinggemma-2",
+  "embedding_dimensions": 768,
   "dashscope_multimodal_url": "https://dashscope.aliyuncs.com/api/v1/services/embeddings/multimodal-embedding/multimodal-embedding",
   "dashscope_text_embedding_url": "https://dashscope.aliyuncs.com/api/v1/services/embeddings/text-embedding/text-embedding",
   "dashscope_rerank_url": "https://dashscope.aliyuncs.com/compatible-api/v1/reranks",
@@ -9,9 +9,9 @@
   "image_embedding_dimensions": 2048,
   "deepseek_base_url": "https://api.deepseek.com",
   "query_rewrite_model": "deepseek-v4-flash",
-  "answer_model": "deepseek-v4-flash",
-  "sparse_embedding_enabled": true,
-  "reranker_enabled": true,
+  "answer_model": "qwen-audio-3.1-realtime-plus",
+  "sparse_embedding_enabled": false,
+  "reranker_enabled": false,
   "reranker_model": "qwen3-rerank",
   "reranker_local_files_only": true,
   "chunk_size": 2400,
@@ -39,5 +39,8 @@
   "tts_voice": "zh-CN-XiaoxiaoNeural",
   "tts_rate": "+0%",
   "dashscope_api_key": "",
-  "deepseek_api_key": ""
+  "deepseek_api_key": "",
+  "embedding_url": "http://127.0.0.1:8765/v1/embeddings",
+  "audio_reply_url": "wss://dashscope.aliyuncs.com/api-ws/v1/realtime",
+  "audio_reply_voice": "longanqian_v3.1"
 }

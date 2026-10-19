@@ -38,6 +38,10 @@ def bridge_main() -> None:
     _exec_module("voice.bridge_node")
 
 
+def realtime_main() -> None:
+    _exec_module("voice.realtime_gateway_node")
+
+
 def arm_main() -> None:
     _exec_module("voice.arm_motion_node")
 

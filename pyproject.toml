@@ -3,7 +3,7 @@ name = "rag-system"
 version = "0.1.0"
 description = "Document parsing foundation for a RAG system."
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["httpx>=0.27,<1", "websockets>=15,<17"]
 
 [project.scripts]
 rag-module-test = "rag_system.module_test.cli:main"

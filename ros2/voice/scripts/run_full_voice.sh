@@ -12,4 +12,7 @@ if [[ ! -x "${FULL_PYTHON}" ]]; then
 fi
 
 export RAG_SYSTEM_PYTHON="${FULL_PYTHON}"
-exec "${SCRIPT_DIR}/run_voice.sh" enable_local_audio:=true "$@"
+export RAG_DATA_DIR="${RAG_DATA_DIR:-${PROJECT_ROOT}/data}"
+export RAG_VOICE_LAUNCH_FILE="voice_realtime.launch.py"
+"${PROJECT_ROOT}/scripts/start_linux.sh"
+exec "${SCRIPT_DIR}/run_voice.sh" "$@"

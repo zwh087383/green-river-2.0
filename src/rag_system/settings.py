@@ -21,12 +21,14 @@ DEFAULT_DASHSCOPE_TEXT_EMBEDDING_URL = (
     "text-embedding/text-embedding"
 )
 DEFAULT_DASHSCOPE_RERANK_URL = "https://dashscope.aliyuncs.com/compatible-api/v1/reranks"
-DEFAULT_EMBEDDING_MODEL = "text-embedding-v4"
-DEFAULT_EMBEDDING_DIMENSIONS = 1024
+DEFAULT_EMBEDDING_MODEL = "google/embeddinggemma-2"
+DEFAULT_EMBEDDING_DIMENSIONS = 768
+DEFAULT_EMBEDDING_URL = "http://127.0.0.1:8765/v1/embeddings"
+DEFAULT_AUDIO_REPLY_URL = "wss://dashscope.aliyuncs.com/api-ws/v1/realtime"
 DEFAULT_IMAGE_EMBEDDING_MODEL = "qwen3-vl-embedding"
 DEFAULT_IMAGE_EMBEDDING_DIMENSIONS = 2048
 DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
-DEFAULT_ANSWER_MODEL = "deepseek-v4-flash"
+DEFAULT_ANSWER_MODEL = "qwen-audio-3.1-realtime-plus"
 DEFAULT_ROUTER_MODEL = "qwen3.7-flash"
 DEFAULT_DEEPSEEK_TURN_PROMPT = """判断当前用户消息属于下列哪一种，严格输出对应的 turn_signal：
 - [[IGNORE_TURN]]：只有无实义的拟声词、停顿词或环境误识别，例如“嗯”“啊”“呃”“哦”，且没有问题、请求、确认或其他语义。
@@ -95,14 +97,17 @@ class AppSettings:
     dashscope_rerank_url: str = DEFAULT_DASHSCOPE_RERANK_URL
     embedding_model: str = DEFAULT_EMBEDDING_MODEL
     embedding_dimensions: int = DEFAULT_EMBEDDING_DIMENSIONS
+    embedding_url: str = DEFAULT_EMBEDDING_URL
+    audio_reply_url: str = DEFAULT_AUDIO_REPLY_URL
+    audio_reply_voice: str = "longanqian_v3.1"
     image_embedding_model: str = DEFAULT_IMAGE_EMBEDDING_MODEL
     image_embedding_dimensions: int = DEFAULT_IMAGE_EMBEDDING_DIMENSIONS
     deepseek_base_url: str = DEFAULT_DEEPSEEK_BASE_URL
     router_model: str = DEFAULT_ROUTER_MODEL
     answer_model: str = DEFAULT_ANSWER_MODEL
     deepseek_turn_prompt: str = DEFAULT_DEEPSEEK_TURN_PROMPT
-    sparse_embedding_enabled: bool = True
-    reranker_enabled: bool = True
+    sparse_embedding_enabled: bool = False
+    reranker_enabled: bool = False
     reranker_model: str = DEFAULT_RERANKER_MODEL
     reranker_local_files_only: bool = True
     chunk_size: int = DEFAULT_CHUNK_SIZE
@@ -150,6 +155,9 @@ class AppSettings:
             "dashscope_rerank_url": self.dashscope_rerank_url,
             "embedding_model": self.embedding_model,
             "embedding_dimensions": self.embedding_dimensions,
+            "embedding_url": self.embedding_url,
+            "audio_reply_url": self.audio_reply_url,
+            "audio_reply_voice": self.audio_reply_voice,
             "image_embedding_model": self.image_embedding_model,
             "image_embedding_dimensions": self.image_embedding_dimensions,
             "deepseek_base_url": self.deepseek_base_url,
@@ -235,6 +243,9 @@ class SettingsStore:
             dashscope_rerank_url=str(saved["dashscope_rerank_url"]),
             embedding_model=str(saved["embedding_model"]),
             embedding_dimensions=int(saved["embedding_dimensions"]),
+            embedding_url=str(saved["embedding_url"]),
+            audio_reply_url=str(saved["audio_reply_url"]),
+            audio_reply_voice=str(saved["audio_reply_voice"]),
             image_embedding_model=str(saved["image_embedding_model"]),
             image_embedding_dimensions=int(saved["image_embedding_dimensions"]),
             deepseek_base_url=str(saved["deepseek_base_url"]),
@@ -434,11 +445,12 @@ class SettingsStore:
                 payload.get("dashscope_base_url"),
                 DEFAULT_DASHSCOPE_BASE_URL,
             ),
-            "embedding_model": _clean_text(
-                payload.get("embedding_model"),
-                DEFAULT_EMBEDDING_MODEL,
-            ),
-            "embedding_dimensions": _clean_dimension(payload.get("embedding_dimensions")),
+            # Legacy settings must never select the old vector space or reply provider.
+            "embedding_model": DEFAULT_EMBEDDING_MODEL,
+            "embedding_dimensions": DEFAULT_EMBEDDING_DIMENSIONS,
+            "embedding_url": _clean_text(payload.get("embedding_url"), DEFAULT_EMBEDDING_URL),
+            "audio_reply_url": _clean_text(payload.get("audio_reply_url"), DEFAULT_AUDIO_REPLY_URL),
+            "audio_reply_voice": _clean_text(payload.get("audio_reply_voice"), "longanqian_v3.1"),
             "dashscope_multimodal_url": _clean_text(
                 payload.get("dashscope_multimodal_url"),
                 DEFAULT_DASHSCOPE_MULTIMODAL_URL,
@@ -464,16 +476,13 @@ class SettingsStore:
                 DEFAULT_DEEPSEEK_BASE_URL,
             ),
             "router_model": _clean_text(payload.get("router_model"), DEFAULT_ROUTER_MODEL),
-            "answer_model": _clean_text(
-                payload.get("answer_model"),
-                DEFAULT_ANSWER_MODEL,
-            ),
+            "answer_model": DEFAULT_ANSWER_MODEL,
             "deepseek_turn_prompt": payload.get(
                 "deepseek_turn_prompt",
                 DEFAULT_DEEPSEEK_TURN_PROMPT,
             ),
-            "sparse_embedding_enabled": _clean_bool(payload.get("sparse_embedding_enabled"), True),
-            "reranker_enabled": _clean_bool(payload.get("reranker_enabled"), True),
+            "sparse_embedding_enabled": False,
+            "reranker_enabled": False,
             "reranker_model": _clean_text(payload.get("reranker_model"), DEFAULT_RERANKER_MODEL),
             "reranker_local_files_only": _clean_bool(payload.get("reranker_local_files_only"), True),
             "chunk_size": _clean_int(payload.get("chunk_size"), DEFAULT_CHUNK_SIZE),

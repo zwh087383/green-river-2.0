@@ -309,119 +309,12 @@ def test_hybrid_search_rrf_promotes_chunk_found_by_vector_and_bm25(tmp_path) -> 
     assert hits[0].metadata["matched_token_count"] == 4
 
 
-def test_search_uses_sparse_route_when_sparse_embeddings_are_available(tmp_path) -> None:
-    service = IndexingService(
-        settings_store=SettingsStore(tmp_path / "settings.json"),
-        vector_store=InMemoryVectorStore(),
-        manifest=IndexManifest(tmp_path / "index.sqlite3"),
-        embedding_client=FakeEmbeddingClient(),
-        bm25_index=BM25Index(tmp_path / "bm25.sqlite3"),
-        sparse_embedding_client=FakeSparseEmbeddingClient(),
-        sparse_index=SparseVectorIndex(tmp_path / "sparse.sqlite3"),
-    )
-    document = ParsedDocument(
-        source=str(tmp_path / "sparse.md"),
-        source_name="sparse.md",
-        backend="auto",
-        chunks=[
-            DocumentChunk(id="exact", text="qwen3-vl-embedding exact keyword", metadata={"chunk_index": 0}),
-            DocumentChunk(id="noise", text="beta unrelated content", metadata={"chunk_index": 1}),
-        ],
-        metadata={"file_sha256": "sparse123"},
-    )
-
-    result = service.index_document(document)
-    _rewrite, hits = service.search_with_rewrite("qwen3 exact", top_k=1)
-
-    assert result.sparse_count == 2
-    assert hits[0].text == "qwen3-vl-embedding exact keyword"
-    assert "sparse_original" in hits[0].metadata["routes"]
-    assert hits[0].metadata["sparse_rank"] == 1
-    assert hits[0].explanation["matched_sparse"]
 
 
-def test_reranker_can_reorder_rrf_candidates(tmp_path) -> None:
-    service = IndexingService(
-        settings_store=SettingsStore(tmp_path / "settings.json"),
-        vector_store=InMemoryVectorStore(),
-        manifest=IndexManifest(tmp_path / "index.sqlite3"),
-        embedding_client=FakeEmbeddingClient(),
-        bm25_index=BM25Index(tmp_path / "bm25.sqlite3"),
-        reranker=FakeReranker(),
-    )
-    document = ParsedDocument(
-        source=str(tmp_path / "rerank.md"),
-        source_name="rerank.md",
-        backend="auto",
-        chunks=[
-            DocumentChunk(id="alpha", text="alpha ordinary content", metadata={"chunk_index": 0}),
-            DocumentChunk(id="winner", text="beta rerank winner", metadata={"chunk_index": 1}),
-        ],
-        metadata={"file_sha256": "rerank123"},
-    )
-
-    service.index_document(document)
-    _rewrite, hits = service.search_with_rewrite("alpha", top_k=1)
-
-    assert hits[0].text == "beta rerank winner"
-    assert hits[0].metadata["reranked"] is True
-    assert hits[0].metadata["reranker_model"] == "fake-reranker"
 
 
-def test_search_with_deepseek_rewrite_uses_rewritten_query_routes(tmp_path) -> None:
-    service = IndexingService(
-        settings_store=SettingsStore(tmp_path / "settings.json"),
-        vector_store=InMemoryVectorStore(),
-        manifest=IndexManifest(tmp_path / "index.sqlite3"),
-        embedding_client=FakeEmbeddingClient(),
-        bm25_index=BM25Index(tmp_path / "bm25.sqlite3"),
-        query_rewrite_client=FakeQueryRewriteClient(),
-    )
-    document = ParsedDocument(
-        source=str(tmp_path / "rewrite.md"),
-        source_name="rewrite.md",
-        backend="auto",
-        chunks=[
-            DocumentChunk(id="exact", text="qwen3-vl-embedding exact keyword", metadata={"chunk_index": 0}),
-            DocumentChunk(id="noise", text="unrelated beta content", metadata={"chunk_index": 1}),
-            DocumentChunk(id="more-noise", text="another gamma paragraph", metadata={"chunk_index": 2}),
-        ],
-        metadata={"file_sha256": "rewrite123"},
-    )
-
-    service.index_document(document)
-    rewrite, hits = service.search_with_rewrite("图片模型怎么搜", top_k=1)
-
-    assert rewrite.method == "deepseek"
-    assert rewrite.rewritten_queries == ["qwen3-vl-embedding exact keyword"]
-    assert hits[0].text == "qwen3-vl-embedding exact keyword"
-    assert "bm25_rewrite_1" in hits[0].metadata["routes"]
-    assert hits[0].metadata["route_count"] >= 1
 
 
-def test_search_with_rewrite_falls_back_without_deepseek_key(tmp_path) -> None:
-    service = IndexingService(
-        settings_store=SettingsStore(tmp_path / "settings.json"),
-        vector_store=InMemoryVectorStore(),
-        manifest=IndexManifest(tmp_path / "index.sqlite3"),
-        embedding_client=FakeEmbeddingClient(),
-        bm25_index=BM25Index(tmp_path / "bm25.sqlite3"),
-    )
-    document = ParsedDocument(
-        source=str(tmp_path / "fallback.md"),
-        source_name="fallback.md",
-        backend="auto",
-        chunks=[DocumentChunk(id="alpha", text="alpha content", metadata={"chunk_index": 0})],
-        metadata={"file_sha256": "fallback123"},
-    )
-
-    service.index_document(document)
-    rewrite, hits = service.search_with_rewrite("alpha", top_k=1)
-
-    assert rewrite.method == "fallback"
-    assert rewrite.rewritten_queries == []
-    assert rewrite.error
-    assert hits[0].text == "alpha content"
 
 
 def test_document_disable_and_delete_control_search_indexes(tmp_path) -> None:
@@ -463,27 +356,44 @@ def test_document_disable_and_delete_control_search_indexes(tmp_path) -> None:
 
     assert deleted["text_vectors"] == 1
     assert deleted["bm25_chunks"] == 1
-    assert deleted["sparse_chunks"] == 1
+    assert deleted["sparse_chunks"] == 0
     assert store.count() == 0
     assert bm25_index.count() == 0
     assert sparse_index.count() == 0
     assert manifest.get_document(indexed.document_id) is None
 
 
-def test_index_document_requires_api_key_without_injected_embedding_client(tmp_path, monkeypatch) -> None:
-    monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
-    service = IndexingService(
-        settings_store=SettingsStore(tmp_path / "settings.json"),
-        vector_store=InMemoryVectorStore(),
-        manifest=IndexManifest(tmp_path / "index.sqlite3"),
-        bm25_index=BM25Index(tmp_path / "bm25.sqlite3"),
-    )
-    document = ParsedDocument(
-        source=str(tmp_path / "demo.txt"),
-        source_name="demo.txt",
-        backend="auto",
-        chunks=[DocumentChunk(id="chunk", text="hello")],
-    )
 
-    with pytest.raises(MissingApiKeyError):
-        service.index_document(document)
+
+def test_index_document_uses_local_embedding_without_api_key(tmp_path, monkeypatch):
+    from rag_system.indexing.embeddings import EmbeddingGemmaClient
+    monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
+    calls = []
+    def embed(self, texts, prompt):
+        calls.append(prompt)
+        return [[1.0] + [0.0] * 767 for _ in texts]
+    monkeypatch.setattr(EmbeddingGemmaClient, "_embed", embed)
+    service = IndexingService(settings_store=SettingsStore(tmp_path / "settings.json"),
+        vector_store=InMemoryVectorStore(), index_dir=tmp_path)
+    document = ParsedDocument(source="demo.txt", source_name="demo.txt", backend="auto",
+                              chunks=[DocumentChunk(id="c1", text="local document")])
+    result = service.index_document(document)
+    assert result.dimensions == 768
+    assert result.model == "google/embeddinggemma-2"
+    assert service.search("local", top_k=1)
+    assert calls == ["Document", "SearchQuery"]
+
+
+@pytest.mark.parametrize("query", ["alpha", "你是谁", "那它呢", "qwen3 exact"])
+def test_search_has_no_cloud_sparse_rewrite_or_reranker(tmp_path, query):
+    class Forbidden:
+        def __getattr__(self, name):
+            raise AssertionError("Removed preprocessing route was invoked")
+    service = IndexingService(settings_store=SettingsStore(tmp_path / "settings.json"),
+        vector_store=InMemoryVectorStore(), embedding_client=FakeEmbeddingClient(), index_dir=tmp_path,
+        sparse_embedding_client=Forbidden(), query_rewrite_client=Forbidden(), reranker=Forbidden())
+    service.index_document(ParsedDocument(source="demo.txt", source_name="demo.txt", backend="auto",
+        chunks=[DocumentChunk(id="c1", text="alpha qwen3 exact")]))
+    hits = service.search(query)
+    assert hits
+    assert all(route in {"vector_original", "bm25_original"} for h in hits for route in h.metadata["routes"])

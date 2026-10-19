@@ -200,17 +200,10 @@ def test_web_page_has_default_auto_index_toggle() -> None:
     assert "URL.revokeObjectURL(stalePrefetch.objectUrl)" in response.text
     assert "ttsPrefetchState?.item === item" in response.text
     assert "void state.promise.catch(() => {})" in response.text
-    assert """const detail = `流式语音合成失败：${error.message}`;
-            stopCurrentTTS();
-            chatStatus.textContent = detail;
-            return;""" in response.text
-    assert "pendingTtsText" in response.text
-    assert "answerTtsVersion === ttsPlaybackVersion" in response.text
-    assert "let answerTtsVersion = ttsPlaybackVersion" in response.text
-    assert "cleanTtsText(answerText) !== cleanTtsText(streamedText)" in response.text
-    assert "answerTtsVersion = ttsPlaybackVersion" in response.text
+    assert "new QwenPcmPlayer" in response.text
+    assert "await player.drain()" in response.text
     delta_handler = response.text.split("onDelta: text => {", 1)[1].split("onFinal: result => {", 1)[0]
-    assert "enqueueTtsSentences(split.sentences, answerTtsVersion)" in delta_handler
+    assert "enqueueTtsSentences" not in delta_handler
     assert "new AbortController()" in response.text
     assert "let wakeupStartToken = 0" in response.text
     assert "const wakeupStartingSockets = new Set()" in response.text
@@ -233,7 +226,7 @@ def test_web_page_has_default_auto_index_toggle() -> None:
     assert "getVisibleAssistantText" in response.text
     assert "assistant-answer-text" in response.text
     assert "isAnswering" in response.text
-    assert "带引用回答" in response.text
+    assert "流式语音回复" in response.text
     assert ".app-page.chat-page.active" in response.text
     assert "overscroll-behavior: contain" in response.text
     assert "scrollbar-gutter: stable" in response.text
@@ -343,7 +336,7 @@ def test_web_deepseek_settings_save_reload_and_mask_api_key(tmp_path, monkeypatc
     assert save_response.json()["has_deepseek_api_key"] is True
     assert save_response.json()["deepseek_api_key_source"] == "file"
     assert save_response.json()["masked_deepseek_api_key"] == "sk-****5678"
-    assert save_response.json()["query_rewrite_model"] == "deepseek-v4-flash"
+    assert save_response.json()["answer_model"] == "qwen-audio-3.1-realtime-plus"
     assert full_key not in save_response.text
 
     monkeypatch.setattr(web_app, "settings_store", SettingsStore(settings_path))
@@ -408,35 +401,13 @@ def test_web_llm_prompt_catalog_exposes_complete_runtime_templates(tmp_path, mon
     assert secret not in response.text
     prompts = response.json()["prompts"]
     by_id = {prompt["id"]: prompt for prompt in prompts}
-    assert set(by_id) == {
-        "combined_router",
-        "query_rewrite",
-        "rag_answer_stream",
-        "rag_answer_json",
-        "chat_answer_stream",
-        "chat_answer_json",
-        "farewell_stream",
-        "identity_compatibility",
-    }
-    assert all(prompt["model"] for prompt in prompts)
-    assert all(prompt["messages"] for prompt in prompts)
-    assert all(prompt["messages"][0]["role"] == "system" for prompt in prompts)
-
-    router_messages = by_id["combined_router"]["messages"]
-    assert "RAG 系统的前置分析器" in router_messages[0]["content"]
-    assert custom_prompt in router_messages[-1]["content"]
-    assert "{{ current_user_message }}" in router_messages[-1]["content"]
-    assert "{{ conversation_history[].assistant }}" in router_messages[-1]["content"]
-
-    rag_messages = by_id["rag_answer_stream"]["messages"]
-    assert "你叫小绿" in rag_messages[0]["content"]
-    assert any(message.get("repeatable") for message in rag_messages)
-    assert "{{ retrieved_evidence_text }}" in rag_messages[-1]["content"]
-    assert "{{ source_name }}" in rag_messages[-1]["content"]
-
-    rewrite_messages = by_id["query_rewrite"]["messages"]
-    assert "Query Rewrite" in rewrite_messages[0]["content"]
-    assert "{{ current_user_message }}" in rewrite_messages[-1]["content"]
+    assert set(by_id) == {"direct_audio_reply"}
+    assert by_id["direct_audio_reply"]["model"] == "qwen-audio-3.1-realtime-plus"
+    messages = by_id["direct_audio_reply"]["messages"]
+    assert messages[0]["role"] == "system"
+    assert "小绿" in messages[0]["content"]
+    assert custom_prompt not in str(messages)
+    assert "{{ current_user_message }}" in messages[-1]["content"]
 
 
 def test_web_settings_test_api_key_does_not_expose_full_key(tmp_path, monkeypatch) -> None:
@@ -707,6 +678,7 @@ def test_web_voice_status_uses_qwen_server_vad_without_loading_local_vad(monkeyp
 
 
 def test_web_lifespan_warms_and_closes_realtime_tts(monkeypatch) -> None:
+    monkeypatch.setattr(web_app, "_warm_retrieval", lambda: None)
     class LifecycleVoice:
         def __init__(self) -> None:
             self.warm_calls = 0
@@ -728,7 +700,7 @@ def test_web_lifespan_warms_and_closes_realtime_tts(monkeypatch) -> None:
 
     with TestClient(app) as client:
         assert client.get("/").status_code == 200
-        assert voice.warm_calls == 1
+        assert voice.warm_calls == 0
         assert voice.close_calls == 0
         assert voice.asr_close_calls == 0
 
@@ -737,6 +709,7 @@ def test_web_lifespan_warms_and_closes_realtime_tts(monkeypatch) -> None:
 
 
 def test_web_lifespan_keeps_app_available_when_tts_warm_fails(monkeypatch) -> None:
+    monkeypatch.setattr(web_app, "_warm_retrieval", lambda: None)
     class FailingLifecycleVoice:
         def __init__(self) -> None:
             self.close_calls = 0
@@ -967,19 +940,10 @@ def test_web_realtime_asr_streams_partial_and_final_without_local_vad(tmp_path, 
         websocket.send_json({"type": "start"})
         assert websocket.receive_json()["type"] == "ready"
         websocket.send_bytes(b"\x00\x00" * 1600)
-        assert websocket.receive_json() == {"type": "speech_start", "reason": "server_vad"}
-        assert websocket.receive_json() == {
-            "type": "partial",
-            "text": "绿色江河",
-            "provider": "dashscope_realtime",
-        }
-        assert websocket.receive_json() == {"type": "speech_end", "reason": "server_vad"}
-        assert websocket.receive_json() == {
-            "type": "final",
-            "text": "绿色江河知識庫",
-            "reason": "server_vad",
-            "provider": "dashscope_realtime",
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_start', 'reason': 'server_vad'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'partial', 'text': '绿色江河', 'provider': 'dashscope_realtime'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_end', 'reason': 'server_vad'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'final', 'text': '绿色江河知識庫', 'reason': 'server_vad', 'provider': 'dashscope_realtime'}
 
     assert transport.audio == [b"\x00\x00" * 1600]
     assert transport.close_calls == 1
@@ -1078,24 +1042,13 @@ def test_web_realtime_asr_disconnect_continues_same_audio_with_local_whisper(
         websocket.send_json({"type": "start"})
         assert websocket.receive_json()["type"] == "ready"
         websocket.send_bytes(first_chunk)
-        assert websocket.receive_json() == {"type": "speech_start", "reason": "server_vad"}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_start', 'reason': 'server_vad'}
         assert websocket.receive_json()["type"] == "partial"
-        assert websocket.receive_json() == {
-            "type": "asr_fallback",
-            "provider": "local_whisper",
-            "reason": "cloud_disconnected",
-        }
-        assert websocket.receive_json() == {"type": "speech_start", "start_ms": 0}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'asr_fallback', 'provider': 'local_whisper', 'reason': 'cloud_disconnected'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_start', 'start_ms': 0}
         websocket.send_bytes(second_chunk)
         assert websocket.receive_json()["type"] == "speech_end"
-        assert websocket.receive_json() == {
-            "type": "final",
-            "text": "语音问题",
-            "reason": "silence",
-            "provider": "local_whisper",
-            "start_ms": 0,
-            "end_ms": 200,
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'final', 'text': '语音问题', 'reason': 'silence', 'provider': 'local_whisper', 'start_ms': 0, 'end_ms': 200}
 
     assert bytes(vad_engine.session.audio) == first_chunk + second_chunk
     assert transport.audio == [first_chunk]
@@ -1123,28 +1076,12 @@ def test_web_streaming_stt_websocket_emits_vad_and_final(tmp_path, monkeypatch) 
                 "end_silence_ms": 400,
             }
         )
-        assert websocket.receive_json() == {
-            "type": "ready",
-            "frame_ms": 100,
-            "sample_rate": 16000,
-            "end_silence_ms": 400,
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'ready', 'frame_ms': 100, 'sample_rate': 16000, 'end_silence_ms': 400}
         websocket.send_bytes(b"\x00\x00" * 1600)
-        assert websocket.receive_json() == {"type": "speech_start", "start_ms": 0}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_start', 'start_ms': 0}
         websocket.send_bytes(b"\x00\x00" * 1600)
-        assert websocket.receive_json() == {
-            "type": "speech_end",
-            "start_ms": 0,
-            "end_ms": 400,
-            "reason": "silence",
-        }
-        assert websocket.receive_json() == {
-            "type": "final",
-            "text": "语音问题",
-            "reason": "silence",
-            "start_ms": 0,
-            "end_ms": 400,
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_end', 'start_ms': 0, 'end_ms': 400, 'reason': 'silence'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'final', 'text': '语音问题', 'reason': 'silence', 'start_ms': 0, 'end_ms': 400}
 
     assert fake_vad.config.end_silence_ms == 400
     assert fake_voice.last_stt_filename == "vad-utterance.wav"
@@ -1161,7 +1098,7 @@ def test_web_streaming_stt_manual_stop_without_speech(tmp_path, monkeypatch) -> 
         websocket.send_json({"type": "start"})
         assert websocket.receive_json()["type"] == "ready"
         websocket.send_json({"type": "stop"})
-        assert websocket.receive_json() == {"type": "no_speech", "reason": "final"}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'no_speech', 'reason': 'final'}
 
 
 def test_web_wakeup_session_keeps_audio_local_until_keyword_then_streams_asr(
@@ -1282,13 +1219,7 @@ def test_web_wakeup_session_keeps_audio_local_until_keyword_then_streams_asr(
     ignored_during_interrupt_ack = b"\x06\x00" * 1600
     with TestClient(app).websocket_connect("/api/voice/session/stream") as websocket:
         websocket.send_json({"type": "start"})
-        assert websocket.receive_json() == {
-            "type": "armed",
-            "keyword": "小绿小绿",
-            "sample_rate": 16000,
-            "end_silence_ms": 800,
-            "cooldown_ms": 800,
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'armed', 'keyword': '小绿小绿', 'sample_rate': 16000, 'end_silence_ms': 800, 'cooldown_ms': 800}
         websocket.send_bytes(first_chunk)
         websocket.send_bytes(wakeup_chunk)
         wake_payload = websocket.receive_json()
@@ -1310,50 +1241,24 @@ def test_web_wakeup_session_keeps_audio_local_until_keyword_then_streams_asr(
         websocket.send_bytes(question_chunk_1)
         websocket.send_bytes(question_chunk_2)
         allow_connection.set()
-        assert websocket.receive_json() == {
-            "type": "listening",
-            "keyword": "小绿小绿",
-            "end_silence_ms": 800,
-        }
-        assert websocket.receive_json() == {"type": "speech_start", "reason": "server_vad"}
-        assert websocket.receive_json() == {
-            "type": "partial",
-            "text": "绿色江河是什么",
-            "provider": "dashscope_realtime",
-        }
-        assert websocket.receive_json() == {"type": "speech_end", "reason": "server_vad"}
-        assert websocket.receive_json() == {
-            "type": "final",
-            "text": "绿色江河是什么组织",
-            "reason": "server_vad",
-            "provider": "dashscope_realtime",
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'listening', 'keyword': '小绿小绿', 'end_silence_ms': 800}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_start', 'reason': 'server_vad'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'partial', 'text': '绿色江河是什么', 'provider': 'dashscope_realtime'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'speech_end', 'reason': 'server_vad'}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'final', 'text': '绿色江河是什么组织', 'reason': 'server_vad', 'provider': 'dashscope_realtime'}
 
         # Once ASR is complete, PCM is routed to the independent wake-word
         # monitor while answer generation/TTS proceeds. A hit interrupts that
         # turn and always requests the fixed "我在" acknowledgement.
         websocket.send_bytes(interrupt_wakeup_chunk)
-        assert websocket.receive_json() == {
-            "type": "wake_detected",
-            "keyword": "小绿小绿",
-            "prompt_text": web_app.INTERRUPT_ACKNOWLEDGEMENT_TEXT,
-            "prompt_audio_url": web_app.INTERRUPT_ACKNOWLEDGEMENT_URL,
-            "reason": "interrupt",
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'wake_detected', 'keyword': '小绿小绿', 'prompt_text': web_app.INTERRUPT_ACKNOWLEDGEMENT_TEXT, 'prompt_audio_url': web_app.INTERRUPT_ACKNOWLEDGEMENT_URL, 'reason': 'interrupt'}
 
         # Microphone frames remain discarded until the acknowledgement has
         # actually finished. Only prompt_finished may open the next VAD turn.
         websocket.send_bytes(ignored_during_interrupt_ack)
         websocket.send_json({"type": "prompt_finished"})
-        assert websocket.receive_json() == {
-            "type": "listening",
-            "keyword": "小绿小绿",
-            "end_silence_ms": 800,
-        }
-        assert websocket.receive_json() == {
-            "type": "no_speech",
-            "reason": "session_finished",
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'listening', 'keyword': '小绿小绿', 'end_silence_ms': 800}
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'no_speech', 'reason': 'session_finished'}
 
         # An empty follow-up explicitly returns the session to local wake-word
         # detection instead of opening another ASR turn.
@@ -1456,11 +1361,7 @@ def test_web_wakeup_qwen_connect_failure_uses_buffered_audio_locally(
         websocket.send_bytes(second_question_chunk)
         allow_failure.set()
         assert websocket.receive_json()["type"] == "listening"
-        assert websocket.receive_json() == {
-            "type": "asr_fallback",
-            "provider": "local_whisper",
-            "reason": "cloud_connect_failed",
-        }
+        assert _without_retrieval_metadata(websocket.receive_json()) == {'type': 'asr_fallback', 'provider': 'local_whisper', 'reason': 'cloud_connect_failed'}
         assert websocket.receive_json()["type"] == "speech_start"
         assert websocket.receive_json()["type"] == "speech_end"
         assert websocket.receive_json()["provider"] == "local_whisper"
@@ -1728,7 +1629,7 @@ def test_web_wakeup_asr_ignores_completed_wakeup_word_before_question() -> None:
         )
     )
 
-    assert websocket.messages == [
+    assert [_without_retrieval_metadata(e) for e in websocket.messages] == [
         {"type": "speech_start", "reason": "server_vad"},
         {"type": "speech_end", "reason": "server_vad"},
         {
@@ -1786,7 +1687,7 @@ def test_web_page_exposes_persistent_offline_wakeup_controls() -> None:
     assert "function isConversationClosingUtterance(text)" not in html
     assert "closeContinuousConversation" not in html
     assert "function finishWakeupConversation(recorder, text)" not in html
-    assert "event.reason || event.decision?.reason" in html
+    assert "event.reason ||" in html
     assert "!wakeupRecorder.pendingWakeupForce" in html
     assert "正在返回待唤醒状态" in html
     assert "has reset the KWS session and emitted the next `armed` event" in html
@@ -1878,8 +1779,7 @@ def test_web_index_job_stats_and_search(tmp_path, monkeypatch) -> None:
     assert search_response.status_code == 200
     search_payload = search_response.json()
     assert search_payload["query_tokens"] == ["alpha"]
-    assert search_payload["rewrite"]["method"] == "fallback"
-    assert search_payload["rewrite"]["model"] == "deepseek-v4-flash"
+    assert "rewrite" not in search_payload
     assert "alpha searchable content" in search_payload["results"][0]["text"]
     assert search_payload["results"][0]["metadata"]["retrieval_source"] in {"vector", "hybrid"}
     assert search_payload["results"][0]["explanation"]["query_tokens"] == ["alpha"]
@@ -2057,7 +1957,7 @@ def test_web_answer_stream_endpoint_returns_ndjson_events(tmp_path, monkeypatch)
 
 def test_web_answer_stream_opts_in_to_local_llm_input_events(tmp_path, monkeypatch) -> None:
     store = SettingsStore(tmp_path / "settings.json")
-    store.save_deepseek_api_key("sk-web-trace-deepseek-12345678")
+    store.save_api_key("sk-web-trace-deepseek-12345678")
     received_options = []
 
     class FakeTracedAnswerService:
@@ -2107,7 +2007,7 @@ def test_web_answer_stream_opts_in_to_local_llm_input_events(tmp_path, monkeypat
 
 def test_web_answer_stream_ignores_nonsemantic_turn(tmp_path, monkeypatch) -> None:
     store = SettingsStore(tmp_path / "settings.json")
-    store.save_deepseek_api_key("sk-web-gate-12345678")
+    store.save_api_key("sk-web-gate-12345678")
 
     class FakeIgnoredService:
         def stream_answer_events(self, query: str, *, top_k: int = 4):
@@ -2144,7 +2044,7 @@ def test_web_answer_stream_ignores_nonsemantic_turn(tmp_path, monkeypatch) -> No
 
 def test_web_answer_stream_uses_farewell_for_session_end(tmp_path, monkeypatch) -> None:
     store = SettingsStore(tmp_path / "settings.json")
-    store.save_deepseek_api_key("sk-web-farewell-deepseek-12345678")
+    store.save_api_key("sk-web-farewell-deepseek-12345678")
 
     class FakeFarewellService:
         def stream_answer_events(self, query: str, *, top_k: int = 4):
@@ -2245,3 +2145,16 @@ def test_web_image_index_job_stats_and_image_search(tmp_path, monkeypatch) -> No
     result = search_response.json()["results"][0]
     assert result["metadata"]["source_name"] == "demo.docx"
     assert result["image_data_url"].startswith("data:image/png;base64,")
+
+
+def _without_retrieval_metadata(event):
+    event = dict(event)
+    if event.get("provider") == "dashscope_realtime":
+        if event.get("type") == "final":
+            assert len(event.pop("retrieval_token")) == 32
+            event.pop("item_id")
+        elif event.get("type") == "partial":
+            assert isinstance(event.pop("confirmed_text"), str)
+            assert isinstance(event.pop("stash"), str)
+            event.pop("item_id")
+    return event

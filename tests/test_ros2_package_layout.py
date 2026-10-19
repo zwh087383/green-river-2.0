@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 from xml.etree import ElementTree
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -174,7 +175,12 @@ def test_ros_entrypoints_delegate_to_full_linux_environment(
         base_python.chmod(0o755)
         python = tmp_path / "venv" / "bin" / "python"
         python.parent.mkdir(parents=True)
-        python.symlink_to(base_python)
+        try:
+            python.symlink_to(base_python)
+        except OSError as exc:
+            if getattr(exc, "winerror", None) == 1314:
+                pytest.skip("Windows account lacks permission to create symlinks; run on Linux for this contract")
+            raise
         monkeypatch.setenv("RAG_SYSTEM_PYTHON", str(python))
         monkeypatch.setattr(sys, "argv", ["rag_answer_node", "--ros-args"])
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Any, Literal, Protocol
 
 from rag_system.settings import AppSettings
@@ -16,6 +17,62 @@ class EmbeddingClient(Protocol):
 
     def embed_texts(self, texts: list[str]) -> list[list[float]]:
         ...
+
+    def embed_queries(self, texts: list[str]) -> list[list[float]]:
+        ...
+
+
+@dataclass(slots=True)
+class EmbeddingGemmaClient:
+    """Local 768d search/document embeddings; never falls back to another model."""
+
+    endpoint_url: str = "http://127.0.0.1:8765/v1/embeddings"
+    model: str = "google/embeddinggemma-2"
+    dimensions: int = 768
+    batch_size: int = 16
+    timeout: float = 20.0
+
+    @classmethod
+    def from_settings(cls, settings: AppSettings) -> "EmbeddingGemmaClient":
+        return cls(endpoint_url=settings.embedding_url)
+
+    def embed_texts(self, texts: list[str]) -> list[list[float]]:
+        return self._embed(texts, "Document")
+
+    def embed_queries(self, texts: list[str]) -> list[list[float]]:
+        return self._embed(texts, "SearchQuery")
+
+    def _embed(self, texts: list[str], prompt_name: str) -> list[list[float]]:
+        import httpx
+
+        if any(not isinstance(text, str) or not text.strip() for text in texts):
+            raise ValueError("Embedding inputs must be non-empty text")
+        vectors: list[list[float]] = []
+        with httpx.Client(timeout=self.timeout, trust_env=False) as client:
+            for start in range(0, len(texts), self.batch_size):
+                batch = texts[start:start + self.batch_size]
+                response = client.post(self.endpoint_url, json={
+                    "model": self.model, "input": batch, "dimensions": self.dimensions,
+                    "encoding_format": "float", "prompt_name": prompt_name,
+                })
+                response.raise_for_status()
+                payload = response.json()
+                if payload.get("model") != self.model:
+                    raise RuntimeError("Embedding server returned an unexpected model")
+                items = sorted(payload.get("data", []), key=lambda item: item["index"])
+                if [item["index"] for item in items] != list(range(len(batch))):
+                    raise RuntimeError("Embedding response indexes do not match inputs")
+                for item in items:
+                    if any(isinstance(v, bool) or not isinstance(v, (int, float)) for v in item["embedding"]):
+                        raise RuntimeError("Embedding response contains non-numeric values")
+                    vector = [float(value) for value in item["embedding"]]
+                    if len(vector) != self.dimensions or not all(math.isfinite(v) for v in vector):
+                        raise RuntimeError("Embedding response has invalid dimensions or values")
+                    norm = math.sqrt(sum(value * value for value in vector))
+                    if not math.isfinite(norm) or norm <= 0:
+                        raise RuntimeError("Embedding response contains a zero vector")
+                    vectors.append([value / norm for value in vector])
+        return vectors
 
 
 @dataclass(slots=True)

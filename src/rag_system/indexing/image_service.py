@@ -33,7 +33,10 @@ class ImageIndexingService:
         self.collection_name = collection_name
         self.vector_store = vector_store
         self.embedding_client = embedding_client
-        self.manifest = manifest or IndexManifest(self.index_dir / "index.sqlite3")
+        # Text and image management share the active document enabled state;
+        # image vectors themselves keep their existing independent collection.
+        manifest_dir = self.index_dir / "embeddinggemma2_768_v1" if vector_store is None else self.index_dir
+        self.manifest = manifest or IndexManifest(manifest_dir / "index.sqlite3")
 
     def index_document_images(self, document: ParsedDocument) -> ImageIndexingResult:
         candidates = self._image_candidates(document)

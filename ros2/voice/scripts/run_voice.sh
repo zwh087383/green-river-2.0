@@ -28,4 +28,4 @@ export RAG_DATA_DIR="${RAG_DATA_DIR:-${PROJECT_ROOT}/data}"
 export RAG_SYSTEM_PYTHON="${FULL_PYTHON}"
 mkdir -p "${RAG_DATA_DIR}"
 
-exec ros2 launch voice voice_rag.launch.py data_dir:="${RAG_DATA_DIR}" "$@"
+exec ros2 launch voice "${RAG_VOICE_LAUNCH_FILE:-voice_rag.launch.py}" data_dir:="${RAG_DATA_DIR}" "$@"
