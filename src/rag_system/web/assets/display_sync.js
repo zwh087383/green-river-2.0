@@ -7,6 +7,7 @@ class DisplaySessionClient {
       sessionStorage.setItem(key, this.clientId);
     } catch (_) { this.clientId = crypto.randomUUID(); }
     this.state = 'idle';
+    this.tone = 'neutral';
     this.version = 0;
     this.claimVersion = 0;
     this.claimAcknowledged = 0;
@@ -14,7 +15,7 @@ class DisplaySessionClient {
     this.inFlight = false;
     window.addEventListener('pagehide', () => this.stop());
     window.addEventListener('pageshow', event => {
-      if (event.persisted) { this.state = 'idle'; this.start(); }
+      if (event.persisted) { this.state = 'idle'; this.tone = 'neutral'; this.start(); }
     });
     window.addEventListener('online', () => void this.synchronize());
     document.addEventListener('visibilitychange', () => {
@@ -62,6 +63,13 @@ class DisplaySessionClient {
     } finally { clearTimeout(timeout); }
   }
 
+  setTone(tone) {
+    if (this.tone === tone) return;
+    this.tone = tone;
+    this.version++;
+    void this.synchronize();
+  }
+
   async synchronize() {
     if (!this.running || this.inFlight || this.retired) return;
     this.inFlight = true;
@@ -79,7 +87,7 @@ class DisplaySessionClient {
       }
       const claimVersion = this.claimVersion;
       const result = await this.post('/api/display/session/state', {
-        session_id: sessionId, sequence: ++this.sequence, state: this.state,
+        session_id: sessionId, sequence: ++this.sequence, state: this.state, tone: this.tone,
         claim: claimVersion > this.claimAcknowledged
       });
       if (!this.running || this.sessionId !== sessionId) return;

@@ -1,0 +1,5 @@
+<library path="greenriver_native_motion">
+  <class name="greenriver/NativePresetController" type="greenriver::NativePresetController" base_class_type="controller_interface::ControllerInterface">
+    <description>Native SDK presets over a local Unix socket, without per-motion ROS commands.</description>
+  </class>
+</library>

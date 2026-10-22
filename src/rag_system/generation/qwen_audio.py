@@ -1,5 +1,7 @@
-"""One manually triggered, text-context Qwen Audio reply per connection."""
+"""One manual Qwen reply with text context and optional original PCM input."""
 from __future__ import annotations
+
+from rag_system.voice_diagnostics import trace_voice
 
 import base64
 import json
@@ -14,6 +16,8 @@ from typing import Any
 from urllib.parse import urlencode
 
 from rag_system.settings import AppSettings
+from rag_system.generation.reply_input import validate_pcm
+from rag_system.generation.turn_control import END_SESSION_TOOL, execute_end_session
 
 
 class AudioReplyError(RuntimeError):
@@ -62,16 +66,26 @@ class QwenAudioReplyClient:
 
     def stream(self, messages: list[dict[str, str]], *, audio: bool = True,
                should_cancel: Callable[[], bool] = lambda: False,
-               prepared: PreparedReply | None = None) -> Iterator[dict[str, Any]]:
+               prepared: PreparedReply | None = None,
+               input_pcm: bytes | None = None) -> Iterator[dict[str, Any]]:
         if should_cancel():
             if prepared:
                 prepared.close()
             return
+        if input_pcm is not None:
+            try:
+                validate_pcm(input_pcm)
+            except ValueError:
+                if prepared:
+                    prepared.close()
+                raise
         instructions = "\n".join(m["content"] for m in messages if m["role"] == "system")
         session = None
         started = False
         completed = False
         response_id = ""
+        seen_responses: set[str] = set()
+        tool_executed = False
         try:
             session = (prepared.claim(self, instructions, audio, should_cancel) if prepared else
                        self._open_session(instructions, audio, should_cancel))
@@ -88,27 +102,64 @@ class QwenAudioReplyClient:
                 wait_for("conversation.item.created", item_id)
             if should_cancel():
                 return
+            if input_pcm is not None:
+                for offset in range(0, len(input_pcm), 3200):
+                    if should_cancel():
+                        return
+                    send({"type": "input_audio_buffer.append",
+                          "audio": base64.b64encode(input_pcm[offset:offset + 3200]).decode("ascii")})
+                if should_cancel():
+                    return
+                send({"type": "input_audio_buffer.commit"})
+                wait_for("input_audio_buffer.committed")
+            if should_cancel():
+                return
             send({"type": "response.create"})
             started = True
             text_kind = ""
             text_parts: list[str] = []
             audio_bytes = 0
+            pending_call: dict[str, Any] | None = None
+            call_arguments: str | None = None
+            usages: list[Any] = []
             while True:
                 event = receive()
                 kind = event.get("type", "")
+                if kind in {"response.output_item.added", "response.function_call_arguments.done", "response.done"}:
+                    trace_voice("model.control", kind=kind, response_id=event.get("response_id"),
+                                item_type=event.get("item", {}).get("type"),
+                                tool_name=event.get("name", event.get("item", {}).get("name")),
+                                response_status=event.get("response", {}).get("status"),
+                                output_types=[item.get("type") for item in event.get("response", {}).get("output", [])])
                 if kind == "response.created":
                     if response_id:
                         raise AudioReplyError("Multiple responses in one reply connection")
                     response_id = str(event.get("response", {}).get("id") or "")
-                    if not response_id:
+                    if not response_id or response_id in seen_responses:
                         raise AudioReplyError("Missing response identity")
+                    seen_responses.add(response_id)
                     continue
                 if not kind.startswith("response."):
                     continue
                 owner = event.get("response_id") or event.get("response", {}).get("id")
                 if not response_id or owner != response_id:
                     raise AudioReplyError("Reply event response identity mismatch")
-                if kind in {"response.audio_transcript.delta", "response.text.delta"}:
+                if kind == "response.output_item.added" and event.get("item", {}).get("type") == "function_call":
+                    if tool_executed or pending_call is not None:
+                        raise AudioReplyError("Repeated conversation tool call")
+                    pending_call = event["item"]
+                    if not pending_call.get("call_id") or not pending_call.get("id"):
+                        raise AudioReplyError("Missing tool call identity")
+                elif kind == "response.function_call_arguments.done":
+                    if (not pending_call or call_arguments is not None
+                            or event.get("call_id") != pending_call["call_id"]
+                            or event.get("item_id") != pending_call["id"]
+                            or event.get("name", pending_call.get("name")) != pending_call.get("name")):
+                        raise AudioReplyError("Tool call identity mismatch")
+                    call_arguments = event.get("arguments")
+                    if not isinstance(call_arguments, str):
+                        raise AudioReplyError("Missing complete tool arguments")
+                elif kind in {"response.audio_transcript.delta", "response.text.delta"}:
                     if text_kind and text_kind != kind:
                         continue  # Some providers emit both representations of the same words.
                     text_kind = kind
@@ -131,11 +182,40 @@ class QwenAudioReplyClient:
                     response = event["response"]
                     if response.get("status") != "completed":
                         raise AudioReplyError("Qwen Audio response did not complete")
+                    usages.append(response.get("usage"))
+                    if pending_call is not None:
+                        if call_arguments is None:
+                            raise AudioReplyError("Incomplete conversation tool call")
+                        try:
+                            result = execute_end_session(str(pending_call.get("name", "")), call_arguments)
+                        except (ValueError, TypeError) as exc:
+                            raise AudioReplyError("Invalid conversation tool call") from exc
+                        output_id = "tool_" + uuid.uuid4().hex
+                        send({"type": "conversation.item.create", "item": {
+                            "id": output_id, "type": "function_call_output",
+                            "call_id": pending_call["call_id"],
+                            "output": json.dumps(result, ensure_ascii=False),
+                        }})
+                        wait_for("conversation.item.created", output_id)
+                        tool_executed = True
+                        yield {"type": "tool_result", "name": pending_call["name"],
+                               "call_id": pending_call["call_id"], "result": result,
+                               "response_id": response_id}
+                        # A tool call may share a response with an audible farewell.
+                        # In that case preserve it and avoid generating a duplicate.
+                        if "".join(text_parts).strip() and (not audio or audio_bytes):
+                            pending_call = None
+                        else:
+                            pending_call, call_arguments = None, None
+                            response_id = ""
+                            send({"type": "response.create"})
+                            continue
                     if not "".join(text_parts).strip() or (audio and not audio_bytes):
                         raise AudioReplyError("Qwen Audio completed without the requested text/audio")
                     completed = True
                     yield {"type": "reply_done", "response_id": response_id,
-                           "usage": response.get("usage"), "audio_bytes": audio_bytes}
+                           "usage": response.get("usage"), "response_usages": usages,
+                           "audio_bytes": audio_bytes}
                     return
         except ReplyCancelled:
             return
@@ -198,10 +278,15 @@ class _ReplySession:
         modalities = ["text", "audio"] if audio else ["text"]
         self.send({"type": "session.update", "session": {
             "modalities": modalities, "voice": self.client.voice,
-            "turn_detection": None, "output_audio_format": "pcm",
+            "turn_detection": None, "input_audio_format": "pcm", "output_audio_format": "pcm",
             "instructions": instructions, "enable_search": False, "max_history_turns": 50,
+            "tools": [END_SESSION_TOOL],
         }})
         echo = self.wait_for("session.updated").get("session", {})
+        trace_voice("model.configured", model=self.client.model, audio=audio,
+                    tool_names=[tool.get("name", tool.get("function", {}).get("name"))
+                                for tool in echo.get("tools", [])],
+                    tools_echoed="tools" in echo)
         # The live provider omits null turn_detection when confirming manual mode.
         if echo.get("turn_detection") is not None:
             raise AudioReplyError("Qwen Audio did not confirm manual response mode")

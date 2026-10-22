@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from rag_system.voice_diagnostics import trace_voice
+
 import asyncio
 import inspect
+import io
+import wave
 import json
 import logging
 import os
@@ -17,7 +21,7 @@ import mimetypes
 from dataclasses import asdict
 from pathlib import Path
 from threading import Lock
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import (
     BackgroundTasks,
@@ -30,15 +34,27 @@ from fastapi import (
     WebSocket,
     WebSocketDisconnect,
 )
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from rag_system.generation import AnswerGenerationService, ConversationHistory
+from rag_system.generation.reply_input import reply_audio_store
 from rag_system.generation.live_retrieval import RetrievalPrefetch, register, discard
 from rag_system.generation.history import ROUTER_HISTORY_MAX_ROUNDS
 from rag_system.generation.prompt_catalog import build_llm_prompt_catalog
 from rag_system.display_state import DisplayStateStore
+from rag_system.display_emotion import analyze_emotion
+from rag_system.emotion_rules import RULES
+from rag_system.robot_motion import (
+    exchange as motion_exchange, request_home as request_robot_home,
+    request_power as request_robot_power, request_all_power as request_robot_all_power,
+    request_arm_restart as request_robot_arm_restart, request_result as get_robot_request_result,
+    request_preset as request_robot_preset,
+)
+from rag_system.motion_presets import load_catalog as load_motion_catalog, validate_vendor_limits
+from rag_system.hardware_wakeup import HardwareWakeEngine
+from rag_system.pcm_probe import PcmProbe
 from rag_system.indexing import ImageIndexingService, IndexingService, MissingApiKeyError
 from rag_system.indexing.document_ids import document_id_for_file, document_id_for_document
 from rag_system.parsing import ParsingService
@@ -57,6 +73,7 @@ from rag_system.voice import (
     VoiceService,
 )
 from rag_system.web.display_page import DISPLAY_HTML
+from rag_system.web.display_preview import DISPLAY_PREVIEW_HTML
 
 try:
     from rag_system.wakeup import WakeWordEngine, keyword_spec_for_text
@@ -312,6 +329,10 @@ class VadSettingsPayload(BaseModel):
     end_silence_ms: int = 400
 
 
+class ReplyInputSettingsPayload(BaseModel):
+    enabled: bool
+
+
 class ASRSettingsPayload(BaseModel):
     provider: str
     model: str | None = None
@@ -341,6 +362,7 @@ class AnswerPayload(BaseModel):
     query: str
     top_k: int = 4
     audio: bool = True
+    input_audio_token: str | None = Field(default=None, min_length=1, max_length=64)
     retrieval_token: str | None = Field(default=None, max_length=64)
     conversation_id: str | None = Field(default=None, min_length=1, max_length=128)
 
@@ -383,6 +405,11 @@ def display() -> str:
     return DISPLAY_HTML
 
 
+@app.get("/display/preview", response_class=HTMLResponse)
+def display_preview() -> str:
+    return DISPLAY_PREVIEW_HTML
+
+
 @app.get("/api/display/state")
 def get_display_state() -> JSONResponse:
     return JSONResponse(display_state_store.snapshot(), headers={"Cache-Control": "no-store"})
@@ -398,6 +425,35 @@ class DisplaySessionPayload(BaseModel):
     session_id: str = Field(min_length=1, max_length=128)
 
 
+@app.get("/api/display/emotion-rules.js")
+def get_display_emotion_rules() -> Response:
+    return Response("window.DisplayEmotionRules = " + json.dumps(RULES, ensure_ascii=True) + ";\n",
+                    media_type="application/javascript", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/display/emotion-client.js")
+def get_display_emotion_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "display_emotion.js",
+                        media_type="application/javascript", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/display/tone-renderer.js")
+def get_display_tone_renderer() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "display_tone.js",
+                        media_type="application/javascript", headers={"Cache-Control": "no-store"})
+
+
+class DisplayAnalysisPayload(BaseModel):
+    text: str = Field(max_length=1200)
+
+
+@app.post("/api/display/analyze")
+async def analyze_display_emotion(payload: DisplayAnalysisPayload) -> JSONResponse:
+    # Suggestions never mutate the active turn or gate the PCM reply stream.
+    result = await analyze_emotion(payload.text, settings_store.load())
+    return JSONResponse(result.to_dict(), headers={"Cache-Control": "no-store"})
+
+
 class DisplaySessionOpenPayload(DisplaySessionPayload):
     client_id: str = Field(min_length=1, max_length=128)
     generation: int = Field(default=0, ge=0)
@@ -407,6 +463,7 @@ class DisplaySessionStatePayload(DisplaySessionPayload):
     sequence: int = Field(ge=0)
     state: str
     claim: bool = False
+    tone: str = "neutral"
 
 
 @app.post("/api/display/session")
@@ -419,7 +476,7 @@ def open_display_session(payload: DisplaySessionOpenPayload) -> JSONResponse:
 def sync_display_session(payload: DisplaySessionStatePayload) -> JSONResponse:
     try:
         return JSONResponse(display_state_store.sync_web_session(
-            payload.session_id, payload.sequence, payload.state, claim=payload.claim))
+            payload.session_id, payload.sequence, payload.state, claim=payload.claim, tone=payload.tone))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -438,6 +495,7 @@ class DisplayEmotionPayload(BaseModel):
     state: str
     text: str = ""
     reason: str = ""
+    tone: str = "neutral"
 
 
 @app.post("/api/display/mode")
@@ -452,10 +510,161 @@ def set_display_mode(payload: DisplayModePayload) -> JSONResponse:
 def set_display_emotion(payload: DisplayEmotionPayload) -> JSONResponse:
     try:
         return JSONResponse(display_state_store.set_emotion(
-            payload.state, text=payload.text, reason=payload.reason
+            payload.state, text=payload.text, reason=payload.reason, tone=payload.tone
         ))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+class RobotHomePayload(BaseModel):
+    request_id: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_-]+$")
+
+
+class RobotPowerPayload(RobotHomePayload):
+    power: Literal["on", "off"]
+
+
+class RobotPresetPayload(RobotHomePayload):
+    catalog_revision: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+@app.get("/api/robot/arm-power.js")
+def get_arm_power_browser_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "arm-power.js", media_type="application/javascript")
+
+
+@app.post("/api/robot/motion/power")
+def set_robot_arm_power(payload: RobotPowerPayload, request: Request) -> JSONResponse:
+    origin = request.headers.get("origin")
+    if (origin and origin != str(request.base_url).rstrip("/")) or request.headers.get("sec-fetch-site") == "cross-site":
+        raise HTTPException(status_code=403, detail="只接受当前页面的手臂电源操作")
+    try:
+        result = request_robot_power(payload.request_id, payload.power)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="机械臂动作服务暂不可用，请检查状态后再操作") from exc
+    status = result.get("status")
+    code = 202 if status == "accepted" else 200 if status in {"duplicate", "already_on", "already_off"} else 409 if status == "busy" else 503
+    return JSONResponse(result, status_code=code)
+
+
+@app.post("/api/robot/motion/restart")
+def restart_robot_arms(payload: RobotHomePayload, request: Request) -> JSONResponse:
+    origin = request.headers.get("origin")
+    if (origin and origin != str(request.base_url).rstrip("/")) or request.headers.get("sec-fetch-site") == "cross-site":
+        raise HTTPException(status_code=403, detail="只接受当前页面的手臂重启操作")
+    try:
+        result = request_robot_arm_restart(payload.request_id)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="机械臂动作服务暂不可用，请检查状态后再操作") from exc
+    status = result.get("status")
+    code = 202 if status == "accepted" else 200 if status == "duplicate" else 409 if status == "busy" else 503
+    return JSONResponse(result, status_code=code)
+
+
+@app.get("/api/robot/all-power.js")
+def get_all_power_browser_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets")/"all-power.js",media_type="application/javascript")
+
+
+@app.post("/api/robot/motion/all-power")
+def set_robot_all_power(payload: RobotPowerPayload, request: Request) -> JSONResponse:
+    origin=request.headers.get("origin")
+    if (origin and origin!=str(request.base_url).rstrip("/")) or request.headers.get("sec-fetch-site")=="cross-site":
+        raise HTTPException(status_code=403,detail="只接受当前页面的全部电源操作")
+    try:
+        result=request_robot_all_power(payload.request_id,payload.power)
+    except (OSError,ValueError) as exc:
+        raise HTTPException(status_code=503,detail="全部电源服务暂不可用，请核对双臂和躯干状态") from exc
+    status=result.get("status")
+    code=202 if status=="accepted" else 200 if status in {"duplicate","already_on","already_off"} else 409 if status=="busy" else 503
+    return JSONResponse(result,status_code=code)
+
+
+@app.get("/api/robot/motion-client.js")
+def get_motion_browser_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "motion-client.js", media_type="application/javascript")
+
+
+@app.get("/api/robot/motion/state")
+def get_robot_motion_state() -> JSONResponse:
+    try:
+        return JSONResponse(motion_exchange("STATUS"))
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="机械臂动作服务暂不可用") from exc
+
+
+@app.get("/api/robot/motion/requests/{token}")
+def get_robot_motion_request(token: str, instance_id: str | None = None) -> JSONResponse:
+    try:
+        result = get_robot_request_result(token, instance_id=instance_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except OSError as exc:
+        raise HTTPException(status_code=503, detail="动作结果暂不可用，请求不会自动重发") from exc
+    code = 409 if result["status"] == "instance_changed" else 404 if result["status"] == "not_found" else 200
+    return JSONResponse(result, status_code=code)
+
+
+@app.get("/api/robot/motion/presets")
+def get_robot_motion_presets() -> JSONResponse:
+    try:
+        return JSONResponse(load_motion_catalog())
+    except (OSError, ValueError, TypeError) as exc:
+        raise HTTPException(status_code=503, detail="动作目录不可用，请检查预设配置") from exc
+
+
+@app.get("/api/robot/motion/presets-client.js")
+def get_motion_presets_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "motion-presets.js", media_type="application/javascript")
+
+
+@app.get("/api/robot/motion/presets-style.css")
+def get_motion_presets_style() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "motion-presets.css", media_type="text/css")
+
+
+@app.post("/api/robot/motion/presets/{preset_id}/run")
+def run_robot_motion_preset(preset_id: str, payload: RobotPresetPayload, request: Request) -> JSONResponse:
+    origin = request.headers.get("origin")
+    if ((origin and origin != str(request.base_url).rstrip("/"))
+            or request.headers.get("sec-fetch-site") == "cross-site"):
+        raise HTTPException(status_code=403, detail="只接受当前页面的动作测试")
+    try:
+        catalog = load_motion_catalog()
+    except (OSError, ValueError, TypeError) as exc:
+        raise HTTPException(status_code=503, detail="动作目录不可用，请检查预设配置") from exc
+    preset = next((preset for preset in catalog["presets"] if preset["id"] == preset_id), None)
+    if preset is None:
+        raise HTTPException(status_code=404, detail="预设动作不存在")
+    if payload.catalog_revision != catalog["revision"]:
+        raise HTTPException(status_code=409, detail="动作目录已更新，请刷新列表后再测试")
+    try:
+        validate_vendor_limits(preset)
+    except OSError as exc:
+        raise HTTPException(status_code=503, detail="厂家关节范围配置不可用") from exc
+    except (ValueError, KeyError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    try:
+        result = request_robot_preset(payload.request_id, preset_id)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="动作回执未确认，请核对状态后操作；系统不会自动重试") from exc
+    status = result.get("status")
+    code = (202 if status == "accepted" else 200 if status == "duplicate"
+            else 409 if status in {"busy", "not_at_home"} else 503)
+    return JSONResponse(result, status_code=code)
+
+
+@app.post("/api/robot/motion/home")
+def home_robot_after_refresh(payload: RobotHomePayload, request: Request) -> JSONResponse:
+    origin = request.headers.get("origin")
+    if origin and origin != str(request.base_url).rstrip("/"):
+        raise HTTPException(status_code=403, detail="只接受当前页面的归位请求")
+    try:
+        result = request_robot_home(payload.request_id)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="机械臂动作服务暂不可用") from exc
+    accepted = result.get("status") in {"accepted", "queued", "coalesced", "duplicate"}
+    return JSONResponse(result, status_code=202 if accepted else 503)
 
 
 @app.get("/api/health")
@@ -564,6 +773,11 @@ def save_vad_settings(payload: VadSettingsPayload) -> JSONResponse:
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return JSONResponse(settings.to_public_dict())
+
+
+@app.post("/api/settings/reply-input")
+def save_reply_input_settings(payload: ReplyInputSettingsPayload) -> JSONResponse:
+    return JSONResponse(settings_store.save_reply_input(payload.enabled).to_public_dict())
 
 
 @app.post("/api/settings/asr")
@@ -936,11 +1150,14 @@ def _web_answer_events(
     should_cancel: Any,
     audio: bool = True,
     retrieval_token: str | None = None,
+    input_pcm: bytes | None = None,
 ) -> Any:
     stream_answer_events = service.stream_answer_events
     try:
         parameters = inspect.signature(stream_answer_events).parameters
     except (TypeError, ValueError):
+        if input_pcm is not None:
+            raise ValueError("无法确认当前回复服务的音频输入能力")
         return stream_answer_events(query, top_k=top_k)
     supports_kwargs = any(
         parameter.kind is inspect.Parameter.VAR_KEYWORD
@@ -955,6 +1172,10 @@ def _web_answer_events(
         kwargs["audio"] = audio
     if "retrieval_token" in parameters or supports_kwargs:
         kwargs["retrieval_token"] = retrieval_token
+    if input_pcm is not None:
+        if "input_pcm" not in parameters and not supports_kwargs:
+            raise ValueError("当前回复服务不支持原始音频输入")
+        kwargs["input_pcm"] = input_pcm
     return stream_answer_events(query, **kwargs)
 
 
@@ -981,6 +1202,12 @@ async def answer_query_stream(payload: AnswerPayload, request: Request) -> Strea
     if not payload.query.strip():
         raise HTTPException(status_code=400, detail="Answer query cannot be empty")
     top_k = max(1, min(payload.top_k, 4))
+    input_pcm = None
+    if payload.input_audio_token:
+        try:
+            input_pcm = reply_audio_store.take(payload.input_audio_token, payload.query)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
     service = _answer_service_for(payload)
 
     async def event_stream():
@@ -996,6 +1223,7 @@ async def answer_query_stream(payload: AnswerPayload, request: Request) -> Strea
                     should_cancel=cancelled.is_set,
                     audio=payload.audio,
                     retrieval_token=payload.retrieval_token,
+                    input_pcm=input_pcm,
                 )
             )
             while not cancelled.is_set():
@@ -1033,6 +1261,7 @@ def get_voice_status() -> JSONResponse:
     payload["reply_audio_available"] = settings.has_api_key
     payload["reply_model"] = settings.answer_model
     payload["reply_voice"] = settings.audio_reply_voice
+    payload["robot_wakeup_source"] = _robot_wakeup_status().get("source", "unknown")
     vad_enabled = bool(getattr(settings, "vad_enabled", True))
     end_silence_ms = int(getattr(settings, "vad_end_silence_ms", 400))
     cloud_vad_active = payload.get("asr_provider_active") == "dashscope_realtime"
@@ -1095,6 +1324,26 @@ def get_voice_status() -> JSONResponse:
     return JSONResponse(payload)
 
 
+def _robot_wakeup_status() -> dict[str, Any]:
+    try:
+        payload = json.loads((DATA_DIR / "runtime/hardware-wake.json").read_text(encoding="utf-8"))
+        if time.time() - float(payload.get("updated_at", 0)) > 5:
+            payload.update(connected=False, error="语音网关状态已过期")
+        return payload
+    except (OSError, ValueError, TypeError):
+        return {"source": "unknown", "connected": False, "error": "机器人唤醒状态暂不可用"}
+
+
+@app.get("/api/robot/voice/wakeup")
+def get_robot_wakeup_status() -> JSONResponse:
+    return JSONResponse(_robot_wakeup_status())
+
+
+@app.get("/api/robot/hardware-wake.js")
+def get_hardware_wake_browser_client() -> FileResponse:
+    return FileResponse(Path(__file__).with_name("assets") / "hardware-wake.js", media_type="application/javascript")
+
+
 @app.post("/api/voice/stt")
 async def voice_speech_to_text(audio: UploadFile = File(...)) -> JSONResponse:
     try:
@@ -1108,7 +1357,16 @@ async def voice_speech_to_text(audio: UploadFile = File(...)) -> JSONResponse:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except VoiceDependencyError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-    return JSONResponse({"text": text})
+    fields = {}
+    if getattr(settings_store.load(), "reply_use_original_audio", False) and text.strip():
+        try:
+            with wave.open(io.BytesIO(audio_bytes), "rb") as wav:
+                if (wav.getframerate(), wav.getnchannels(), wav.getsampwidth(), wav.getcomptype()) != (16000, 1, 2, "NONE"):
+                    raise ValueError("原始音频模式需要 16 kHz 单声道 PCM16 WAV")
+                fields = _reply_audio_fields(text, wav.readframes(wav.getnframes()))
+        except (ValueError, wave.Error, EOFError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return JSONResponse({"text": text, **fields})
 
 
 def _run_stt_inference(audio_bytes: bytes, filename: str) -> str:
@@ -1149,6 +1407,12 @@ def _validate_vad_start(message: dict[str, Any], default_end_silence_ms: int) ->
         pre_pad_ms=300,
         post_pad_ms=200,
     )
+
+
+def _reply_audio_fields(text: str, pcm: bytes) -> dict[str, Any]:
+    if not getattr(settings_store.load(), "reply_use_original_audio", False):
+        return {}
+    return {"input_audio_token": reply_audio_store.put(text, pcm), "reply_input_mode": "original_audio"}
 
 
 async def _send_vad_events(
@@ -1205,6 +1469,7 @@ async def _send_vad_events(
             value = getattr(event, key, None)
             if value is not None:
                 final_payload[key] = value
+        final_payload.update(_reply_audio_fields(text, audio_pcm))
         await websocket.send_json(final_payload)
         return True, True
     return False, speech_seen
@@ -1234,13 +1499,14 @@ async def _forward_realtime_asr_events(
     transport: Any,
     service: VoiceService,
     wakeup_word: str | None = None,
+    captured_audio: list[bytes] | None = None,
 ) -> None:
     prefetch = RetrievalPrefetch(indexing_service_factory())
     token = register(prefetch)
     state = {"final": False}
     try:
         await _forward_realtime_asr_with_retrieval(websocket, transport, service, wakeup_word,
-                                                  prefetch, token, state)
+                                                  prefetch, token, state, captured_audio)
     finally:
         if not state["final"]:
             discard(token)
@@ -1249,6 +1515,7 @@ async def _forward_realtime_asr_events(
 async def _forward_realtime_asr_with_retrieval(
     websocket: WebSocket, transport: Any, service: VoiceService, wakeup_word: str | None,
     prefetch: RetrievalPrefetch, token: str, state: dict[str, bool],
+    captured_audio: list[bytes] | None = None,
 ) -> None:
     """Forward Qwen partial/final events while browser audio is still arriving."""
     speech_started = False
@@ -1295,6 +1562,8 @@ async def _forward_realtime_asr_with_retrieval(
             # frame—but keeps listening if a provider still returns the keyword.
             if wakeup_word and raw_text:
                 speech_started = False
+                if captured_audio is not None:
+                    captured_audio.clear()
                 continue
             await websocket.send_json({"type": "no_speech", "reason": "empty_transcript"})
             return
@@ -1308,6 +1577,7 @@ async def _forward_realtime_asr_with_retrieval(
                 "reason": "server_vad",
                 "provider": "dashscope_realtime",
                 "retrieval_token": token,
+                **_reply_audio_fields(text, b"".join(captured_audio or [])), 
                 "item_id": getattr(event, "item_id", None),
             }
         )
@@ -1405,7 +1675,9 @@ async def _run_local_asr_stream(
                 if command_type == "stop":
                     audio_chunk = b""
                     is_final = True
-                elif command_type in {"pause", "resume"}:
+                elif command_type in {"pause", "resume", "hardware_wake"}:
+                    if command_type == "hardware_wake":
+                        trace_voice("backend.phase_drop", phase="local_asr", command=command)
                     continue
                 else:
                     await websocket.send_json(
@@ -1453,7 +1725,7 @@ async def _run_realtime_asr_stream(
         for audio_chunk in captured_audio:
             await transport.append_audio(audio_chunk)
         receiver_task = asyncio.create_task(
-            _forward_realtime_asr_events(websocket, transport, service, wakeup_word)
+            _forward_realtime_asr_events(websocket, transport, service, wakeup_word, captured_audio)
         )
         while True:
             if incoming_task is None:
@@ -1487,6 +1759,9 @@ async def _run_realtime_asr_stream(
             except json.JSONDecodeError:
                 await websocket.send_json({"type": "error", "detail": "控制消息必须为 JSON"})
                 continue
+            if command.get("type") == "hardware_wake":
+                trace_voice("backend.phase_drop", phase="cloud_asr", command=command)
+                continue  # Already listening: do not restart ASR on another wake event.
             if command.get("type") != "stop":
                 await websocket.send_json({"type": "error", "detail": "仅支持 stop 控制消息"})
                 continue
@@ -1703,7 +1978,9 @@ async def _connect_realtime_asr_while_buffering(
                             else:
                                 await _cancel_task(connect_task)
                             return None, (), None
-                        if command_type not in {"pause", "resume"}:
+                        if command_type == "hardware_wake":
+                            trace_voice("backend.phase_drop", phase="asr_connect", command=command)
+                        if command_type not in {"pause", "resume", "hardware_wake"}:
                             await websocket.send_json(
                                 {
                                     "type": "error",
@@ -1798,7 +2075,9 @@ async def _wait_for_wakeup_prompt_finished(websocket: WebSocket) -> bool:
             return True
         if command_type == "stop":
             return False
-        if command_type == "pause":
+        if command_type in {"pause", "hardware_wake"}:
+            if command_type == "hardware_wake":
+                trace_voice("backend.phase_drop", phase="prompt", command=command)
             continue
         await websocket.send_json(
             {"type": "error", "detail": "播放唤醒提示音时仅支持 pause、prompt_finished 或 stop"}
@@ -1837,6 +2116,9 @@ async def _wait_for_voice_next_action(
     """
     if wake_session_holder is None:
         wake_session_holder = [wake_session]
+    probe = PcmProbe("backend.interrupt_pcm", keyword=wakeup_word)
+    trace_voice("backend.interrupt_monitor_started", keyword=wakeup_word,
+                session_type=type(wake_session_holder[0]).__name__)
     while True:
         message = await websocket.receive()
         if message.get("type") == "websocket.disconnect":
@@ -1850,6 +2132,7 @@ async def _wait_for_voice_next_action(
                 continue
             try:
                 wake_event = _accept_wakeup_pcm(wake_session_holder[0], bytes(audio_chunk))
+                probe.feed(audio_chunk, hit=bool(wake_event))
             except Exception as exc:
                 # A transient backend failure must not tear down the active
                 # answer session; continue dropping this frame and keep the
@@ -1858,6 +2141,7 @@ async def _wait_for_voice_next_action(
                 continue
             if wake_event is None or wake_event is False:
                 continue
+            trace_voice("backend.software_interrupt_hit", keyword=wakeup_word)
             await websocket.send_json(
                 _wakeup_event_payload(
                     wake_event,
@@ -1881,6 +2165,18 @@ async def _wait_for_voice_next_action(
             await websocket.send_json({"type": "error", "detail": "控制消息必须为 JSON"})
             continue
         command_type = command.get("type")
+        if command_type == "hardware_wake":
+            trace_voice("backend.phase_receive", phase="answer", command=command)
+            accept = getattr(wake_session_holder[0], "accept_control", None)
+            event = accept(command) if callable(accept) else None
+            if event is None:
+                continue
+            trace_voice("backend.interrupt_ack", command=command)
+            await websocket.send_json(_wakeup_event_payload(event, wakeup_word, reason="interrupt"))
+            wake_session_holder[0] = _rearm_wakeup_session(wake_engine, wake_session_holder[0], wakeup_word)
+            if not await _wait_for_wakeup_prompt_finished(websocket):
+                return None
+            return "interrupt"
         if command_type in {"continue", "resume"}:
             return str(command_type)
         if command_type == "stop":
@@ -1903,6 +2199,8 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
     await websocket.accept()
     transport: Any | None = None
     wake_session: Any | None = None
+    interrupt_session: Any | None = None
+    interrupt_engine: Any | None = None
     try:
         settings = settings_store.load()
         if not bool(getattr(settings, "wakeup_enabled", True)):
@@ -1927,8 +2225,24 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
         wakeup_word = str(getattr(settings, "wakeup_word", "小绿小绿")).strip()
         cooldown_ms = int(getattr(settings, "wakeup_cooldown_ms", 800))
         try:
-            engine = wakeword_engine_factory()
+            source = start_message.get("wake_source", "software")
+            if source not in {"software", "hardware"}:
+                raise ValueError("Invalid wake source")
+            interrupt_source = start_message.get("interrupt_source", source)
+            if interrupt_source not in {"software", "hardware"}:
+                raise ValueError("Invalid interrupt source")
+            if source == "software" and interrupt_source == "hardware":
+                raise ValueError("Hardware interruption requires hardware initial wake")
+            connection_id = start_message.get("connection_id", "")
+            if source == "hardware" and (not isinstance(connection_id, str) or not 16 <= len(connection_id) <= 128):
+                raise ValueError("Hardware wake requires a connection id")
+            engine = HardwareWakeEngine(wakeup_word, connection_id, cooldown_ms) if source == "hardware" else wakeword_engine_factory()
             wake_session = _create_wakeup_session(engine, wakeup_word)
+            if source == "hardware" and interrupt_source == "software":
+                interrupt_engine = wakeword_engine_factory()
+                interrupt_session = _create_wakeup_session(interrupt_engine, wakeup_word)
+            trace_voice("backend.wake_sources", wake_source=source,
+                        interrupt_source=interrupt_source, connection_id=connection_id)
         except Exception as exc:
             await websocket.send_json({"type": "error", "detail": f"离线唤醒不可用：{exc}"})
             await websocket.close(code=1011)
@@ -1949,6 +2263,7 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
             if message.get("type") == "websocket.disconnect":
                 return
             audio_chunk = message.get("bytes")
+            wake_event = None
             if audio_chunk is None:
                 try:
                     command = json.loads(message.get("text") or "{}")
@@ -1956,10 +2271,16 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
                     await websocket.send_json({"type": "error", "detail": "控制消息必须为 JSON"})
                     continue
                 command_type = command.get("type")
-                if command_type == "stop":
+                if command_type == "hardware_wake":
+                    trace_voice("backend.phase_receive", phase="armed", command=command)
+                    accept = getattr(wake_session, "accept_control", None)
+                    wake_event = accept(command) if callable(accept) else None
+                    if wake_event is None:
+                        continue
+                elif command_type == "stop":
                     await websocket.close(code=1000)
                     return
-                if command_type == "resume":
+                elif command_type == "resume":
                     # A typed/manual answer can finish while the persistent
                     # wake socket is still in its outer armed phase.  Re-arm
                     # the detector explicitly and acknowledge the transition;
@@ -1980,25 +2301,26 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
                         }
                     )
                     continue
-                if command_type == "pause":
+                elif command_type == "pause":
                     continue
-                await websocket.send_json(
-                    {"type": "error", "detail": "待唤醒时仅支持 pause、resume 或 stop"}
-                )
-                continue
-            if len(audio_chunk) % 2:
-                await websocket.send_json({"type": "error", "detail": "PCM 数据长度必须为偶数"})
-                continue
-            if not audio_chunk:
-                continue
-
-            chunk = bytes(audio_chunk)
-            try:
-                wake_event = _accept_wakeup_pcm(wake_session, chunk)
-            except Exception as exc:
-                await websocket.send_json({"type": "error", "detail": f"离线唤醒处理失败：{exc}"})
-                await websocket.close(code=1011)
-                return
+                else:
+                    await websocket.send_json(
+                        {"type": "error", "detail": "待唤醒时仅支持 pause、resume 或 stop"}
+                    )
+                    continue
+            else:
+                if len(audio_chunk) % 2:
+                    await websocket.send_json({"type": "error", "detail": "PCM 数据长度必须为偶数"})
+                    continue
+                if not audio_chunk:
+                    continue
+                chunk = bytes(audio_chunk)
+                try:
+                    wake_event = _accept_wakeup_pcm(wake_session, chunk)
+                except Exception as exc:
+                    await websocket.send_json({"type": "error", "detail": f"离线唤醒处理失败：{exc}"})
+                    await websocket.close(code=1011)
+                    return
             if wake_event is None or wake_event is False:
                 continue
 
@@ -2084,15 +2406,23 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
                                 await transport.close()
                         transport = None
 
-                session_holder = [wake_session]
+                # A separate KWS session sees answer-phase PCM only. Serial
+                # controls remain exclusive to the initial hardware wake.
+                if interrupt_engine is not None:
+                    interrupt_session = _rearm_wakeup_session(
+                        interrupt_engine, interrupt_session, wakeup_word)
+                session_holder = [interrupt_session if interrupt_engine is not None else wake_session]
                 next_action = await _wait_for_voice_next_action(
                     websocket,
-                    wake_session=wake_session,
-                    wake_engine=engine,
+                    wake_session=session_holder[0],
+                    wake_engine=interrupt_engine if interrupt_engine is not None else engine,
                     wakeup_word=wakeup_word,
                     wake_session_holder=session_holder,
                 )
-                wake_session = session_holder[0]
+                if interrupt_engine is not None:
+                    interrupt_session = session_holder[0]
+                else:
+                    wake_session = session_holder[0]
                 if next_action is None:
                     with suppress(Exception):
                         await websocket.close(code=1000)
@@ -2137,6 +2467,10 @@ async def voice_wakeup_session_stream(websocket: WebSocket) -> None:
         if callable(close_session):
             with suppress(Exception):
                 close_session()
+        close_interrupt = getattr(interrupt_session, "close", None)
+        if callable(close_interrupt):
+            with suppress(Exception):
+                close_interrupt()
 
 
 @app.post("/api/voice/tts")
@@ -2509,6 +2843,7 @@ HTML_PAGE = r"""<!doctype html>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>小绿 · 绿色江河志愿讲解员</title>
+  <link rel="stylesheet" href="/api/robot/motion/presets-style.css" />
   <style>
     :root {
       color-scheme: dark;
@@ -2620,9 +2955,19 @@ HTML_PAGE = r"""<!doctype html>
       min-width: 0;
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto auto auto;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto auto;
       gap: 14px;
     }
+    .arm-power-panel {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px;
+      padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+      background: var(--panel);
+    }
+    .arm-power-copy { flex: 1; min-width: 190px; font-size: 13px; line-height: 1.6; }
+    .arm-power-copy strong { margin-right: 8px; }
+    .arm-power-copy small { display: block; color: var(--muted); }
+    .arm-power-panel button { padding: 8px 12px; white-space: nowrap; }
+    .arm-power-panel .power-off { color: var(--amber); border: 1px solid var(--amber); background: rgba(240, 184, 72, 0.08); }
     .llm-trace-panel {
       min-width: 0;
       min-height: 0;
@@ -3372,6 +3717,7 @@ HTML_PAGE = r"""<!doctype html>
       <div class="brand"><span class="brand-mark">绿</span><span>小绿 · 绿色江河志愿讲解员</span></div>
       <nav class="app-nav" aria-label="主导航">
         <button class="nav-btn active" data-page="chat">对话</button>
+        <button class="nav-btn" data-page="motions">动作调试</button>
         <button class="nav-btn" data-page="docs">文档解析</button>
         <button class="nav-btn" data-page="manage">文档管理</button>
         <button class="nav-btn" data-page="settings">配置</button>
@@ -3392,6 +3738,26 @@ HTML_PAGE = r"""<!doctype html>
             </div>
           </aside>
           <div class="chat-shell">
+          <section class="arm-power-panel" aria-label="双臂和躯干电源">
+            <div class="arm-power-copy">
+              <strong>全部电源 · 双臂＋躯干</strong><span id="allPowerStatus" role="status" aria-live="polite">正在读取状态</span>
+              <small>包含双臂、腰腿及颈部；上电后归位，断电前归位并检查抱闸。</small>
+              <small id="allPowerMessage" role="status" aria-live="polite"></small>
+            </div>
+            <button id="allPowerOnBtn" disabled>全部上电并归位</button>
+            <button id="allPowerOffBtn" class="secondary power-off" disabled>全部归位并断电</button>
+          </section>
+          <section class="arm-power-panel" aria-label="机械臂电源">
+            <div class="arm-power-copy">
+              <strong>仅双臂</strong><span id="armPowerStatus" role="status" aria-live="polite">正在读取状态</span>
+              <small>上电后归位 · 断电前归位；运行时请保持双臂运动区域畅通。</small>
+              <small id="armPowerMessage" role="status" aria-live="polite"></small>
+              <small id="robotWakeStatus" role="status" aria-live="polite">机器人唤醒：正在读取状态</small>
+            </div>
+            <button id="armPowerOnBtn" disabled>手臂上电并归位</button>
+            <button id="armPowerOffBtn" class="secondary power-off" disabled>手臂归位并断电</button>
+            <button id="armRestartBtn" class="secondary" disabled>重启手臂</button>
+          </section>
           <div class="chat-feed" id="chatMessages">
             <div class="chat-empty" id="chatEmpty">
               <h1>你好，我是小绿</h1>
@@ -3466,6 +3832,24 @@ HTML_PAGE = r"""<!doctype html>
         </div>
       </section>
         </main>
+      </section>
+      <section class="app-page" id="page-motions">
+        <div class="motion-workspace" id="motionDebugRoot">
+          <header class="motion-heading">
+            <div><p class="motion-eyebrow">小绿 · 动作预设</p><h1>动作调试</h1>
+              <p>选择一个预设，单独执行一次。每次测试从起始位开始，完成后回到起始位。</p></div>
+            <button class="secondary" id="motionCatalogRefresh">刷新动作列表</button>
+          </header>
+          <section class="motion-status-panel" aria-label="动作服务状态">
+            <span class="motion-state-dot" id="motionStateDot"></span>
+            <div class="motion-status-copy"><strong id="motionDebugState">正在连接动作服务</strong>
+              <span id="motionDebugDetail">请保持双臂活动区域畅通；同一时间只执行一个动作。</span></div>
+            <button class="secondary" id="motionDebugHome" disabled>回到起始位</button>
+          </section>
+          <div class="motion-feedback" id="motionDebugFeedback" role="status" aria-live="polite">正在读取预设目录…</div>
+          <div class="motion-catalog" id="motionPresetList"></div>
+          <p class="motion-catalog-note">预设目录统一管理现有和后续动作。新增预设后刷新列表即可显示；新动作仍需现场验证完整路径。</p>
+        </div>
       </section>
       <section class="app-page" id="page-manage">
         <main class="document-layout">
@@ -3548,6 +3932,16 @@ HTML_PAGE = r"""<!doctype html>
                 <button id="saveWakeupSettingsBtn">保存并重启唤醒</button>
               </div>
             </div>
+            <h2>回复模型输入</h2>
+            <div class="settings-form">
+              <label class="toggle-row" for="replyOriginalAudioInput">
+                <span>向 Qwen 发送原始音频</span>
+                <input id="replyOriginalAudioInput" type="checkbox" disabled />
+              </label>
+              <div class="model-line">开启：当前轮发送原始录音，不发送转写文字。关闭：发送转写文字。</div>
+              <div class="model-line">识别、检索、历史对话和语音回复照常工作；手动打字仍发送文字。保存后对下一次识别完成的语音生效。</div>
+              <div class="settings-status" id="replyInputStatus" role="status" aria-live="polite">读取输入方式中</div>
+            </div>
             <h2>语音断句</h2>
             <div class="settings-form">
               <label class="toggle-row" for="vadEnabledInput">
@@ -3598,12 +3992,20 @@ HTML_PAGE = r"""<!doctype html>
       </section>
     </main>
   </div>
+  <script src="/api/robot/motion-client.js"></script>
+  <script src="/api/robot/arm-power.js" defer></script>
+  <script src="/api/robot/all-power.js" defer></script>
+  <script src="/api/robot/hardware-wake.js" defer></script>
+  <script src="/api/robot/motion/presets-client.js" defer></script>
   <script src="/api/display/client.js"></script>
+  <script src="/api/display/emotion-rules.js"></script>
+  <script src="/api/display/emotion-client.js"></script>
   <script src="/api/voice/pcm-player.js"></script>
   <script>
     const navButtons = document.querySelectorAll('.nav-btn');
     const pages = {
       chat: document.getElementById('page-chat'),
+      motions: document.getElementById('page-motions'),
       docs: document.getElementById('page-docs'),
       manage: document.getElementById('page-manage'),
       settings: document.getElementById('page-settings')
@@ -3641,6 +4043,8 @@ HTML_PAGE = r"""<!doctype html>
     const wakeupWordInput = document.getElementById('wakeupWordInput');
     const wakeupSettingsLine = document.getElementById('wakeupSettingsLine');
     const wakeupSettingsStatus = document.getElementById('wakeupSettingsStatus');
+    const replyOriginalAudioInput = document.getElementById('replyOriginalAudioInput');
+    const replyInputStatus = document.getElementById('replyInputStatus');
     const vadEnabledInput = document.getElementById('vadEnabledInput');
     const vadEndSilenceInput = document.getElementById('vadEndSilenceInput');
     const asrCorrectionEnabledInput = document.getElementById('asrCorrectionEnabledInput');
@@ -3720,6 +4124,7 @@ HTML_PAGE = r"""<!doctype html>
     let ttsQueueRunPromise = null;
     const voiceConversationId = crypto.randomUUID();
     let pendingRetrievalToken = null;
+    let pendingInputAudioToken = null;
     let qwenAudioContext = null;
     let qwenPlayer = null;
     function unlockReplyAudio() {
@@ -3737,6 +4142,7 @@ HTML_PAGE = r"""<!doctype html>
     let displayAsrPending = false;
     let displayTextResponse = false;
     const displaySync = new DisplaySessionClient();
+    const answerEmotion = new AnswerEmotionClient(tone => displaySync.setTone(tone));
     let wakeupRecorder = null;
     let wakeupResumeTimer = null;
     let wakeupStartToken = 0;
@@ -3751,7 +4157,8 @@ HTML_PAGE = r"""<!doctype html>
       clearTimeout(displayRestTimer);
       displayTransient = restAfterMs > 0 ? { state, until: Date.now() + restAfterMs } : null;
       if (['idle', 'success', 'error'].includes(state)) displayAsrPending = false;
-      if (displayPlayingAudio) state = 'speaking';
+      if (displayPlayingAudio || qwenPlayer?.sources.size) state = 'speaking';
+      if (['idle', 'listening', 'error'].includes(state)) answerEmotion.reset();
       const takeControl = claim || (state === 'listening' && displayEmotionState !== state);
       displayEmotionState = state;
       displaySync.setState(state, takeControl);
@@ -3760,12 +4167,13 @@ HTML_PAGE = r"""<!doctype html>
 
     function settleDisplayEmotion() {
       let state = 'idle';
-      if (displayPlayingAudio) state = 'speaking';
+      if (displayPlayingAudio || qwenPlayer?.sources.size) state = 'speaking';
       else if (displayTransient && displayTransient.until > Date.now()) state = displayTransient.state;
       else if (isRecordingVoice || displayWakeupPhase === 'listening') state = 'listening';
       else if (displayAsrPending || ['recognizing', 'acknowledging', 'interrupt_ack'].includes(displayWakeupPhase)) state = 'thinking';
       else if (isAnswering) state = displayTextResponse ? 'speaking' : 'thinking';
       else if (ttsActiveItem || ttsSentenceQueue.length || currentTtsController) state = 'thinking';
+      if (['idle', 'listening', 'error'].includes(state)) answerEmotion.reset();
       displayEmotionState = state;
       displaySync.setState(state);
     }
@@ -3824,6 +4232,8 @@ HTML_PAGE = r"""<!doctype html>
       } else if (pageName === 'manage') {
         jobStatus.textContent = '文档管理';
         loadDocuments();
+      } else if (pageName === 'motions') {
+        jobStatus.textContent = '动作调试';
       } else {
         jobStatus.textContent = '配置';
       }
@@ -3928,7 +4338,7 @@ HTML_PAGE = r"""<!doctype html>
       void loadVoiceStatus();
     });
     displaySync.start();
-    switchPage('chat');
+    switchPage(window.location.hash === '#motions' ? 'motions' : 'chat');
     loadSettings();
     loadLlmPromptCatalog();
     applyAutoSpeakState();
@@ -3936,6 +4346,24 @@ HTML_PAGE = r"""<!doctype html>
     loadIndexStats();
     loadImageIndexStats();
     loadDocuments();
+
+    replyOriginalAudioInput.addEventListener('change', async () => {
+      const previous = currentSettings?.reply_use_original_audio === true;
+      replyOriginalAudioInput.disabled = true;
+      replyInputStatus.textContent = '正在保存输入方式';
+      try {
+        const response = await fetch('/api/settings/reply-input', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: replyOriginalAudioInput.checked })
+        });
+        renderSettings(await readJsonResponse(response));
+      } catch (error) {
+        replyOriginalAudioInput.checked = previous;
+        replyInputStatus.textContent = `保存失败：${error.message}`;
+      } finally {
+        replyOriginalAudioInput.disabled = false;
+      }
+    });
 
     async function loadSettings() {
       settingsStatus.textContent = '读取配置中';
@@ -3979,6 +4407,10 @@ HTML_PAGE = r"""<!doctype html>
 
     function renderSettings(settings) {
       currentSettings = settings;
+      replyOriginalAudioInput.checked = settings.reply_use_original_audio === true;
+      replyOriginalAudioInput.disabled = false;
+      replyInputStatus.textContent = replyOriginalAudioInput.checked
+        ? "已保存：原始音频输入（网页和机器人共用）" : "已保存：转写文字输入（网页和机器人共用）";
       modelLine.textContent = `${settings.embedding_model} / ${settings.embedding_dimensions} 维`;
       routerAnswerLine.textContent = `${settings.router_model || 'qwen3.7-flash'} / Router · ${settings.answer_model || 'deepseek-v4-flash'} / Answer`;
       deepseekTurnPromptInput.value = settings.deepseek_turn_prompt || '';
@@ -4738,16 +5170,25 @@ HTML_PAGE = r"""<!doctype html>
       content.innerHTML = `<h2>以图搜图结果</h2><div class="image-grid">${cards}</div>`;
     }
 
+    let robotHardwareWakeActive = false;
+    let browserWakeupExplicitlyEnabled = false;
+
     async function loadVoiceStatus() {
       try {
         const response = await fetch('/api/voice/status');
         const payload = await readJsonResponse(response);
         voiceStatusPayload = payload;
+        robotHardwareWakeActive = payload.robot_wakeup_source === 'hardware';
+        if (robotHardwareWakeActive && !browserWakeupExplicitlyEnabled) {
+          wakeupEnabled = false;
+          wakeupToggle.checked = false;
+          await stopWakeupListening('机器人已启用硬件唤醒，控制页不自动监听');
+        }
         const asrRuntime = describeAsrRuntime(payload);
         voiceMicBtn.disabled = !payload.stt_available;
         autoSpeakBtn.disabled = !payload.reply_audio_available;
         const wakeupWord = payload.wakeup_word || '小绿小绿';
-        wakeupLabel.textContent = `唤醒“${wakeupWord}”`;
+        wakeupLabel.textContent = robotHardwareWakeActive ? '浏览器唤醒（手动开启）' : `唤醒“${wakeupWord}”`;
         const wakeupVadReady = payload.vad_enabled !== false;
         wakeupToggle.disabled = !payload.wakeup_available || !wakeupVadReady;
         if (!payload.wakeup_available) {
@@ -4759,6 +5200,9 @@ HTML_PAGE = r"""<!doctype html>
         } else if (!wakeupRecorder) {
           wakeupStatus.className = 'wakeup-status';
           wakeupStatus.textContent = wakeupEnabled ? '等待麦克风许可' : '离线唤醒已关闭';
+        }
+        if (robotHardwareWakeActive && !browserWakeupExplicitlyEnabled) {
+          wakeupStatus.textContent = '机器人已启用硬件唤醒，控制页不自动监听';
         }
         voiceMicBtn.title = payload.stt_available ? `语音输入 / ${asrRuntime}` : `语音输入不可用：${(payload.errors || []).join('; ')}`;
         autoSpeakBtn.title = `语音回复：${autoSpeakEnabled ? '开' : '关'} / ${payload.reply_model || 'Qwen Audio 3.1'}`;
@@ -4779,6 +5223,7 @@ HTML_PAGE = r"""<!doctype html>
       applyAutoSpeakState();
       if (
         !wakeupAutoStartAttempted &&
+        !robotHardwareWakeActive &&
         wakeupEnabled &&
         voiceStatusPayload?.wakeup_available &&
         voiceStatusPayload?.vad_enabled !== false
@@ -4843,12 +5288,14 @@ HTML_PAGE = r"""<!doctype html>
       return `${protocol}//${window.location.host}/api/voice/session/stream`;
     }
 
-    function setWakeupStatus(text, state = '') {
+    function setWakeupStatus(text, state = '', speechDetected = false) {
       wakeupStatus.className = `wakeup-status ${state}`.trim();
       wakeupStatus.textContent = text;
       displayWakeupPhase = state;
       if (state === 'listening') {
-        setDisplayEmotion('listening');
+        if (!speechDetected && displayTransient?.state === 'success' && displayTransient.until > Date.now()) {
+          settleDisplayEmotion();
+        } else setDisplayEmotion('listening');
       } else if (state === 'recognizing') {
         setDisplayEmotion('thinking');
       } else if (state === 'error' && !isAnswering &&
@@ -5028,6 +5475,7 @@ HTML_PAGE = r"""<!doctype html>
 
     async function toggleWakeupListening() {
       wakeupEnabled = wakeupToggle.checked;
+      browserWakeupExplicitlyEnabled = wakeupEnabled;
       localStorage.setItem(WAKEUP_STORAGE_KEY, wakeupEnabled ? '1' : '0');
       if (wakeupEnabled) {
         await startWakeupListening();
@@ -5163,6 +5611,8 @@ HTML_PAGE = r"""<!doctype html>
     async function interruptActiveTurn(recorder, payload) {
       if (wakeupRecorder !== recorder || recorder.stopping || interruptInProgress) return;
       interruptInProgress = true;
+      pendingInputAudioToken = null;
+      pendingRetrievalToken = null;
       answerGeneration += 1;
       clearTimeout(wakeupResumeTimer);
       if (currentAnswerController) {
@@ -5280,6 +5730,8 @@ HTML_PAGE = r"""<!doctype html>
         chatInput.value = '';
         recorder.suspended = false;
         setWakeupStatus('正在聆听问题', 'listening');
+      } else if (payload.type === "speech_start") {
+        setWakeupStatus('正在聆听问题', 'listening', true);
       } else if (payload.type === "asr_fallback") {
         setWakeupStatus('千问 ASR 已断开，正在用本地 Whisper 继续识别', 'listening');
       } else if (payload.type === "speech_end" || payload.type === "forced_end") {
@@ -5290,9 +5742,10 @@ HTML_PAGE = r"""<!doctype html>
           recorder.partialText = text;
           chatInput.value = text;
         }
-        setWakeupStatus(text ? `实时识别：${text}` : '正在聆听问题', 'listening');
+        setWakeupStatus(text ? `实时识别：${text}` : '正在聆听问题', 'listening', Boolean(text));
       } else if (payload.type === "final") {
         pendingRetrievalToken = payload.retrieval_token || null;
+        pendingInputAudioToken = payload.input_audio_token || null;
         // The ASR turn is over; the server now switches to its KWS-only
         // waiting phase while the answer and TTS are running.
         recorder.suspended = false;
@@ -5560,6 +6013,7 @@ HTML_PAGE = r"""<!doctype html>
         armVoiceStopTimer(30000);
         chatStatus.textContent = '正在聆听';
       } else if (payload.type === 'partial') {
+        pendingInputAudioToken = payload.input_audio_token || null;
         const text = (payload.text || '').trim();
         if (!text) return;
         armVoiceStopTimer(30000);
@@ -5577,6 +6031,7 @@ HTML_PAGE = r"""<!doctype html>
         chatSendBtn.disabled = true;
       } else if (payload.type === 'final') {
         pendingRetrievalToken = payload.retrieval_token || null;
+        pendingInputAudioToken = payload.input_audio_token || null;
         recorder.completed = true;
         const text = (payload.text || recorder.partialText || '').trim();
         clearStreamingPartial(recorder, false);
@@ -5734,6 +6189,7 @@ HTML_PAGE = r"""<!doctype html>
         form.append('audio', new Blob([wav], { type: 'audio/wav' }), 'recording.wav');
         const response = await fetch('/api/voice/stt', { method: 'POST', body: form });
         const payload = await readJsonResponse(response);
+        pendingInputAudioToken = payload.input_audio_token || null;
         const text = (payload.text || '').trim();
         if (!text) {
           chatStatus.textContent = '没有识别到内容';
@@ -5821,6 +6277,7 @@ HTML_PAGE = r"""<!doctype html>
     }
 
     function stopCurrentTTS() {
+      answerEmotion.reset();
       if (qwenPlayer) { qwenPlayer.stop(); qwenPlayer = null; }
       ttsPlaybackVersion += 1;
       ttsQueueRunPromise = null;
@@ -6186,7 +6643,7 @@ HTML_PAGE = r"""<!doctype html>
         }
         if (finishedNormally && startedVersion === ttsPlaybackVersion &&
             !ttsSentenceQueue.length && !isAnswering && !isRecordingVoice) {
-          setDisplayEmotion('success', 1400);
+          setDisplayEmotion('success', 3000);
         }
         schedulePendingWakeupAction();
       }
@@ -6205,6 +6662,7 @@ HTML_PAGE = r"""<!doctype html>
         button.textContent = '...';
       }
       enqueueTtsSentences(split.sentences, playbackVersion);
+      answerEmotion.observe(text, true);
     }
 
     function beginLiveLlmTrace(query) {
@@ -6221,7 +6679,8 @@ HTML_PAGE = r"""<!doctype html>
       const messages = Array.isArray(event.messages) ? event.messages : [];
       liveLlmInputs.push({
         stage: String(event.stage || 'llm'),
-        title: String(event.title || 'LLM 输入'),
+        title: String(event.title || 'LLM 输入') + (event.input_mode === 'original_audio'
+          ? ` · 原始音频 ${((event.input_audio_bytes || 0) / 32000).toFixed(1)} 秒（当前轮无转写文字）` : ''),
         model: String(event.model || ''),
         messages
       });
@@ -6268,6 +6727,8 @@ HTML_PAGE = r"""<!doctype html>
     async function sendChatMessage(continuousVoice = false) {
       const query = chatInput.value.trim();
       if (!query || isAnswering || isRecordingVoice || interruptInProgress) return false;
+      const inputAudioToken = pendingInputAudioToken;
+      pendingInputAudioToken = null;
       const retrievalToken = pendingRetrievalToken;
       pendingRetrievalToken = null;
       const continueConversation = continuousVoice === true;
@@ -6285,6 +6746,7 @@ HTML_PAGE = r"""<!doctype html>
       displayWakeupPhase = '';
       keepWakeupCaptureActive('正在回答，唤醒监听中');
       stopCurrentTTS();
+      answerEmotion.begin(query);
       chatInput.value = '';
       beginLiveLlmTrace(query);
       appendChatMessage('user', escapeHtml(query));
@@ -6306,7 +6768,7 @@ HTML_PAGE = r"""<!doctype html>
         }
         const response = await fetch('/api/answer/stream', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, top_k: 4, audio: audioEnabled, retrieval_token: retrievalToken, conversation_id: voiceConversationId }),
+          body: JSON.stringify({ query, top_k: 4, audio: audioEnabled, retrieval_token: retrievalToken, input_audio_token: inputAudioToken, conversation_id: voiceConversationId }),
           signal: controller.signal
         });
         if (!response.ok) {
@@ -6326,10 +6788,12 @@ HTML_PAGE = r"""<!doctype html>
             player.push(event.audio, event.sample_rate);
             setDisplayEmotion('speaking', 0, true);
           },
+          onEmotion: event => { if (isCurrentTurn()) answerEmotion.acceptTone(event.tone); },
           onIgnored: event => {
             if (!isCurrentTurn()) return;
             terminal = true;
             ignored = true;
+            answerEmotion.reset();
             assistantNode.remove();
             if (activeAnswerNode === assistantNode) activeAnswerNode = null;
             chatStatus.textContent = event.reason || '继续聆听';
@@ -6341,11 +6805,14 @@ HTML_PAGE = r"""<!doctype html>
             assistantNode.innerHTML = `${formatAnswerText(streamedText)}<span class="stream-cursor"></span>`;
             chatMessages.scrollTop = chatMessages.scrollHeight;
             if (!audioEnabled) { displayTextResponse = true; setDisplayEmotion('speaking'); }
+            answerEmotion.observe(streamedText);
           },
           onFinal: result => {
             if (!isCurrentTurn()) return;
             terminal = true;
+            endSession = result.retrieval?.reason === 'end_session' || endSession;
             assistantNode.innerHTML = `<div class="assistant-answer-text">${formatAnswerText(result.answer || streamedText)}</div>`;
+            answerEmotion.observe(result.answer || streamedText, true);
             finishLiveLlmTrace('本轮完成');
             chatStatus.textContent = audioEnabled ? '语音播放中' : '回答完成';
           },
@@ -6354,7 +6821,7 @@ HTML_PAGE = r"""<!doctype html>
         if (!terminal && isCurrentTurn()) throw new Error('回复连接提前结束');
         if (audioEnabled && !ignored && isCurrentTurn() && !player?.frames) throw new Error('回复缺少语音数据');
         if (player && isCurrentTurn()) await player.drain();
-        if (isCurrentTurn()) { chatStatus.textContent = '回答完成'; setDisplayEmotion('success', 1400); }
+        if (isCurrentTurn()) { chatStatus.textContent = '回答完成'; setDisplayEmotion('success', 3000); }
       } catch (error) {
         failed = true;
         controller.abort();
@@ -6416,6 +6883,7 @@ HTML_PAGE = r"""<!doctype html>
           if (event.type === 'llm_input') handlers.onLlmInput?.(event);
           if (event.type === 'meta') handlers.onMeta?.(event);
           if (event.type === 'audio') handlers.onAudio?.(event);
+          if (event.type === 'emotion') handlers.onEmotion?.(event);
           if (event.type === 'delta') handlers.onDelta?.(event.text || '');
           else if (event.type === 'ignored') handlers.onIgnored?.(event);
           if (event.type === 'final') handlers.onFinal?.(event.result || {});
@@ -6428,6 +6896,7 @@ HTML_PAGE = r"""<!doctype html>
         if (event.type === 'llm_input') handlers.onLlmInput?.(event);
         else if (event.type === 'meta') handlers.onMeta?.(event);
         else if (event.type === 'audio') handlers.onAudio?.(event);
+        else if (event.type === 'emotion') handlers.onEmotion?.(event);
         else if (event.type === 'delta') handlers.onDelta?.(event.text || '');
         else if (event.type === 'ignored') handlers.onIgnored?.(event);
         else if (event.type === 'final') handlers.onFinal?.(event.result || {});

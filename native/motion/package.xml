@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>greenriver_native_motion</name><version>0.1.0</version>
+  <description>Socket requests to vendor-native ArmMotion presets inside the arm SDK host.</description>
+  <maintainer email="maintainer@example.invalid">Green River</maintainer>
+  <license>Proprietary</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>controller_interface</depend><depend>pluginlib</depend>
+  <depend>rclcpp</depend><depend>wheeled_robot_msgs</depend>
+  <depend>nlohmann_json</depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

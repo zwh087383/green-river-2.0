@@ -16,6 +16,7 @@ fi
 
 python_path="$project_root/src"
 export PYTHONPATH="$python_path"
+export RAG_SYSTEM_PORT="${RAG_SYSTEM_PORT:-8001}"
 cd "$project_root"
 
 case "${1:-web}" in

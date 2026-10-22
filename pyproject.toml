@@ -20,6 +20,9 @@ rag-agent-test = "rag_system.agent.cli:main"
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+license-files = ["licenses/neko/LICENSE", "licenses/neko/NOTICE"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
@@ -28,11 +31,17 @@ where = ["src"]
     "assets/*.mp3",
     "assets/*.txt",
     "assets/*.js",
+    "assets/*.json",
     "assets/emotions/*.png",
     "assets/emotions/*.json",
 ]
 
 [project.optional-dependencies]
+embedding-local = [
+    "sentence-transformers>=6.1.0,<7",
+    # EmbeddingGemma 2 is newer than the current 5.17 release.
+    "transformers @ https://github.com/huggingface/transformers/archive/54c0fe02b61062fe2666add21744c27035549644.tar.gz",
+]
 pdf = [
     "pypdf>=4.0.0",
 ]

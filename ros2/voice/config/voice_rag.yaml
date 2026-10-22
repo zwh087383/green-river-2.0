@@ -70,16 +70,5 @@ voice_arm_motion_node:
     motion_request_topic: /voice/arm_motion_request
     interrupt_topic: /voice/interrupt
     control_topic: /voice/control
-    arm_motion_topic: /arm_control/motion
-    arm_state_topic: /arm_control/arm_state
     session_id: robot
-    wake_motion_code: 4
-    answer_motion_code: 5
-    closing_motion_code: 4
-    # SDK code 1 is "preset position"; confirm on the robot that this is
-    # Xiao Lu's intended default pose before the acceptance test.
-    default_motion_code: 1
-    motion_start_timeout_seconds: 3.0
-    motion_finish_timeout_seconds: 15.0
-    reset_start_timeout_seconds: 3.0
-    reset_finish_timeout_seconds: 10.0
+    # Hardware execution uses GREENRIVER_MOTION_SOCKET; no ROS arm commands.

@@ -18,7 +18,7 @@ The deployable source tree belongs at:
 | `rag_answer_node` | Maintains isolated RAG conversation state per `session_id` and publishes streamed answer events. |
 | `rag_knowledge_node` | Exposes parse/index actions plus search, index-stat, and document-enable services. |
 | `robot_audio_input_node` | Captures the robot microphone, detects `小绿小绿`, segments speech with FSMN VAD, and publishes local Whisper transcripts. |
-| `voice_arm_motion_node` | Serializes voice gestures, publishes SDK `Byte` motion commands, and requests preset recovery after interruption or timeout. |
+| `voice_arm_motion_node` | Legacy voice-event adapter to the native SDK socket; no hardware ROS commands. The realtime gateway calls the socket directly. |
 
 The complete Python stack is isolated in `~/Voice/.venv-linux`. The generated
 ROS2 executables delegate into that environment, so parsing, indexing, ASR, and

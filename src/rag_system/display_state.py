@@ -10,6 +10,8 @@ from pathlib import Path
 from threading import RLock
 from typing import Any
 
+from rag_system.display_emotion import EMOTION_TONES
+
 DISPLAY_MODES = frozenset({"emotion", "web"})
 EMOTION_STATES = frozenset(
     {"idle", "listening", "thinking", "speaking", "success", "error", "sleep", "shy", "smug"}
@@ -59,15 +61,19 @@ class DisplayStateStore:
         text: str = "",
         reason: str = "",
         source: str = "manual",
+        tone: str = "neutral",
     ) -> dict[str, Any]:
         cleaned = str(state or "").strip().lower()
         if cleaned not in EMOTION_STATES:
             raise ValueError(f"unknown emotion state: {cleaned}")
+        if tone not in EMOTION_TONES:
+            raise ValueError(f"unknown emotion tone: {tone}")
         with self._lock:
             current = self.snapshot()
             current.update(
                 {
                     "state": cleaned,
+                    "tone": tone,
                     "text": str(text or ""),
                     "reason": str(reason or "").strip(),
                     "updated_at": time.time(),
@@ -81,10 +87,10 @@ class DisplayStateStore:
             return current
 
     @staticmethod
-    def _change_emotion(current: dict[str, Any], state: str, *, reason: str) -> None:
+    def _change_emotion(current: dict[str, Any], state: str, *, reason: str, tone: str = "neutral") -> None:
         # Lease renewals must not restart the same animation every heartbeat.
-        if current.get("state") != state or current.get("text"):
-            current.update(state=state, text="", updated_at=time.time())
+        if current.get("state") != state or current.get("tone", "neutral") != tone or current.get("text"):
+            current.update(state=state, tone=tone, text="", updated_at=time.time())
         current["reason"] = reason
 
     def open_web_session(self, client_id: str, session_id: str, generation: int = 0) -> dict[str, Any]:
@@ -117,10 +123,12 @@ class DisplayStateStore:
                     "accepted": current.get("web_session_id") == session_id}
 
     def sync_web_session(
-        self, session_id: str, sequence: int, state: str, *, claim: bool = False,
+        self, session_id: str, sequence: int, state: str, *, claim: bool = False, tone: str = "neutral",
     ) -> dict[str, Any]:
         if state not in EMOTION_STATES:
             raise ValueError(f"unknown emotion state: {state}")
+        if tone not in EMOTION_TONES:
+            raise ValueError(f"unknown emotion tone: {tone}")
         with self._lock:
             current = self.snapshot()
             session = self._web_sessions.get(session_id)
@@ -132,7 +140,7 @@ class DisplayStateStore:
             session["sequence"] = sequence
             if current.get("web_session_id") != session_id and not claim:
                 return {**current, "session_status": "ready", "accepted": False}
-            self._change_emotion(current, state, reason="web conversation")
+            self._change_emotion(current, state, reason="web conversation", tone=tone)
             current.update(source="web", web_session_id=session_id,
                            web_client_id=session["client_id"],
                            lease_expires_at=time.time() + WEB_DISPLAY_LEASE_SECONDS)
@@ -155,6 +163,7 @@ class DisplayStateStore:
         return {
             "mode": "emotion",
             "state": "idle",
+            "tone": "neutral",
             "text": "",
             "reason": "startup",
             "updated_at": 0.0,

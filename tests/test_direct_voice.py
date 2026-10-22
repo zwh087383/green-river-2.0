@@ -89,6 +89,70 @@ def test_qwen_cancellation_closes_provider_without_completion():
     assert socket.closed
 
 
+class ToolSocket(Socket):
+    def __init__(self, *, arguments='{"reason":"明确道别"}', tool_name='end_conversation',
+                 wrong_call=False, incomplete_call=False, repeat=False):
+        super().__init__()
+        self.arguments, self.tool_name = arguments, tool_name
+        self.wrong_call, self.incomplete_call, self.repeat = wrong_call, incomplete_call, repeat
+        self.responses = 0
+
+    def send(self, raw):
+        event = json.loads(raw)
+        if event['type'] != 'response.create':
+            return super().send(raw)
+        self.sent.append(event)
+        self.responses += 1
+        owner = 'r' + str(self.responses)
+        self.events.append({'type': 'response.created', 'response': {'id': owner}})
+        if self.responses == 1 or self.repeat:
+            self.events.append({'type':'response.output_item.added','response_id':owner,
+                'item':{'id':'fc1','type':'function_call','call_id':'call1','name':self.tool_name}})
+            if not self.incomplete_call:
+                self.events.append({'type':'response.function_call_arguments.done','response_id':owner,
+                    'item_id':'fc1','call_id':'stale' if self.wrong_call else 'call1',
+                    'name':self.tool_name,'arguments':self.arguments})
+        else:
+            self.events.extend([
+                {'type':'response.audio_transcript.delta','response_id':owner,'delta':'再见！'},
+                {'type':'response.audio.delta','response_id':owner,'delta':'AAA='},
+            ])
+        self.events.append({'type':'response.done','response':{'id':owner,'status':'completed'}})
+
+
+def test_end_tool_returns_result_then_continues_same_session_for_farewell():
+    socket = ToolSocket()
+    events = list(client(socket).stream([{'role':'user','content':'再见'}]))
+    assert [e['type'] for e in events] == ['tool_result','delta','audio','reply_done']
+    assert events[0]['result']['end_session'] is True
+    assert socket.sent[0]['session']['tools'][0]['function']['name'] == 'end_conversation'
+    output = next(e['item'] for e in socket.sent if e.get('item',{}).get('type') == 'function_call_output')
+    assert output['call_id'] == 'call1'
+    assert json.loads(output['output'])['status'] == 'finish_after_playback'
+    assert socket.responses == 2 and socket.closed
+
+
+@pytest.mark.parametrize('options', [
+    {'arguments':'{}'}, {'tool_name':'unknown'}, {'wrong_call':True}, {'incomplete_call':True},
+])
+def test_invalid_or_incomplete_tool_never_signals_ending(options):
+    socket = ToolSocket(**options)
+    events = []
+    with pytest.raises(AudioReplyError):
+        for event in client(socket).stream([{'role':'user','content':'再见'}]):
+            events.append(event)
+    assert not any(e['type'] == 'tool_result' for e in events)
+    assert not any(e.get('item',{}).get('type') == 'function_call_output' for e in socket.sent)
+    assert socket.closed
+
+
+def test_repeated_end_tool_is_bounded_and_cannot_loop():
+    socket = ToolSocket(repeat=True)
+    with pytest.raises(AudioReplyError, match='Repeated'):
+        list(client(socket).stream([{'role':'user','content':'再见'}]))
+    assert socket.responses == 2
+
+
 def test_prepared_qwen_only_configures_until_final_context_is_acknowledged():
     socket = Socket()
     reply = client(socket)
@@ -258,15 +322,74 @@ def test_cancelled_reply_is_closed_and_not_added_as_completed_history(tmp_path):
     assert reply.closed and len(history) == 0
 
 
-def test_local_control_only_matches_explicit_short_commands(tmp_path):
-    index, reply = Index(), Reply()
-    service = AnswerGenerationService(settings_store=SettingsStore(tmp_path / 's.json'), indexing_service=index, answer_client=reply)
+def test_main_model_tool_ends_without_separate_judgment(tmp_path):
+    index = Index()
+    class ForbiddenJudge:
+        def decide(self, *args, **kwargs):
+            pytest.fail("Separate end judgment must never be invoked")
+    class ToolReply(Reply):
+        def stream(self, messages, **kwargs):
+            yield {"type": "tool_result", "name": "end_conversation", "call_id": "call1",
+                   "result": {"end_session": True, "reason": "明确告别"}}
+            yield from super().stream(messages, **kwargs)
+    reply = ToolReply()
+    service = AnswerGenerationService(settings_store=SettingsStore(tmp_path / 's.json'),
+        indexing_service=index, answer_client=reply, turn_controller=ForbiddenJudge())
     service.conversation_history.append("q", "a")
     assert list(service.stream_answer_events("嗯。"))[0]["type"] == "ignored"
-    events = list(service.stream_answer_events("没有别的问题了"))
-    assert events[0]["retrieval"]["reason"] == "end_session"
-    assert not index.queries and len(service.conversation_history) == 0
-    assert local_turn_control("没有别的问题了，但是我还想问垃圾分类") == "answer"
+    events = list(service.stream_answer_events("我已经了解清楚了，今天先不打扰你了", include_llm_inputs=True))
+    metas = [e for e in events if e["type"] == "meta"]
+    assert metas[0]["retrieval"]["reason"] == "direct_retrieval"
+    assert metas[-1]["retrieval"]["reason"] == "end_session"
+    assert metas[-1]["retrieval"]["turn_control"]["source"] == "main_model_tool"
+    assert all(e["retrieval"]["preanalysis"] is False for e in metas)
+    assert len(index.queries) == 1 and len(service.conversation_history) == 0
+    assert [e["stage"] for e in events if e["type"] == "llm_input"] == ["direct_audio_reply"]
+    assert 'end_conversation' in reply.messages[0]["content"]
+    assert local_turn_control("再见") == "answer"
+
+
+def test_no_tool_call_keeps_history_even_when_farewell_words_are_present(tmp_path):
+    index, reply = Index(), Reply()
+    service = AnswerGenerationService(settings_store=SettingsStore(tmp_path / 's.json'),
+        indexing_service=index, answer_client=reply)
+    service.conversation_history.append("q", "a")
+    events = list(service.stream_answer_events("再见是什么意思", audio=False))
+    assert events[0]["retrieval"]["reason"] == "direct_retrieval"
+    assert len(index.queries) == 1 and len(service.conversation_history) == 2
+    assert events[-1]["result"]["retrieval"]["turn_control"]["tool_called"] is False
+
+
+def test_cancel_during_retrieval_closes_prepared_reply_without_response(tmp_path):
+    stop = threading.Event()
+    class Prepared:
+        closed = False
+        def close(self): self.closed = True
+    prepared = Prepared()
+    class PreparingReply(Reply):
+        def prepare(self, *args, **kwargs): return prepared
+    index = Index()
+    def search(*args, **kwargs):
+        stop.set()
+        return []
+    index.search = search
+    service = AnswerGenerationService(settings_store=SettingsStore(tmp_path / 's.json'),
+        indexing_service=index, answer_client=PreparingReply())
+    assert list(service.stream_answer_events("介绍环保", should_cancel=stop.is_set)) == []
+    assert prepared.closed
+
+
+@pytest.mark.parametrize('query,tone', [
+    ('小绿你真可爱', 'shy'), ('鼓励我', 'encouraging'), ('我很难过', 'concerned'),
+    ('你有什么想问的', 'curious'), ('我做到了', 'proud'),
+])
+def test_stream_carries_interaction_emotion_to_all_clients(tmp_path, query, tone):
+    service = AnswerGenerationService(settings_store=SettingsStore(tmp_path / 's.json'),
+        indexing_service=Index(), answer_client=Reply())
+    events = list(service.stream_answer_events(query))
+    tones = [e['tone'] for e in events if e['type'] == 'emotion']
+    assert tones and tones[-1] == tone
+    assert events[-1]['result']['retrieval']['emotion']['tone'] == tone
 
 
 def wait_snapshot(prefetch):

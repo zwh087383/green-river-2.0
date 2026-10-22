@@ -32,7 +32,7 @@ if [[ ! -x "$venv_dir/bin/python" ]]; then
 fi
 
 "$venv_dir/bin/python" -m pip install --upgrade pip setuptools wheel
-"$venv_dir/bin/python" -m pip install -e '.[test,web,indexing,pdf,ocr,html,heavy,voice]'
+"$venv_dir/bin/python" -m pip install -e '.[test,web,indexing,pdf,ocr,html,heavy,voice,embedding-local]'
 # Keep compatibility with optional ROS/legacy packages if they already exist
 # in an environment that is being upgraded in place.
 "$venv_dir/bin/python" -m pip install 'setuptools>=68,<80' 'wrapt<2'

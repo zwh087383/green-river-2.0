@@ -92,12 +92,11 @@ def test_voice_arm_motion_contract_is_wired_end_to_end() -> None:
     )
     setup_source = (VOICE / "setup.py").read_text(encoding="utf-8")
 
-    assert "from std_msgs.msg import Byte" in arm_source
-    assert 'message.data = bytes([code])' in arm_source
-    assert '"wake_wave":' in arm_source
-    assert '"answer_gesture":' in arm_source
-    assert '"closing_wave":' in arm_source
-    assert '"default_motion_code", 1' in arm_source
+    assert "from rag_system.robot_motion import MotionClient" in arm_source
+    assert "self._client.request(" in arm_source
+    assert "self._client.advance(" in arm_source
+    assert "create_publisher" not in arm_source
+    assert "/arm_control/motion" not in arm_source
     assert 'purpose="wake_wave"' in audio_source
     assert '"closing_wave" if disposition == "closing" else "answer_gesture"' in bridge_source
     assert config_source.count("arm_motion_request_topic: /voice/arm_motion_request") == 2
@@ -126,7 +125,7 @@ def test_voice_python_modules_compile_without_ros2_runtime() -> None:
     assert "self._services" not in answer_source
     assert '"RAG_DATA_DIR"' in launch_source
     assert "default_value=PathJoinSubstitution" in launch_source
-    assert 'data_dir:="${RAG_DATA_DIR}"' in run_source
+    assert '/scripts/run_ipc_voice.sh' in run_source
     assert 'export RAG_SYSTEM_PYTHON="${FULL_PYTHON}"' in run_source
     assert '"enable_local_audio"' in launch_source
     assert '"voice_arm_motion_node"' in launch_source

@@ -577,7 +577,16 @@ def _frame_is_suspended(frame: FrameType) -> bool:
     bytecode = frame.f_code.co_code
     if instruction < 0 or instruction >= len(bytecode):
         return False
-    return dis.opname[bytecode[instruction]] in _SUSPEND_OPNAMES
+    if dis.opname[bytecode[instruction]] in _SUSPEND_OPNAMES:
+        return True
+    # CPython 3.10 reports an await suspension at the instruction preceding
+    # YIELD_FROM; 3.11+ reports the actual suspension instruction instead.
+    following = instruction + 2
+    return (
+        sys.version_info[:2] == (3, 10)
+        and following < len(bytecode)
+        and dis.opname[bytecode[following]] == "YIELD_FROM"
+    )
 
 
 def _find_active_segment(

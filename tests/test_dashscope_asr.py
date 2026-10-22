@@ -114,7 +114,7 @@ def test_connect_configures_pcm16_server_vad() -> None:
                 "input_audio_transcription": {"language": "zh"},
                 "turn_detection": {
                     "type": "server_vad",
-                    "threshold": 0.0,
+                    "threshold": 0.4,
                     "silence_duration_ms": 400,
                 },
             },

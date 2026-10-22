@@ -41,6 +41,12 @@ def generate_launch_description() -> LaunchDescription:
                 default_value=PathJoinSubstitution([data_dir, "runtime", "display_state.json"]),
             ),
             DeclareLaunchArgument("speak_answers", default_value="true"),
+            DeclareLaunchArgument("native_motion_script", default_value=PathJoinSubstitution([
+                EnvironmentVariable("GREENRIVER_PROJECT_ROOT", default_value=PathJoinSubstitution([
+                    EnvironmentVariable("HOME"), "green-river-4.0"])),
+                "scripts", "run_sdk_motion.sh",
+            ])),
+            ExecuteProcess(cmd=["bash", LaunchConfiguration("native_motion_script"), "--takeover"], output="screen"),
             DeclareLaunchArgument("enable_local_audio", default_value="false"),
             DeclareLaunchArgument(
                 "full_python",

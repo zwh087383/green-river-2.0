@@ -8,6 +8,7 @@ from std_msgs.msg import String
 
 from rag_interfaces.srv import SetDisplayMode
 from rag_system.display_state import DisplayStateStore
+from rag_system.display_emotion import EMOTION_TONES, infer_reply_emotion
 
 
 class DisplayNode(Node):
@@ -19,6 +20,9 @@ class DisplayNode(Node):
         self.declare_parameter("display_topic", "/voice/display_text")
         self.declare_parameter("mode_service", "/display/set_mode")
         self._store = DisplayStateStore(Path(str(self.get_parameter("state_path").value)))
+        self._answer_text = ""
+        self._query_text = ""
+        self._tone = "neutral"
         display_topic = str(self.get_parameter("display_topic").value)
         mode_service = str(self.get_parameter("mode_service").value)
         self.create_subscription(String, display_topic, self._on_display_text, 20)
@@ -31,6 +35,15 @@ class DisplayNode(Node):
     def _on_display_text(self, message: String) -> None:
         text = str(message.data or "").strip()
         if not text:
+            return
+        if text.startswith("[tone]"):
+            tone = text.split("]", 1)[1].strip()
+            if tone in EMOTION_TONES:
+                self._tone = tone
+                snapshot = self._store.snapshot()
+                if snapshot.get("source") == "ros" and snapshot["state"] in {"speaking", "success"}:
+                    self._store.set_emotion(snapshot["state"], text=snapshot.get("text", ""),
+                                            source="ros", tone=tone, reason="reply emotion")
             return
         state = "idle"
         lowered = text.lower()
@@ -47,8 +60,21 @@ class DisplayNode(Node):
         elif lowered.startswith("[ignored]"):
             state = "idle"
         body = text.split("]", 1)[1].strip() if "]" in text else text
+        if lowered.startswith("[query]") or state in {"idle", "listening", "error"}:
+            self._answer_text = ""
+            self._query_text = body if lowered.startswith("[query]") else ""
+            self._tone = "neutral"
+        elif lowered.startswith("[delta]"):
+            self._answer_text = (self._answer_text + body)[:1200]
+        elif lowered.startswith("[answer]"):
+            self._answer_text = body[:1200]
+        # Robot display uses the same offline cues; it never waits for an API
+        # or changes the gateway's PCM/output-drain timing.
+        tone = infer_reply_emotion(self._query_text, self._answer_text).tone if state in {"speaking", "success"} else "neutral"
+        if tone == "neutral" and state in {"speaking", "success"}:
+            tone = self._tone
         try:
-            self._store.set_emotion(state, text=body, reason=text.split("]", 1)[0] + "]", source="ros")
+            self._store.set_emotion(state, text=body, reason=text.split("]", 1)[0] + "]", source="ros", tone=tone)
         except ValueError as exc:
             self.get_logger().warning(str(exc))
 

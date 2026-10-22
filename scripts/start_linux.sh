@@ -2,29 +2,41 @@
 set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-runtime_dir="$project_root/data/runtime"
+runtime_dir="${RAG_DATA_DIR:-$project_root/data}/runtime"
 pid_file="$runtime_dir/web.pid"
 log_file="$runtime_dir/web.log"
 host="${RAG_SYSTEM_HOST:-127.0.0.1}"
-port="${RAG_SYSTEM_PORT:-8000}"
+port="${RAG_SYSTEM_PORT:-8001}"
 probe_host="$host"
 if [[ "$probe_host" == "0.0.0.0" || "$probe_host" == "::" ]]; then
     probe_host="127.0.0.1"
 fi
 
 mkdir -p "$runtime_dir"
+# Serialize even standalone web starts; the detached server must not inherit it.
+exec 9>"$runtime_dir/web-start.lock"
+flock -x 9
 
 if [[ -f "$pid_file" ]]; then
     existing_pid="$(tr -cd '0-9' < "$pid_file")"
-    if [[ -n "$existing_pid" ]] && kill -0 "$existing_pid" 2>/dev/null; then
+    if [[ -n "$existing_pid" ]] && /usr/bin/python3 - "$existing_pid" "$project_root" <<'PY_CHECK'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[2]) / 'scripts'))
+from robot_runtime import read_process, role
+process = read_process(int(sys.argv[1]))
+raise SystemExit(0 if process and process.state != 'Z' and role(process, (Path(sys.argv[2]),)) == 'web' else 1)
+PY_CHECK
+    then
         echo "服务已运行：http://$host:$port（PID $existing_pid）"
         exit 0
     fi
 fi
 
 cd "$project_root"
+bash "$project_root/scripts/start_embedding_linux.sh"
 RAG_SYSTEM_HOST="$host" RAG_SYSTEM_PORT="$port" \
-    nohup setsid "$project_root/scripts/run_linux.sh" web >"$log_file" 2>&1 </dev/null &
+    nohup setsid "$project_root/scripts/run_linux.sh" web >"$log_file" 2>&1 </dev/null 9>&- &
 server_pid=$!
 printf '%s\n' "$server_pid" > "$pid_file"
 

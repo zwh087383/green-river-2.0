@@ -99,6 +99,7 @@ class AppSettings:
     embedding_dimensions: int = DEFAULT_EMBEDDING_DIMENSIONS
     embedding_url: str = DEFAULT_EMBEDDING_URL
     audio_reply_url: str = DEFAULT_AUDIO_REPLY_URL
+    reply_use_original_audio: bool = False
     audio_reply_voice: str = "longanqian_v3.1"
     image_embedding_model: str = DEFAULT_IMAGE_EMBEDDING_MODEL
     image_embedding_dimensions: int = DEFAULT_IMAGE_EMBEDDING_DIMENSIONS
@@ -158,6 +159,7 @@ class AppSettings:
             "embedding_url": self.embedding_url,
             "audio_reply_url": self.audio_reply_url,
             "audio_reply_voice": self.audio_reply_voice,
+            "reply_use_original_audio": self.reply_use_original_audio,
             "image_embedding_model": self.image_embedding_model,
             "image_embedding_dimensions": self.image_embedding_dimensions,
             "deepseek_base_url": self.deepseek_base_url,
@@ -246,6 +248,7 @@ class SettingsStore:
             embedding_url=str(saved["embedding_url"]),
             audio_reply_url=str(saved["audio_reply_url"]),
             audio_reply_voice=str(saved["audio_reply_voice"]),
+            reply_use_original_audio=bool(saved["reply_use_original_audio"]),
             image_embedding_model=str(saved["image_embedding_model"]),
             image_embedding_dimensions=int(saved["image_embedding_dimensions"]),
             deepseek_base_url=str(saved["deepseek_base_url"]),
@@ -319,6 +322,9 @@ class SettingsStore:
                 "chunk_overlap": validated_overlap,
             }
         )
+
+    def save_reply_input(self, enabled: bool) -> AppSettings:
+        return self._update_payload({"reply_use_original_audio": enabled})
 
     def save_conversation_history(self, max_rounds: int) -> AppSettings:
         validated_rounds = validate_conversation_max_rounds(max_rounds)
@@ -450,6 +456,7 @@ class SettingsStore:
             "embedding_dimensions": DEFAULT_EMBEDDING_DIMENSIONS,
             "embedding_url": _clean_text(payload.get("embedding_url"), DEFAULT_EMBEDDING_URL),
             "audio_reply_url": _clean_text(payload.get("audio_reply_url"), DEFAULT_AUDIO_REPLY_URL),
+            "reply_use_original_audio": payload.get("reply_use_original_audio") is True,
             "audio_reply_voice": _clean_text(payload.get("audio_reply_voice"), "longanqian_v3.1"),
             "dashscope_multimodal_url": _clean_text(
                 payload.get("dashscope_multimodal_url"),

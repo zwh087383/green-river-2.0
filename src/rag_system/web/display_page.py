@@ -24,6 +24,8 @@ DISPLAY_HTML = r'''<!doctype html>
 <body>
   <main id="emotion"><canvas id="eyes" role="img" aria-label="小绿表情"></canvas><div id="caption"></div></main>
   <iframe id="web" title="小绿管理网页"></iframe>
+  <script src="/api/robot/motion-client.js"></script>
+<script src="/api/display/tone-renderer.js"></script>
   <script>
     const eyes = document.getElementById('eyes');
     const emotionPanel = document.getElementById('emotion');
@@ -34,6 +36,23 @@ DISPLAY_HTML = r'''<!doctype html>
     let activeFrames = null, currentFrame = null, animationToken = 0;
     let polling = false, pollTimer = null, lastContact = Date.now();
     const stateCache = new Map();
+    const toneRenderer = new DisplayToneRenderer();
+    let toneTimer = null, toneStartedAt = 0, animatedTone = 'neutral';
+
+    function updateToneAnimation() {
+      const tone = snapshot?.mode !== 'web' && ['speaking', 'success'].includes(activeState)
+        ? (snapshot?.tone || 'neutral') : 'neutral';
+      if (tone === animatedTone) return;
+      animatedTone = tone;
+      toneStartedAt = performance.now();
+      clearInterval(toneTimer);
+      toneTimer = null;
+      if (Object.hasOwn(DisplayToneRenderer.tones, tone)) {
+        toneTimer = setInterval(() => {
+          if (currentFrame && manifest) drawFrame(currentFrame);
+        }, 100);
+      }
+    }
 
     function fitCanvas() {
       const ratio = window.devicePixelRatio || 1;
@@ -81,6 +100,11 @@ DISPLAY_HTML = r'''<!doctype html>
     }
 
     function drawFrame(frame) {
+      // Interaction always wins while listening/thinking or reporting errors.
+      const tone = ['speaking', 'success'].includes(activeState) ? (snapshot?.tone || 'neutral') : 'neutral';
+      eyes.dataset.tone = tone;
+      const toneFrame = toneRenderer.render(tone, Math.floor((performance.now() - toneStartedAt) / 100));
+      if (toneFrame) frame = toneFrame;
       const context = eyes.getContext('2d');
       const width = eyes.width;
       const height = eyes.height;
@@ -92,7 +116,8 @@ DISPLAY_HTML = r'''<!doctype html>
       const scale = displayScale(width, height);
       for (let side = 0; side < 2; side++) {
         const sourceX = side * sourceHalfWidth;
-        const stateAnchors = manifest.states[activeState]?.eye_anchors || manifest.layout.eye_anchors;
+        const stateAnchors = toneFrame ? manifest.layout.eye_anchors :
+          (manifest.states[activeState]?.eye_anchors || manifest.layout.eye_anchors);
         const [anchorX, anchorY] = stateAnchors[side];
         const targetX = width * manifest.layout.target_x_fraction[side];
         const targetY = height * manifest.layout.target_y_fraction;
@@ -117,7 +142,10 @@ DISPLAY_HTML = r'''<!doctype html>
       const web = mode === 'web';
       emotionPanel.style.display = web ? 'none' : 'block';
       webPanel.style.display = web ? 'block' : 'none';
-      if (web) { clearInterval(timer); animationToken++; activeState = ''; }
+      if (web) {
+        clearInterval(timer); clearInterval(toneTimer); toneTimer = null;
+        animatedTone = 'neutral'; animationToken++; activeState = '';
+      }
       if (web && !webPanel.src) webPanel.src = '/';
     }
 
@@ -125,6 +153,7 @@ DISPLAY_HTML = r'''<!doctype html>
       if (!manifest || !manifest.states[state]) state = 'idle';
       if (activeState === state && lastVersion === version) return;
       activeState = state; lastVersion = version; frameIndex = 0;
+      updateToneAnimation();
       eyes.dataset.state = state;
       const config = manifest.states[state];
       clearInterval(timer);
@@ -160,6 +189,7 @@ DISPLAY_HTML = r'''<!doctype html>
       const previousMode = snapshot && snapshot.mode;
       snapshot = next;
       showMode(next.mode);
+      updateToneAnimation();
       if (next.mode !== 'web') {
         const serverVersion = String(next.updated_at || 0);
         if (serverVersion !== lastServerVersion || previousMode !== next.mode) {
